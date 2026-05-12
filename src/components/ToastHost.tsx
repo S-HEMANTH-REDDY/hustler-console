@@ -20,7 +20,7 @@ export function ToastHost() {
         <div
           key={t.id}
           className={cn(
-            'pointer-events-none rounded border border-l bg-[#131316]/95 px-3 py-2 text-sm shadow-none backdrop-blur-sm',
+            'pointer-events-none rounded border border-l bg-[#262934]/95 px-3 py-2 text-sm shadow-none backdrop-blur-sm',
             kindStyles[t.kind] ?? kindStyles.info,
           )}
         >

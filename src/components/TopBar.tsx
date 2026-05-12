@@ -51,7 +51,7 @@ export function TopBar() {
       : `${wr.hours}h ${String(wr.minutes).padStart(2, '0')}m left`
 
   return (
-    <header className="frost sticky top-0 z-20 border-b border-[#232328] shadow-[0_1px_0_0_rgba(255,255,255,0.02),0_10px_30px_-20px_rgba(0,0,0,0.9)]">
+    <header className="frost sticky top-0 z-20 border-b border-[#3d4150] shadow-[0_1px_0_0_rgba(255,255,255,0.02),0_10px_30px_-20px_rgba(0,0,0,0.9)]">
       <div className="flex min-h-14 flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2">
         <div className="flex items-center gap-3">
           <MobileHeaderToggle />
@@ -61,12 +61,12 @@ export function TopBar() {
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span>{dateStr}</span>
-              <span className="text-zinc-500">{yearStr}</span>
-              <span className="rounded border border-[#232328] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
+              <span className="text-zinc-400">{yearStr}</span>
+              <span className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
                 {clock}
               </span>
             </div>
-            <div className="font-mono text-xs text-zinc-500">
+            <div className="font-mono text-xs text-zinc-400">
               W{week} · {grad.label} · {remainingLabel}
             </div>
           </div>
@@ -90,18 +90,18 @@ export function TopBar() {
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="hidden items-center gap-2 rounded border border-[#232328] bg-[#131316] px-2.5 py-1.5 text-xs text-zinc-400 hover:border-zinc-700 hover:text-zinc-200 sm:flex"
+            className="hidden items-center gap-2 rounded border border-[#3d4150] bg-[#262934] px-2.5 py-1.5 text-xs text-zinc-400 hover:border-zinc-700 hover:text-zinc-200 sm:flex"
             aria-label="Open command palette"
           >
             <span>Commands</span>
-            <kbd className="rounded border border-[#2a2a30] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-xs text-zinc-500">
+            <kbd className="rounded border border-[#4a4e5b] bg-[#1c1f27] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
               ⌘K
             </kbd>
           </button>
         </div>
       </div>
       {(backupStale || noBackup) && (
-        <div className="flex items-center justify-between gap-3 border-t border-[#232328] bg-amber-950/20 px-4 py-1.5 font-mono text-xs text-amber-200/90">
+        <div className="flex items-center justify-between gap-3 border-t border-[#3d4150] bg-amber-950/20 px-4 py-1.5 font-mono text-xs text-amber-200/90">
           <span>
             {noBackup
               ? 'No backup recorded · export soon to keep your data safe.'
@@ -123,7 +123,7 @@ export function TopBar() {
 function Stat(props: { label: string; value: string; valueClass?: string }) {
   return (
     <div className="text-right">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
         {props.label}
       </div>
       <div

@@ -66,11 +66,11 @@ export function BehavioralPage() {
         >
           Behavioral
         </h1>
-        <p className="text-sm text-zinc-500">STAR archive · coverage grid</p>
+        <p className="text-sm text-zinc-400">STAR archive · coverage grid</p>
       </div>
 
-      <section className="rounded border border-[#232328] bg-[#131316] p-4">
-        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-500">
+      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-400">
           Coverage
         </h2>
         <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-3">
@@ -81,7 +81,7 @@ export function BehavioralPage() {
                 'rounded border p-3',
                 c.count === 0
                   ? 'border-amber-600/60 bg-amber-950/20'
-                  : 'border-[#232328] bg-[#0A0A0B]',
+                  : 'border-[#3d4150] bg-[#0A0A0B]',
               )}
             >
               <div className="text-sm font-medium text-zinc-200">{c.cat}</div>
@@ -98,7 +98,7 @@ export function BehavioralPage() {
         </div>
       </section>
 
-      <section className="rounded border border-[#232328] bg-[#131316]/80 p-4">
+      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">New story</h2>
         <form
           className="grid gap-3 md:grid-cols-4"
@@ -111,11 +111,11 @@ export function BehavioralPage() {
           }}
         >
           <label className="col-span-2 block space-y-1">
-            <span className="text-xs text-zinc-500">Title</span>
+            <span className="text-xs text-zinc-400">Title</span>
             <input name="title" className="field" required />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Category</span>
+            <span className="text-xs text-zinc-400">Category</span>
             <select name="category" className="field">
               {BEHAVIORAL_CATEGORIES.map((c) => (
                 <option key={c}>{c}</option>
@@ -123,7 +123,7 @@ export function BehavioralPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Status</span>
+            <span className="text-xs text-zinc-400">Status</span>
             <select name="status" className="field" defaultValue="draft">
               <option value="draft">draft</option>
               <option value="refined">refined</option>
@@ -131,7 +131,7 @@ export function BehavioralPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Confidence</span>
+            <span className="text-xs text-zinc-400">Confidence</span>
             <select name="confidence" className="field" defaultValue="3">
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -160,12 +160,12 @@ export function BehavioralPage() {
             return (
               <div
                 key={s.id}
-                className="rounded border border-[#232328] bg-[#131316] p-3 text-sm"
+                className="rounded border border-[#3d4150] bg-[#262934] p-3 text-sm"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    className="w-8 shrink-0 text-left text-zinc-500 hover:text-lime-300"
+                    className="w-8 shrink-0 text-left text-zinc-400 hover:text-lime-300"
                     aria-expanded={open}
                     onClick={() => setOpenId(open ? null : s.id)}
                   >
@@ -289,14 +289,14 @@ export function BehavioralPage() {
                     />
                   </div>
                 ) : null}
-                <p className="mt-2 text-xs text-zinc-500">
+                <p className="mt-2 text-xs text-zinc-400">
                   STAR blocks autosave on blur · ⌘/Ctrl+Enter commits textarea
                 </p>
               </div>
             )
           })}
         {stories.length === 0 ? (
-          <div className="text-center text-zinc-500">No stories yet</div>
+          <div className="text-center text-zinc-400">No stories yet</div>
         ) : null}
       </div>
     </div>
@@ -311,7 +311,7 @@ function StarArea(props: {
 }) {
   return (
     <label className="block space-y-1">
-      <span className="text-xs uppercase text-zinc-500">{props.label}</span>
+      <span className="text-xs uppercase text-zinc-400">{props.label}</span>
       <textarea
         className="field min-h-[96px] resize-y font-mono text-xs"
         defaultValue={props.value}

@@ -20,7 +20,7 @@ export function ResumePreviewToolbar(props: {
           'inline-flex items-center gap-1 rounded border px-2 py-1 font-mono text-xs transition-colors',
           expanded
             ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-            : 'border-[#232328] bg-[#0f0f12] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
+            : 'border-[#3d4150] bg-[#20232c] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
         )}
         title={expanded ? 'Hide preview' : 'Preview inline'}
       >
@@ -30,7 +30,7 @@ export function ResumePreviewToolbar(props: {
       <button
         type="button"
         onClick={() => void downloadResume(attachment.id)}
-        className="inline-flex items-center gap-1 rounded border border-[#232328] bg-[#0f0f12] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+        className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
         title="Download file"
       >
         <DownloadIcon />
@@ -40,14 +40,14 @@ export function ResumePreviewToolbar(props: {
         <button
           type="button"
           onClick={() => void openResumeInNewTab(attachment.id)}
-          className="inline-flex items-center gap-1 rounded border border-[#232328] bg-[#0f0f12] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
           title="Open in new tab"
         >
           <ExternalIcon />
           <span>Open</span>
         </button>
       ) : null}
-      <span className="ml-1 truncate font-mono text-xs text-zinc-500">
+      <span className="ml-1 truncate font-mono text-xs text-zinc-400">
         {attachment.fileName} · {humanBytes(attachment.fileSize)}
       </span>
     </div>
@@ -80,8 +80,8 @@ export function ResumeInlinePreview(props: {
   const height = props.height ?? 320
 
   return (
-    <div className="mt-2 overflow-hidden rounded-md border border-[#232328] bg-gradient-to-b from-[#0a0a0b] to-[#0d0d10] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
-      <div className="flex items-center justify-between gap-2 border-b border-[#232328] bg-[#0f0f12]/80 px-3 py-1.5 font-mono text-xs text-zinc-500">
+    <div className="mt-2 overflow-hidden rounded-md border border-[#3d4150] bg-gradient-to-b from-[#1c1f27] to-[#0d0d10] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
+      <div className="flex items-center justify-between gap-2 border-b border-[#3d4150] bg-[#20232c]/80 px-3 py-1.5 font-mono text-xs text-zinc-400">
         <span className="truncate">
           {attachment.fileName} · {humanBytes(attachment.fileSize)}
         </span>
@@ -99,11 +99,11 @@ export function ResumeInlinePreview(props: {
             src={url}
             title={attachment.fileName}
             style={{ height }}
-            className="block w-full bg-[#0a0a0b]"
+            className="block w-full bg-[#1c1f27]"
           />
         ) : (
           <div
-            className="flex items-center justify-center px-6 py-10 text-center font-mono text-xs text-zinc-500"
+            className="flex items-center justify-center px-6 py-10 text-center font-mono text-xs text-zinc-400"
             style={{ minHeight: height }}
           >
             Inline preview not supported for{' '}
@@ -116,7 +116,7 @@ export function ResumeInlinePreview(props: {
           </div>
         )
       ) : (
-        <div className="px-3 py-6 text-center font-mono text-xs text-zinc-500">
+        <div className="px-3 py-6 text-center font-mono text-xs text-zinc-400">
           Loading…
         </div>
       )}

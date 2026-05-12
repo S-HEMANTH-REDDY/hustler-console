@@ -144,7 +144,7 @@ export function DayRibbon(props: {
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2
-          className="text-xs font-medium uppercase tracking-wider text-zinc-500"
+          className="text-xs font-medium uppercase tracking-wider text-zinc-400"
           style={{ fontFamily: 'var(--font-mono)' }}
         >
           Last {days} days · scroll left for older · today on right
@@ -154,7 +154,7 @@ export function DayRibbon(props: {
           <button
             type="button"
             onClick={scrollToToday}
-            className="rounded border border-[#232328] px-2 py-0.5 font-mono text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+            className="rounded border border-[#3d4150] px-2 py-0.5 font-mono text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
             title="Jump to today"
           >
             Today →
@@ -188,14 +188,14 @@ export function DayRibbon(props: {
                   selected
                     ? 'border-lime-500/70 bg-lime-500/10'
                     : d.isToday
-                      ? 'border-zinc-700 bg-[#15151a]'
-                      : 'border-[#232328] bg-[#131316] hover:border-zinc-700',
+                      ? 'border-zinc-700 bg-[#262934]'
+                      : 'border-[#3d4150] bg-[#262934] hover:border-zinc-700',
                 )}
               >
                 <div
                   className={cn(
                     'font-mono text-[9px] uppercase tracking-wider',
-                    d.isWeekend ? 'text-zinc-500' : 'text-zinc-500',
+                    d.isWeekend ? 'text-zinc-400' : 'text-zinc-400',
                   )}
                 >
                   {d.dow}
@@ -210,7 +210,7 @@ export function DayRibbon(props: {
                     {d.dayNum}
                   </span>
                   {d.isMonthStart ? (
-                    <span className="font-mono text-[9px] text-zinc-500">
+                    <span className="font-mono text-[9px] text-zinc-400">
                       {d.monthAbbr}
                     </span>
                   ) : null}
@@ -284,7 +284,7 @@ function TrackTick(props: {
     )
   }
   return (
-    <span className="flex h-3.5 w-3.5 items-center justify-center rounded-sm border border-[#2a2a30] font-mono text-[8px] text-zinc-700">
+    <span className="flex h-3.5 w-3.5 items-center justify-center rounded-sm border border-[#4a4e5b] font-mono text-[8px] text-zinc-700">
       {props.letter}
     </span>
   )
@@ -292,7 +292,7 @@ function TrackTick(props: {
 
 function Legend() {
   return (
-    <div className="hidden items-center gap-2 font-mono text-xs text-zinc-500 sm:flex">
+    <div className="hidden items-center gap-2 font-mono text-xs text-zinc-400 sm:flex">
       {TRACKS.map((t) => (
         <span key={t.kind} className="inline-flex items-center gap-1">
           <span

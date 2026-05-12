@@ -14,7 +14,7 @@ export function HeatStrip(props: {
         let bg: string
         let border: string
         if (c.count === 0) {
-          bg = '#0f0f12'
+          bg = '#20232c'
           border = '#1f1f24'
         } else if (c.count < dailyMin) {
           const t = c.count / Math.max(1, dailyMin)
@@ -36,7 +36,7 @@ export function HeatStrip(props: {
             style={{ backgroundColor: bg, boxShadow: `inset 0 0 0 1px ${border}` }}
             title={`${c.date} · ${c.count}`}
           >
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0a0a0b] px-2 py-1 font-mono text-xs text-zinc-200 shadow-lg group-hover:block">
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#3d4150] bg-[#1c1f27] px-2 py-1 font-mono text-xs text-zinc-200 shadow-lg group-hover:block">
               {c.date} · {c.count}
             </div>
           </div>
@@ -48,8 +48,8 @@ export function HeatStrip(props: {
 
 export function HeatLegend(props: { dailyMin: number; dailyMax: number }) {
   return (
-    <div className="flex items-center gap-3 font-mono text-xs text-zinc-500">
-      <Swatch color="#0f0f12" border="#1f1f24" /> 0
+    <div className="flex items-center gap-3 font-mono text-xs text-zinc-400">
+      <Swatch color="#20232c" border="#1f1f24" /> 0
       <Swatch color="rgba(220,38,38,0.55)" border="#7f1d1d80" /> &lt; {props.dailyMin}
       <Swatch color="rgba(132,204,22,0.7)" border="#65a30d80" />{' '}
       {props.dailyMin}–{props.dailyMax}
@@ -84,7 +84,7 @@ export function MiniBars(props: {
   const max = Math.max(1, ...props.items.map((i) => i.count))
   if (props.items.length === 0) {
     return (
-      <p className="text-xs text-zinc-500">{props.emptyLabel ?? 'No data'}</p>
+      <p className="text-xs text-zinc-400">{props.emptyLabel ?? 'No data'}</p>
     )
   }
   return (
@@ -92,7 +92,7 @@ export function MiniBars(props: {
       {props.items.map((it) => (
         <div key={it.key} className="flex items-center gap-2 font-mono text-xs">
           <span className="w-20 shrink-0 truncate text-zinc-400">{it.label}</span>
-          <div className="relative h-3 flex-1 overflow-hidden rounded-sm bg-[#1a1a1d]">
+          <div className="relative h-3 flex-1 overflow-hidden rounded-sm bg-[#323540]">
             <div
               className="absolute inset-y-0 left-0 rounded-sm"
               style={{
@@ -167,7 +167,7 @@ export function FunnelMini(props: {
               <span className="uppercase tracking-wider">{s.label}</span>
               <span className="tabular-nums text-zinc-200">{s.count}</span>
             </div>
-            <div className="relative h-2 overflow-hidden rounded-sm bg-[#1a1a1d]">
+            <div className="relative h-2 overflow-hidden rounded-sm bg-[#323540]">
               <div
                 className="absolute inset-y-0 left-0 rounded-sm opacity-90"
                 style={{ width: w, backgroundColor: s.color }}
@@ -177,7 +177,7 @@ export function FunnelMini(props: {
               <div
                 className={cn(
                   'pl-1 font-mono text-xs',
-                  s.count > 0 ? 'text-zinc-500' : 'text-zinc-700',
+                  s.count > 0 ? 'text-zinc-400' : 'text-zinc-700',
                 )}
               >
                 ↳ {rate}

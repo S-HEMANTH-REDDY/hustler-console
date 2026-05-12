@@ -55,7 +55,7 @@ export function PaceBar(props: {
 
   return (
     <div className="space-y-2">
-      <div className="relative h-12 w-full overflow-hidden rounded border border-[#232328] bg-[#0A0A0B]">
+      <div className="relative h-12 w-full overflow-hidden rounded border border-[#3d4150] bg-[#0A0A0B]">
         {/* ideal band */}
         <div
           className="absolute inset-y-0 bg-lime-500/15"
@@ -68,14 +68,14 @@ export function PaceBar(props: {
         {ticks.map((v) => (
           <div
             key={v}
-            className="absolute top-0 h-2 w-px bg-[#2a2a30]"
+            className="absolute top-0 h-2 w-px bg-[#4a4e5b]"
             style={{ left: `${(v / scaleMax) * 100}%` }}
           />
         ))}
         {ticks.map((v) => (
           <div
             key={`b-${v}`}
-            className="absolute bottom-0 h-2 w-px bg-[#2a2a30]"
+            className="absolute bottom-0 h-2 w-px bg-[#4a4e5b]"
             style={{ left: `${(v / scaleMax) * 100}%` }}
           />
         ))}
@@ -83,7 +83,7 @@ export function PaceBar(props: {
         {[dailyMin, dailyMax].map((v) => (
           <div
             key={`lab-${v}`}
-            className="pointer-events-none absolute -bottom-0 z-10 -translate-x-1/2 font-mono text-[9px] text-zinc-500"
+            className="pointer-events-none absolute -bottom-0 z-10 -translate-x-1/2 font-mono text-[9px] text-zinc-400"
             style={{ left: `${(v / scaleMax) * 100}%`, top: 1 }}
           >
             {v}
@@ -101,18 +101,18 @@ export function PaceBar(props: {
           title="Expected pace"
         />
         <div
-          className="absolute -top-0.5 h-2 w-2 -translate-x-1/2 rotate-45 border border-white/80 bg-[#131316]"
+          className="absolute -top-0.5 h-2 w-2 -translate-x-1/2 rotate-45 border border-white/80 bg-[#262934]"
           style={{ left: `${nowPct}%` }}
         />
         {/* current count number floating on the bar */}
         <div
-          className="pointer-events-none absolute top-1 -translate-x-1/2 rounded bg-[#0a0a0b]/80 px-1.5 font-mono text-xs text-zinc-200 ring-1 ring-[#232328]"
+          className="pointer-events-none absolute top-1 -translate-x-1/2 rounded bg-[#1c1f27]/80 px-1.5 font-mono text-xs text-zinc-200 ring-1 ring-[#3d4150]"
           style={{ left: `${Math.min(100, Math.max(0, actualPct))}%` }}
         >
           {pace.todayCount}
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-zinc-500">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-zinc-400">
         <span>
           Scale 0–{scaleMax} · Band{' '}
           <span className="text-lime-400/90">

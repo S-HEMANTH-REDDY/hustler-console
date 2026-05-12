@@ -85,13 +85,13 @@ export function DSAPage() {
         >
           DSA
         </h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-zinc-400">
           Volume log · 91-day matrix · inline table
         </p>
       </div>
 
-      <section className="rounded border border-[#232328] bg-[#131316] p-4">
-        <div className="mb-3 text-xs font-mono uppercase text-zinc-500">
+      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+        <div className="mb-3 text-xs font-mono uppercase text-zinc-400">
           13×7 heat · problems / day
         </div>
         <div
@@ -106,23 +106,23 @@ export function DSAPage() {
             return (
               <div
                 key={c.date}
-                className="group relative h-4 rounded-sm border border-[#232328]"
+                className="group relative h-4 rounded-sm border border-[#3d4150]"
                 style={{
                   backgroundColor:
                     c.count === 0
-                      ? '#131316'
+                      ? '#262934'
                       : `rgba(132, 204, 22, ${intensity.toFixed(2)})`,
                 }}
                 title={`${c.date}: ${c.count}`}
               >
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#3d4150] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
                   {c.date} · {c.count} problems
                 </div>
               </div>
             )
           })}
         </div>
-        <p className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-zinc-400">
           13-week columns × 7 weekday rows · older left, newer right.
         </p>
       </section>
@@ -134,14 +134,14 @@ export function DSAPage() {
           { k: 'medium', v: totals.m },
           { k: 'hard', v: totals.h },
         ].map((x) => (
-          <div key={x.k} className="rounded border border-[#232328] bg-[#131316] p-3">
-            <div className="text-xs uppercase text-zinc-500">{x.k}</div>
+          <div key={x.k} className="rounded border border-[#3d4150] bg-[#262934] p-3">
+            <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div className="font-mono text-2xl text-zinc-100">{x.v}</div>
           </div>
         ))}
       </section>
 
-      <section className="rounded border border-[#232328] bg-[#131316]/80 p-4">
+      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">Log problem</h2>
         <form
           className="grid gap-3 md:grid-cols-3 lg:grid-cols-6"
@@ -154,11 +154,11 @@ export function DSAPage() {
           }}
         >
           <label className="col-span-2 block space-y-1">
-            <span className="text-xs text-zinc-500">Title</span>
+            <span className="text-xs text-zinc-400">Title</span>
             <input name="title" className="field" required />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Topic</span>
+            <span className="text-xs text-zinc-400">Topic</span>
             <select name="topic" className="field">
               {DSA_TOPICS.map((t) => (
                 <option key={t}>{t}</option>
@@ -166,7 +166,7 @@ export function DSAPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Difficulty</span>
+            <span className="text-xs text-zinc-400">Difficulty</span>
             <select name="difficulty" className="field" defaultValue="medium">
               <option value="easy">easy</option>
               <option value="medium">medium</option>
@@ -174,7 +174,7 @@ export function DSAPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Confidence 1–5</span>
+            <span className="text-xs text-zinc-400">Confidence 1–5</span>
             <select name="confidence" className="field" defaultValue="3">
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -184,7 +184,7 @@ export function DSAPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Minutes</span>
+            <span className="text-xs text-zinc-400">Minutes</span>
             <input name="minutes" type="number" min={0} className="field" defaultValue={30} />
           </label>
           <div className="col-span-full flex justify-end">
@@ -198,10 +198,10 @@ export function DSAPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-[#232328]">
+      <div className="overflow-x-auto rounded border border-[#3d4150]">
         <table className="min-w-[900px] w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#232328] bg-[#131316] text-xs uppercase text-zinc-500">
+            <tr className="border-b border-[#3d4150] bg-[#262934] text-xs uppercase text-zinc-400">
               <th className="px-2 py-2">Date</th>
               <th className="px-2 py-2">Title</th>
               <th className="px-2 py-2">Topic</th>
@@ -216,7 +216,7 @@ export function DSAPage() {
               .slice()
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((p) => (
-                <tr key={p.id} className="border-b border-[#232328]/70 hover:bg-[#1a1a1d]">
+                <tr key={p.id} className="border-b border-[#3d4150]/70 hover:bg-[#323540]">
                   <td className="px-1 py-1 align-middle">
                     <input
                       type="date"
@@ -314,7 +314,7 @@ export function DSAPage() {
           </tbody>
         </table>
         {problems.length === 0 ? (
-          <div className="p-6 text-center text-zinc-500">No problems yet</div>
+          <div className="p-6 text-center text-zinc-400">No problems yet</div>
         ) : null}
       </div>
     </div>

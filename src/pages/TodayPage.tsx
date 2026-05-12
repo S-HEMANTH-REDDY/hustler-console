@@ -245,7 +245,7 @@ export function TodayPage() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
             <p
-              className="text-xs font-medium uppercase tracking-wider text-zinc-500"
+              className="text-xs font-medium uppercase tracking-wider text-zinc-400"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Application pace · today
@@ -261,7 +261,7 @@ export function TodayPage() {
                 >
                   {pace.state.replace('onPace', 'on pace')}
                 </span>
-                <span className="font-mono text-xs text-zinc-500">
+                <span className="font-mono text-xs text-zinc-400">
                   target {dailyMin}–{dailyMax}
                 </span>
               </div>
@@ -283,7 +283,7 @@ export function TodayPage() {
                 A
               </span>
             </Link>
-            <p className="font-mono text-xs text-zinc-500 md:text-right">
+            <p className="font-mono text-xs text-zinc-400 md:text-right">
               {wr.beforeWindow
                 ? `Window opens ${winStart}`
                 : wr.afterWindow
@@ -298,7 +298,7 @@ export function TodayPage() {
         </div>
 
         {tput ? (
-          <div className="relative mt-5 grid gap-px overflow-hidden rounded border border-[#232328] bg-[#232328] sm:grid-cols-4">
+          <div className="relative mt-5 grid gap-px overflow-hidden rounded border border-[#3d4150] bg-[#3d4150] sm:grid-cols-4">
             <ThroughputTile
               label="Rate"
               value={`${tput.rate.toFixed(1)}/h`}
@@ -422,16 +422,16 @@ export function TodayPage() {
         />
       </section>
 
-      <section className="rounded-lg border border-[#232328] bg-[#131316] p-4">
+      <section className="rounded-lg border border-[#3d4150] bg-[#262934] p-4">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2
-              className="text-xs font-medium uppercase tracking-wider text-zinc-500"
+              className="text-xs font-medium uppercase tracking-wider text-zinc-400"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Last 30 days · application volume
             </h2>
-            <p className="mt-0.5 text-xs text-zinc-500">
+            <p className="mt-0.5 text-xs text-zinc-400">
               Color encodes daily band · hover for date · today on the right
             </p>
           </div>
@@ -471,7 +471,7 @@ export function TodayPage() {
           right={
             <Link
               to="/tasks"
-              className="font-mono text-xs text-zinc-500 hover:text-lime-300"
+              className="font-mono text-xs text-zinc-400 hover:text-lime-300"
             >
               Tasks →
             </Link>
@@ -479,14 +479,14 @@ export function TodayPage() {
           muted
         >
           {openTasks.length === 0 ? (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-zinc-400">
               Nothing open ·{' '}
               <Link to="/tasks" className="text-lime-400/90 hover:underline">
                 add on Tasks
               </Link>
             </p>
           ) : (
-            <ul className="-my-1 divide-y divide-[#232328]/60">
+            <ul className="-my-1 divide-y divide-[#3d4150]/60">
               {showTasks.map((t) => (
                 <li
                   key={t.id}
@@ -515,13 +515,13 @@ export function TodayPage() {
                         className={cn(
                           'uppercase tracking-wider',
                           t.priority === 'high' && 'text-amber-400/90',
-                          t.priority === 'mid' && 'text-zinc-500',
-                          t.priority === 'low' && 'text-zinc-500',
+                          t.priority === 'mid' && 'text-zinc-400',
+                          t.priority === 'low' && 'text-zinc-400',
                         )}
                       >
                         {t.priority}
                       </span>
-                      <span className="text-zinc-500">
+                      <span className="text-zinc-400">
                         {recurrenceShort(t.recurrence)}
                       </span>
                     </div>
@@ -531,7 +531,7 @@ export function TodayPage() {
             </ul>
           )}
           {moreTasks > 0 ? (
-            <p className="mt-3 text-xs text-zinc-500">
+            <p className="mt-3 text-xs text-zinc-400">
               +{moreTasks} more on{' '}
               <Link to="/tasks" className="text-zinc-400 hover:text-lime-300">
                 Tasks
@@ -542,11 +542,11 @@ export function TodayPage() {
 
         <Card title="Pipeline">
           {applications.length === 0 ? (
-            <p className="text-sm text-zinc-500">No applications yet.</p>
+            <p className="text-sm text-zinc-400">No applications yet.</p>
           ) : (
             <>
               <FunnelMini stages={funnelStages} />
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#232328] pt-3 font-mono text-xs">
+              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#3d4150] pt-3 font-mono text-xs">
                 <Aside
                   label="Active screens"
                   value={pipeline.OA + pipeline.Phone + pipeline.Onsite}
@@ -564,7 +564,7 @@ export function TodayPage() {
                 <Aside
                   label="Ghosted"
                   value={pipeline.Ghosted}
-                  className="text-zinc-500"
+                  className="text-zinc-400"
                 />
               </div>
             </>
@@ -581,7 +581,7 @@ export function TodayPage() {
         </Card>
         <Card title="Today's log">
           {todayAppsSorted.length === 0 ? (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-zinc-400">
               Nothing yet ·{' '}
               <Link
                 to="/applications#quick-log"
@@ -591,7 +591,7 @@ export function TodayPage() {
               </Link>
             </p>
           ) : (
-            <ul className="-my-1 divide-y divide-[#232328]/60">
+            <ul className="-my-1 divide-y divide-[#3d4150]/60">
               {todayAppsSorted.slice(0, 8).map((a) => {
                 const att = a.resumeFileId
                   ? resumeIndex.get(a.resumeFileId) ?? null
@@ -600,7 +600,7 @@ export function TodayPage() {
                 return (
                   <li key={a.id} className="py-2 first:pt-0">
                     <div className="flex items-start gap-3">
-                      <span className="w-12 shrink-0 font-mono text-xs text-zinc-500">
+                      <span className="w-12 shrink-0 font-mono text-xs text-zinc-400">
                         {format(new Date(a.createdAt), 'HH:mm')}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -616,7 +616,7 @@ export function TodayPage() {
                             </span>
                           ) : null}
                         </div>
-                        <div className="truncate font-mono text-xs text-zinc-500">
+                        <div className="truncate font-mono text-xs text-zinc-400">
                           {a.role} · {a.source}
                           {a.resumeVersion ? ` · ${a.resumeVersion}` : null}
                         </div>
@@ -653,7 +653,7 @@ export function TodayPage() {
             </ul>
           )}
           {todayAppsSorted.length > 8 ? (
-            <p className="mt-3 text-xs text-zinc-500">
+            <p className="mt-3 text-xs text-zinc-400">
               +{todayAppsSorted.length - 8} more on{' '}
               <Link
                 to="/applications"
@@ -668,19 +668,19 @@ export function TodayPage() {
 
       <p className="text-center font-mono text-xs text-zinc-700">
         Press{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
+        <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           ⌘K
         </kbd>{' '}
         for commands ·{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
+        <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           A
         </kbd>{' '}
         to log application ·{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
+        <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           g
         </kbd>{' '}
         +{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
+        <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           t/a/d/b/k/s
         </kbd>{' '}
         to navigate
@@ -700,13 +700,13 @@ function Card(props: {
       className={cn(
         'rounded-lg border p-4',
         props.muted
-          ? 'border-[#232328]/80 bg-[#131316]/60'
-          : 'border-[#232328] bg-[#131316]',
+          ? 'border-[#3d4150]/80 bg-[#262934]/60'
+          : 'border-[#3d4150] bg-[#262934]',
       )}
     >
       <div className="mb-3 flex items-end justify-between gap-2">
         <h2
-          className="text-xs font-medium uppercase tracking-wider text-zinc-500"
+          className="text-xs font-medium uppercase tracking-wider text-zinc-400"
           style={{ fontFamily: 'var(--font-mono)' }}
         >
           {props.title}
@@ -725,8 +725,8 @@ function ThroughputTile(props: {
   valueClass?: string
 }) {
   return (
-    <div className="bg-[#131316] p-3">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+    <div className="bg-[#262934] p-3">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
         {props.label}
       </div>
       <div
@@ -738,7 +738,7 @@ function ThroughputTile(props: {
       >
         {props.value}
       </div>
-      <div className="font-mono text-xs text-zinc-500">{props.hint}</div>
+      <div className="font-mono text-xs text-zinc-400">{props.hint}</div>
     </div>
   )
 }
@@ -751,9 +751,9 @@ function Kpi(props: {
   chart?: React.ReactNode
 }) {
   return (
-    <div className="rounded-lg border border-[#232328] bg-[#131316] p-4">
+    <div className="rounded-lg border border-[#3d4150] bg-[#262934] p-4">
       <div className="flex items-start justify-between gap-2">
-        <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+        <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
           {props.label}
         </div>
         {props.chart}
@@ -767,7 +767,7 @@ function Kpi(props: {
       >
         {props.primary}
       </div>
-      <div className="font-mono text-xs text-zinc-500">
+      <div className="font-mono text-xs text-zinc-400">
         {props.secondary}
       </div>
     </div>
@@ -790,8 +790,8 @@ function Delta(props: {
     : 'text-zinc-100'
   const sign = props.colored ? (v > 0 ? '+' : '') : ''
   return (
-    <div className="rounded border border-[#232328]/70 bg-[#0f0f12] px-3 py-2">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+    <div className="rounded border border-[#3d4150]/70 bg-[#20232c] px-3 py-2">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
         {props.label}
       </div>
       <div
@@ -803,7 +803,7 @@ function Delta(props: {
         {sign}
         {v}
       </div>
-      <div className="font-mono text-xs text-zinc-500">{props.muted}</div>
+      <div className="font-mono text-xs text-zinc-400">{props.muted}</div>
     </div>
   )
 }
@@ -814,8 +814,8 @@ function Aside(props: {
   className?: string
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-2 border-b border-[#232328]/40 pb-1">
-      <span className="text-zinc-500">{props.label}</span>
+    <div className="flex items-baseline justify-between gap-2 border-b border-[#3d4150]/40 pb-1">
+      <span className="text-zinc-400">{props.label}</span>
       <span className={cn('tabular-nums', props.className ?? 'text-zinc-200')}>
         {props.value}
       </span>
@@ -857,49 +857,49 @@ function SelectedDayPanel(props: {
       ? 'text-lime-300'
       : apps > 0
         ? 'text-amber-300'
-        : 'text-zinc-500'
+        : 'text-zinc-400'
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#232328] pt-3 font-mono text-xs">
-      <span className="text-zinc-500">
+    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#3d4150] pt-3 font-mono text-xs">
+      <span className="text-zinc-400">
         Selected ·{' '}
         <span className={isToday ? 'text-lime-300' : 'text-zinc-200'}>
           {isToday ? `${label} · TODAY` : label}
         </span>
       </span>
-      <span className="text-zinc-500">|</span>
+      <span className="text-zinc-400">|</span>
       <span>
-        <span className="text-zinc-500">Apps </span>
+        <span className="text-zinc-400">Apps </span>
         <span className={cn('tabular-nums', appsClass)}>{apps}</span>
-        <span className="text-zinc-500">/{props.dailyMin}</span>
+        <span className="text-zinc-400">/{props.dailyMin}</span>
       </span>
       <span>
-        <span className="text-zinc-500">DSA </span>
+        <span className="text-zinc-400">DSA </span>
         <span
           className={cn(
             'tabular-nums',
-            props.detail.dsa > 0 ? 'text-cyan-300' : 'text-zinc-500',
+            props.detail.dsa > 0 ? 'text-cyan-300' : 'text-zinc-400',
           )}
         >
           {props.detail.dsa}
         </span>
       </span>
       <span>
-        <span className="text-zinc-500">Beh </span>
+        <span className="text-zinc-400">Beh </span>
         <span
           className={cn(
             'tabular-nums',
-            props.detail.beh > 0 ? 'text-violet-300' : 'text-zinc-500',
+            props.detail.beh > 0 ? 'text-violet-300' : 'text-zinc-400',
           )}
         >
           {props.detail.beh}
         </span>
       </span>
       <span>
-        <span className="text-zinc-500">SysD </span>
+        <span className="text-zinc-400">SysD </span>
         <span
           className={cn(
             'tabular-nums',
-            props.detail.sd > 0 ? 'text-amber-300' : 'text-zinc-500',
+            props.detail.sd > 0 ? 'text-amber-300' : 'text-zinc-400',
           )}
         >
           {props.detail.sd}
@@ -909,7 +909,7 @@ function SelectedDayPanel(props: {
         <button
           type="button"
           onClick={props.onBackToToday}
-          className="ml-auto rounded border border-[#232328] px-2 py-0.5 text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          className="ml-auto rounded border border-[#3d4150] px-2 py-0.5 text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
         >
           ↩ Today
         </button>

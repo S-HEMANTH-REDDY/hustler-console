@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-bg: #0c0d11;
-  --color-surface: #14151b;
-  --color-surface-2: #1a1b22;
-  --color-border: #2a2b34;
-  --color-border-soft: #22232c;
+  --color-bg: #1c1f27;
+  --color-surface: #262934;
+  --color-surface-2: #2c2f3a;
+  --color-border: #3d4150;
+  --color-border-soft: #2f3340;
   --color-accent: #a3e635;
   --color-accent-2: #818cf8;
   --color-amber-warn: #fbbf24;
@@ -22,7 +22,7 @@
 @layer base {
   html {
     color-scheme: dark;
-    font-size: 17px;
+    font-size: 18px;
   }
   html,
   body,
@@ -30,7 +30,7 @@
     height: 100%;
   }
   body {
-    @apply text-zinc-100 font-sans;
+    @apply text-zinc-50 font-sans;
     font-family: var(--font-sans);
     font-feature-settings:
       'cv02', 'cv03', 'cv04', 'cv11', 'ss01', 'ss03';
@@ -41,17 +41,17 @@
     background-image:
       radial-gradient(
         ellipse 70% 40% at 50% -5%,
-        rgba(163, 230, 53, 0.045),
+        rgba(163, 230, 53, 0.05),
         transparent 60%
       ),
       radial-gradient(
         ellipse 55% 35% at 100% 0%,
-        rgba(129, 140, 248, 0.04),
+        rgba(129, 140, 248, 0.045),
         transparent 60%
       ),
       radial-gradient(
         ellipse 80% 50% at 0% 100%,
-        rgba(34, 211, 238, 0.025),
+        rgba(34, 211, 238, 0.03),
         transparent 60%
       );
     background-attachment: fixed;
@@ -85,26 +85,26 @@ button {
 .field {
   @apply w-full rounded-md text-sm text-zinc-50 outline-none transition-colors;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 50%),
-    #101116;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 50%),
+    #20232c;
   border: 1px solid var(--color-border);
-  padding: 0.5rem 0.65rem;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.025);
+  padding: 0.55rem 0.7rem;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.03);
   transition:
     border-color 120ms ease,
     box-shadow 160ms ease,
     background-color 160ms ease;
 }
 .field::placeholder {
-  color: #6b6b75;
+  color: #8b8d97;
 }
 .field:hover {
-  border-color: #353641;
+  border-color: #4a4e5b;
 }
 .field:focus {
   border-color: rgba(163, 230, 53, 0.6);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.04),
     0 0 0 3px rgba(163, 230, 53, 0.14);
 }
 input[type='date'].field,
@@ -115,7 +115,7 @@ input[type='time'].field {
 
 .btn-primary {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, transparent 38%),
     linear-gradient(180deg, #bef264 0%, #a3e635 100%);
   color: #0a1505;
   font-weight: 600;
@@ -141,17 +141,17 @@ input[type='time'].field {
 
 .surface-glossy {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, transparent 28%),
-    linear-gradient(180deg, #181922 0%, #111218 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 28%),
+    linear-gradient(180deg, #2a2d38 0%, #20232c 100%);
   border: 1px solid var(--color-border);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.035),
-    0 1px 0 0 rgba(0, 0, 0, 0.5),
-    0 16px 40px -28px rgba(0, 0, 0, 0.9);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.045),
+    0 1px 0 0 rgba(0, 0, 0, 0.4),
+    0 16px 40px -28px rgba(0, 0, 0, 0.7);
 }
 
 .frost {
-  background: rgba(12, 13, 17, 0.78);
+  background: rgba(28, 31, 39, 0.78);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
@@ -166,8 +166,8 @@ input[type='time'].field {
   background: linear-gradient(
     to right,
     transparent,
-    #34353f 20%,
-    #34353f 80%,
+    #4a4e5b 20%,
+    #4a4e5b 80%,
     transparent
   );
   height: 1px;
@@ -175,7 +175,7 @@ input[type='time'].field {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #34353f transparent;
+  scrollbar-color: #4a4e5b transparent;
 }
 *::-webkit-scrollbar {
   width: 9px;
@@ -185,12 +185,12 @@ input[type='time'].field {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #34353f, #22232c);
+  background: linear-gradient(180deg, #4a4e5b, #3d4150);
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #44454f, #2a2b34);
+  background: linear-gradient(180deg, #5a5e6b, #4a4e5b);
 }
 
 kbd {

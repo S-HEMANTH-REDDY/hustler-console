@@ -10,7 +10,7 @@ export function SettingsPage() {
   const stored = useLiveQuery(() => ensureDefaults(), [])
 
   if (!stored) {
-    return <div className="text-sm text-zinc-500">Loading settings…</div>
+    return <div className="text-sm text-zinc-400">Loading settings…</div>
   }
 
   return <SettingsEditor key={stored.updatedAt} settings={stored} />
@@ -76,13 +76,13 @@ function SettingsEditor(props: { settings: SettingsRow }) {
         >
           Settings
         </h1>
-        <p className="text-sm text-zinc-500">Pace inputs · backup · reset</p>
+        <p className="text-sm text-zinc-400">Pace inputs · backup · reset</p>
       </div>
 
-      <section className="space-y-4 rounded border border-[#232328] bg-[#131316] p-4">
+      <section className="space-y-4 rounded border border-[#3d4150] bg-[#262934] p-4">
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="space-y-1">
-            <span className="text-xs text-zinc-500">Daily minimum</span>
+            <span className="text-xs text-zinc-400">Daily minimum</span>
             <input
               type="number"
               min={1}
@@ -94,7 +94,7 @@ function SettingsEditor(props: { settings: SettingsRow }) {
             />
           </label>
           <label className="space-y-1">
-            <span className="text-xs text-zinc-500">Daily maximum</span>
+            <span className="text-xs text-zinc-400">Daily maximum</span>
             <input
               type="number"
               min={1}
@@ -106,7 +106,7 @@ function SettingsEditor(props: { settings: SettingsRow }) {
             />
           </label>
           <label className="space-y-1">
-            <span className="text-xs text-zinc-500">Window start</span>
+            <span className="text-xs text-zinc-400">Window start</span>
             <input
               type="time"
               className="field font-mono"
@@ -117,7 +117,7 @@ function SettingsEditor(props: { settings: SettingsRow }) {
             />
           </label>
           <label className="space-y-1">
-            <span className="text-xs text-zinc-500">Window end</span>
+            <span className="text-xs text-zinc-400">Window end</span>
             <input
               type="time"
               className="field font-mono"
@@ -137,21 +137,21 @@ function SettingsEditor(props: { settings: SettingsRow }) {
         </button>
       </section>
 
-      <section className="space-y-3 rounded border border-[#232328] bg-[#131316]/80 p-4">
+      <section className="space-y-3 rounded border border-[#3d4150] bg-[#262934]/80 p-4">
         <h2 className="text-sm font-semibold text-zinc-200">Data</h2>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-zinc-400">
           All entities persist in IndexedDB automatically. JSON export uses
           schema version {SCHEMA_VERSION}.
         </p>
         <div className="flex flex-col gap-2 sm:flex-row">
           <button
             type="button"
-            className="rounded border border-[#232328] px-3 py-2 text-sm text-zinc-200"
+            className="rounded border border-[#3d4150] px-3 py-2 text-sm text-zinc-200"
             onClick={() => void onExport()}
           >
             Export JSON
           </button>
-          <label className="cursor-pointer rounded border border-[#232328] px-3 py-2 text-center text-sm text-zinc-200 hover:bg-[#1a1a1d]">
+          <label className="cursor-pointer rounded border border-[#3d4150] px-3 py-2 text-center text-sm text-zinc-200 hover:bg-[#323540]">
             Import JSON
             <input
               type="file"

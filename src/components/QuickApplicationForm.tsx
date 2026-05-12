@@ -130,7 +130,7 @@ export function QuickApplicationForm() {
     <section
       id="quick-log"
       ref={sectionRef}
-      className="scroll-mt-20 rounded-lg border border-[#232328] bg-[#131316]/80 p-5"
+      className="scroll-mt-20 rounded-lg border border-[#3d4150] bg-[#262934]/80 p-5"
     >
       <div className="mb-4 flex items-end justify-between gap-3">
         <div>
@@ -141,13 +141,13 @@ export function QuickApplicationForm() {
             Quick log
           </h2>
           <p
-            className="mt-0.5 text-xs text-zinc-500"
+            className="mt-0.5 text-xs text-zinc-400"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
             Enter submits · ⌘/Ctrl+Enter submits · A focuses this from anywhere
           </p>
         </div>
-        <span className="font-mono text-xs text-zinc-500">
+        <span className="font-mono text-xs text-zinc-400">
           {companies.length} cos · {resumes.length} resumes
         </span>
       </div>
@@ -244,11 +244,11 @@ export function QuickApplicationForm() {
         </Field>
         <div className="col-span-full">
           <label className="block space-y-1">
-            <span className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+            <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">
               Resume file (optional)
             </span>
             <div className="flex flex-wrap items-center gap-2">
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-[#232328] bg-[#0f0f12] px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-[#3d4150] bg-[#20232c] px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
                 <Paperclip />
                 <span>{pickedFile ? 'Replace file' : 'Attach PDF / DOC'}</span>
                 <input
@@ -265,13 +265,13 @@ export function QuickApplicationForm() {
               {pickedFile ? (
                 <span className="inline-flex items-center gap-2 rounded border border-lime-700/40 bg-lime-500/5 px-2 py-1 font-mono text-xs text-lime-200">
                   <span>{pickedFile.name}</span>
-                  <span className="text-zinc-500">
+                  <span className="text-zinc-400">
                     · {humanBytes(pickedFile.size)}
                   </span>
                   <button
                     type="button"
                     aria-label="Remove file"
-                    className="rounded px-1 text-zinc-500 hover:text-red-300"
+                    className="rounded px-1 text-zinc-400 hover:text-red-300"
                     onClick={() => {
                       setPickedFile(null)
                       if (fileInputRef.current) {
@@ -283,7 +283,7 @@ export function QuickApplicationForm() {
                   </button>
                 </span>
               ) : (
-                <span className="font-mono text-xs text-zinc-500">
+                <span className="font-mono text-xs text-zinc-400">
                   stored locally · viewable from the Applications table
                 </span>
               )}
@@ -309,9 +309,9 @@ export function QuickApplicationForm() {
               </div>
               <div className="truncate text-sm text-zinc-100">
                 <span className="font-semibold">{lastLogged.app.company}</span>
-                <span className="text-zinc-500"> · {lastLogged.app.role}</span>
+                <span className="text-zinc-400"> · {lastLogged.app.role}</span>
               </div>
-              <div className="font-mono text-xs text-zinc-500">
+              <div className="font-mono text-xs text-zinc-400">
                 {lastLogged.app.source} · resume{' '}
                 <span className="text-zinc-300">
                   {lastLogged.app.resumeVersion}
@@ -322,7 +322,7 @@ export function QuickApplicationForm() {
             <button
               type="button"
               onClick={() => setLastLogged(null)}
-              className="rounded border border-[#232328] px-2 py-0.5 font-mono text-xs text-zinc-500 hover:text-zinc-200"
+              className="rounded border border-[#3d4150] px-2 py-0.5 font-mono text-xs text-zinc-400 hover:text-zinc-200"
             >
               Dismiss
             </button>
@@ -370,7 +370,7 @@ function Field(props: { label: string; children: ReactNode }) {
   return (
     <label className="block space-y-1">
       <span
-        className="font-mono text-xs uppercase tracking-wider text-zinc-500"
+        className="font-mono text-xs uppercase tracking-wider text-zinc-400"
       >
         {props.label}
       </span>

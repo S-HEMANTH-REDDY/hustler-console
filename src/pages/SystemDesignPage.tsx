@@ -96,13 +96,13 @@ export function SystemDesignPage() {
         >
           System Design
         </h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-zinc-400">
           Volume log · 91-day matrix · topic coverage
         </p>
       </div>
 
-      <section className="rounded border border-[#232328] bg-[#131316] p-4">
-        <div className="mb-3 text-xs font-mono uppercase text-zinc-500">
+      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+        <div className="mb-3 text-xs font-mono uppercase text-zinc-400">
           13×7 heat · problems / day
         </div>
         <div
@@ -117,23 +117,23 @@ export function SystemDesignPage() {
             return (
               <div
                 key={c.date}
-                className="group relative h-4 rounded-sm border border-[#232328]"
+                className="group relative h-4 rounded-sm border border-[#3d4150]"
                 style={{
                   backgroundColor:
                     c.count === 0
-                      ? '#131316'
+                      ? '#262934'
                       : `rgba(132, 204, 22, ${intensity.toFixed(2)})`,
                 }}
                 title={`${c.date}: ${c.count}`}
               >
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#3d4150] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
                   {c.date} · {c.count} problems
                 </div>
               </div>
             )
           })}
         </div>
-        <p className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-zinc-400">
           13-week columns × 7 weekday rows · older left, newer right.
         </p>
       </section>
@@ -147,16 +147,16 @@ export function SystemDesignPage() {
         ].map((x) => (
           <div
             key={x.k}
-            className="rounded border border-[#232328] bg-[#131316] p-3"
+            className="rounded border border-[#3d4150] bg-[#262934] p-3"
           >
-            <div className="text-xs uppercase text-zinc-500">{x.k}</div>
+            <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div className="font-mono text-2xl text-zinc-100">{x.v}</div>
           </div>
         ))}
       </section>
 
-      <section className="rounded border border-[#232328] bg-[#131316] p-4">
-        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-500">
+      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-400">
           Topic coverage
         </h2>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -166,10 +166,10 @@ export function SystemDesignPage() {
               className={
                 t.count === 0
                   ? 'rounded border border-amber-700/40 bg-amber-950/20 px-3 py-2'
-                  : 'rounded border border-[#232328] bg-[#0a0a0b] px-3 py-2'
+                  : 'rounded border border-[#3d4150] bg-[#1c1f27] px-3 py-2'
               }
             >
-              <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
+              <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
                 {t.topic}
               </div>
               <div
@@ -186,7 +186,7 @@ export function SystemDesignPage() {
         </div>
       </section>
 
-      <section className="rounded border border-[#232328] bg-[#131316]/80 p-4">
+      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">
           Log system design problem
         </h2>
@@ -201,11 +201,11 @@ export function SystemDesignPage() {
           }}
         >
           <label className="col-span-2 block space-y-1">
-            <span className="text-xs text-zinc-500">Title</span>
+            <span className="text-xs text-zinc-400">Title</span>
             <input name="title" className="field" required />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Topic</span>
+            <span className="text-xs text-zinc-400">Topic</span>
             <select name="topic" className="field">
               {SD_TOPICS.map((t) => (
                 <option key={t}>{t}</option>
@@ -213,7 +213,7 @@ export function SystemDesignPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Difficulty</span>
+            <span className="text-xs text-zinc-400">Difficulty</span>
             <select
               name="difficulty"
               className="field"
@@ -225,7 +225,7 @@ export function SystemDesignPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Confidence 1–5</span>
+            <span className="text-xs text-zinc-400">Confidence 1–5</span>
             <select name="confidence" className="field" defaultValue="3">
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -235,7 +235,7 @@ export function SystemDesignPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Minutes</span>
+            <span className="text-xs text-zinc-400">Minutes</span>
             <input
               name="minutes"
               type="number"
@@ -245,7 +245,7 @@ export function SystemDesignPage() {
             />
           </label>
           <label className="col-span-full block space-y-1">
-            <span className="text-xs text-zinc-500">Notes</span>
+            <span className="text-xs text-zinc-400">Notes</span>
             <textarea
               name="notes"
               className="field min-h-[60px] resize-y font-mono text-xs"
@@ -263,10 +263,10 @@ export function SystemDesignPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-[#232328]">
+      <div className="overflow-x-auto rounded border border-[#3d4150]">
         <table className="min-w-[900px] w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#232328] bg-[#131316] text-xs uppercase text-zinc-500">
+            <tr className="border-b border-[#3d4150] bg-[#262934] text-xs uppercase text-zinc-400">
               <th className="px-2 py-2">Date</th>
               <th className="px-2 py-2">Title</th>
               <th className="px-2 py-2">Topic</th>
@@ -284,7 +284,7 @@ export function SystemDesignPage() {
               .map((p) => (
                 <tr
                   key={p.id}
-                  className="border-b border-[#232328]/70 hover:bg-[#1a1a1d]"
+                  className="border-b border-[#3d4150]/70 hover:bg-[#323540]"
                 >
                   <td className="px-1 py-1 align-middle">
                     <input
@@ -404,7 +404,7 @@ export function SystemDesignPage() {
           </tbody>
         </table>
         {problems.length === 0 ? (
-          <div className="p-6 text-center text-zinc-500">
+          <div className="p-6 text-center text-zinc-400">
             No problems yet · log your first one above
           </div>
         ) : null}

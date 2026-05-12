@@ -58,21 +58,21 @@ export function TasksPage() {
         >
           Tasks
         </h1>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-zinc-400">
           Life lane · demoted priority versus applications
         </p>
       </div>
 
       <form
         onSubmit={addTask}
-        className="flex flex-col gap-2 rounded border border-[#232328]/80 bg-[#131316]/50 p-3 md:flex-row md:items-end"
+        className="flex flex-col gap-2 rounded border border-[#3d4150]/80 bg-[#262934]/50 p-3 md:flex-row md:items-end"
       >
         <label className="block flex-1 space-y-1">
-          <span className="text-xs text-zinc-500">Title</span>
+          <span className="text-xs text-zinc-400">Title</span>
           <input name="title" className="field border-zinc-800 bg-[#0d0d0f]" />
         </label>
         <label className="block space-y-1 md:w-28">
-          <span className="text-xs text-zinc-500">Priority</span>
+          <span className="text-xs text-zinc-400">Priority</span>
           <select
             name="priority"
             className="field border-zinc-800 bg-[#0d0d0f] text-xs"
@@ -84,7 +84,7 @@ export function TasksPage() {
           </select>
         </label>
         <label className="block space-y-1 md:w-36">
-          <span className="text-xs text-zinc-500">Recurrence</span>
+          <span className="text-xs text-zinc-400">Recurrence</span>
           <select
             name="recurrence"
             className="field border-zinc-800 bg-[#0d0d0f] text-xs"
@@ -109,8 +109,8 @@ export function TasksPage() {
           <li
             key={t.id}
             className={cn(
-              'rounded border border-[#232328]/70 p-3',
-              done ? 'bg-[#0d0d0f]/80 text-zinc-500' : 'bg-[#131316]/60',
+              'rounded border border-[#3d4150]/70 p-3',
+              done ? 'bg-[#0d0d0f]/80 text-zinc-400' : 'bg-[#262934]/60',
             )}
           >
             <div className="flex flex-wrap items-center gap-2">
@@ -182,7 +182,7 @@ export function TasksPage() {
         ))}
       </ul>
       {tasks.length === 0 ? (
-        <p className="text-center text-sm text-zinc-500">No errands logged.</p>
+        <p className="text-center text-sm text-zinc-400">No errands logged.</p>
       ) : null}
     </div>
   )
