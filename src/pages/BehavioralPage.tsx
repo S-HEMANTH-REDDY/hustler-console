@@ -1,0 +1,331 @@
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useMemo, useState, type FormEvent } from 'react'
+import { db } from '../db/database'
+import type {
+  BehavioralCategory,
+  BehavioralStatus,
+  BehavioralStory,
+} from '../db/types'
+import { BEHAVIORAL_CATEGORIES } from '../lib/constants'
+import { cn, newId } from '../lib/utils'
+import { useUiStore } from '../store/uiStore'
+
+const EMPTY_STORIES: BehavioralStory[] = []
+
+export function BehavioralPage() {
+  const raw = useLiveQuery(() => db.behavioralStories.toArray(), [])
+  const stories = (raw ?? EMPTY_STORIES) as BehavioralStory[]
+  const pushToast = useUiStore((s) => s.pushToast)
+  const [openId, setOpenId] = useState<string | null>(null)
+
+  const coverage = useMemo(() => {
+    return BEHAVIORAL_CATEGORIES.map((cat) => {
+      const inCat = stories.filter((s) => s.category === cat)
+      const count = inCat.length
+      const avg =
+        count === 0
+          ? 0
+          : Math.round(
+              (inCat.reduce((s, x) => s + x.confidence, 0) / count) * 10,
+            ) / 10
+      return { cat, count, avg }
+    })
+  }, [stories])
+
+  async function addStory(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const fd = new FormData(e.currentTarget)
+    const title = String(fd.get('title') ?? '').trim()
+    if (!title) {
+      pushToast('info', 'Title required')
+      return
+    }
+    const s: BehavioralStory = {
+      id: newId(),
+      title,
+      category: (fd.get('category') as BehavioralCategory) || 'Leadership',
+      status: (fd.get('status') as BehavioralStatus) || 'draft',
+      confidence: Number(fd.get('confidence')) as 1 | 2 | 3 | 4 | 5,
+      situation: '',
+      task: '',
+      action: '',
+      result: '',
+      updatedAt: Date.now(),
+    }
+    await db.behavioralStories.add(s)
+    pushToast('save', 'Story added')
+    e.currentTarget.reset()
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div>
+        <h1
+          className="text-xl font-semibold text-zinc-100"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          Behavioral
+        </h1>
+        <p className="text-sm text-zinc-500">STAR archive · coverage grid</p>
+      </div>
+
+      <section className="rounded border border-[#232328] bg-[#131316] p-4">
+        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-500">
+          Coverage
+        </h2>
+        <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-3">
+          {coverage.map((c) => (
+            <div
+              key={c.cat}
+              className={cn(
+                'rounded border p-3',
+                c.count === 0
+                  ? 'border-amber-600/60 bg-amber-950/20'
+                  : 'border-[#232328] bg-[#0A0A0B]',
+              )}
+            >
+              <div className="text-sm font-medium text-zinc-200">{c.cat}</div>
+              <div className="mt-1 font-mono text-xs text-zinc-400">
+                Stories: <span className="text-zinc-100">{c.count}</span> · Avg
+                conf:{' '}
+                <span className="text-zinc-100">{c.count ? c.avg : '—'}</span>
+              </div>
+              {c.count === 0 ? (
+                <div className="mt-2 text-xs text-amber-300">Gap · no stories</div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded border border-[#232328] bg-[#131316]/80 p-4">
+        <h2 className="mb-3 text-sm font-semibold text-zinc-200">New story</h2>
+        <form
+          className="grid gap-3 md:grid-cols-4"
+          onSubmit={addStory}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault()
+              e.currentTarget.requestSubmit()
+            }
+          }}
+        >
+          <label className="col-span-2 block space-y-1">
+            <span className="text-xs text-zinc-500">Title</span>
+            <input name="title" className="field" required />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Category</span>
+            <select name="category" className="field">
+              {BEHAVIORAL_CATEGORIES.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Status</span>
+            <select name="status" className="field" defaultValue="draft">
+              <option value="draft">draft</option>
+              <option value="refined">refined</option>
+              <option value="memorized">memorized</option>
+            </select>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Confidence</span>
+            <select name="confidence" className="field" defaultValue="3">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="col-span-full flex justify-end">
+            <button
+              type="submit"
+              className="rounded bg-lime-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+            >
+              Add story
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <div className="space-y-2">
+        {stories
+          .slice()
+          .sort((a, b) => b.updatedAt - a.updatedAt)
+          .map((s) => {
+            const open = openId === s.id
+            return (
+              <div
+                key={s.id}
+                className="rounded border border-[#232328] bg-[#131316] p-3 text-sm"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className="w-8 shrink-0 text-left text-zinc-500 hover:text-lime-300"
+                    aria-expanded={open}
+                    onClick={() => setOpenId(open ? null : s.id)}
+                  >
+                    {open ? '▼' : '▶'}
+                  </button>
+                  <input
+                    className="field min-w-[10rem] flex-[2] text-sm"
+                    defaultValue={s.title}
+                    onBlur={(e) => {
+                      void db.behavioralStories.update(s.id, {
+                        title: e.target.value,
+                        updatedAt: Date.now(),
+                      })
+                      pushToast('save', 'Saved')
+                    }}
+                  />
+                  <select
+                    className="field w-40 text-xs"
+                    value={s.category}
+                    onChange={(e) => {
+                      void db.behavioralStories.update(s.id, {
+                        category: e.target.value as BehavioralCategory,
+                        updatedAt: Date.now(),
+                      })
+                      pushToast('save', 'Saved')
+                    }}
+                  >
+                    {BEHAVIORAL_CATEGORIES.map((c) => (
+                      <option key={c}>{c}</option>
+                    ))}
+                  </select>
+                  <select
+                    className="field w-32 text-xs"
+                    value={s.status}
+                    onChange={(e) => {
+                      void db.behavioralStories.update(s.id, {
+                        status: e.target.value as BehavioralStatus,
+                        updatedAt: Date.now(),
+                      })
+                      pushToast('save', 'Saved')
+                    }}
+                  >
+                    <option value="draft">draft</option>
+                    <option value="refined">refined</option>
+                    <option value="memorized">memorized</option>
+                  </select>
+                  <select
+                    className="field w-24 text-xs"
+                    value={s.confidence}
+                    onChange={(e) => {
+                      void db.behavioralStories.update(s.id, {
+                        confidence: Number(e.target.value) as 1 | 2 | 3 | 4 | 5,
+                        updatedAt: Date.now(),
+                      })
+                      pushToast('save', 'Saved')
+                    }}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="rounded border border-red-900/50 px-2 py-1 text-xs text-red-300"
+                    onClick={() => {
+                      if (!window.confirm('Delete story?')) return
+                      void db.behavioralStories.delete(s.id)
+                      pushToast('delete', 'Deleted')
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+                {open ? (
+                  <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    <StarArea
+                      label="Situation"
+                      value={s.situation}
+                      onCommit={(v) =>
+                        db.behavioralStories.update(s.id, {
+                          situation: v,
+                          updatedAt: Date.now(),
+                        })
+                      }
+                      onToast={() => pushToast('save', 'Saved')}
+                    />
+                    <StarArea
+                      label="Task"
+                      value={s.task}
+                      onCommit={(v) =>
+                        db.behavioralStories.update(s.id, {
+                          task: v,
+                          updatedAt: Date.now(),
+                        })
+                      }
+                      onToast={() => pushToast('save', 'Saved')}
+                    />
+                    <StarArea
+                      label="Action"
+                      value={s.action}
+                      onCommit={(v) =>
+                        db.behavioralStories.update(s.id, {
+                          action: v,
+                          updatedAt: Date.now(),
+                        })
+                      }
+                      onToast={() => pushToast('save', 'Saved')}
+                    />
+                    <StarArea
+                      label="Result"
+                      value={s.result}
+                      onCommit={(v) =>
+                        db.behavioralStories.update(s.id, {
+                          result: v,
+                          updatedAt: Date.now(),
+                        })
+                      }
+                      onToast={() => pushToast('save', 'Saved')}
+                    />
+                  </div>
+                ) : null}
+                <p className="mt-2 text-[11px] text-zinc-600">
+                  STAR blocks autosave on blur · ⌘/Ctrl+Enter commits textarea
+                </p>
+              </div>
+            )
+          })}
+        {stories.length === 0 ? (
+          <div className="text-center text-zinc-500">No stories yet</div>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+function StarArea(props: {
+  label: string
+  value: string
+  onCommit: (v: string) => unknown
+  onToast: () => void
+}) {
+  return (
+    <label className="block space-y-1">
+      <span className="text-xs uppercase text-zinc-500">{props.label}</span>
+      <textarea
+        className="field min-h-[96px] resize-y font-mono text-xs"
+        defaultValue={props.value}
+        onBlur={(e) => {
+          void props.onCommit(e.target.value)
+          props.onToast()
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault()
+            e.currentTarget.blur()
+          }
+        }}
+      />
+    </label>
+  )
+}
