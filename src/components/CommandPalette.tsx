@@ -77,6 +77,13 @@ function PaletteBody() {
         run: () => navigate('/tasks'),
       },
       {
+        id: 'nav-timer',
+        group: 'Navigate',
+        label: 'Timer (Stopwatch & Pomodoro)',
+        shortcut: 'g m',
+        run: () => navigate('/timer'),
+      },
+      {
         id: 'nav-settings',
         group: 'Navigate',
         label: 'Settings',
@@ -132,7 +139,7 @@ function PaletteBody() {
       {
         id: 'help-shortcuts',
         group: 'Help',
-        label: 'Keyboard shortcuts: g+t/a/d/b/k/s · ⌘K · ?',
+        label: 'Keyboard shortcuts: g+t/a/d/y/b/k/m/s · ⌘K · ?',
         run: () => {},
       },
     ],
@@ -200,7 +207,7 @@ function PaletteBody() {
       <div
         role="dialog"
         aria-label="Command palette"
-        className="w-full max-w-lg overflow-hidden rounded-lg border border-[#4a4e5b] bg-[#101013] shadow-2xl"
+        className="w-full max-w-lg overflow-hidden rounded-lg border border-[#4a4e5b] bg-[#20232c] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -250,7 +257,7 @@ function PaletteBody() {
             </div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-[#3d4150] bg-[#0d0d10] px-3 py-2 font-mono text-xs text-zinc-400">
+        <div className="flex items-center justify-between border-t border-[#3d4150] bg-[#20232c] px-3 py-2 font-mono text-xs text-zinc-400">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>

@@ -69,13 +69,13 @@ export function TasksPage() {
       >
         <label className="block flex-1 space-y-1">
           <span className="text-xs text-zinc-400">Title</span>
-          <input name="title" className="field border-zinc-800 bg-[#0d0d0f]" />
+          <input name="title" className="field border-zinc-800 bg-[#262934]" />
         </label>
         <label className="block space-y-1 md:w-28">
           <span className="text-xs text-zinc-400">Priority</span>
           <select
             name="priority"
-            className="field border-zinc-800 bg-[#0d0d0f] text-xs"
+            className="field border-zinc-800 bg-[#262934] text-xs"
             defaultValue="mid"
           >
             <option value="low">low</option>
@@ -87,7 +87,7 @@ export function TasksPage() {
           <span className="text-xs text-zinc-400">Recurrence</span>
           <select
             name="recurrence"
-            className="field border-zinc-800 bg-[#0d0d0f] text-xs"
+            className="field border-zinc-800 bg-[#262934] text-xs"
             defaultValue="oneoff"
           >
             <option value="oneoff">one-off</option>
@@ -110,7 +110,7 @@ export function TasksPage() {
             key={t.id}
             className={cn(
               'rounded border border-[#3d4150]/70 p-3',
-              done ? 'bg-[#0d0d0f]/80 text-zinc-400' : 'bg-[#262934]/60',
+              done ? 'bg-[#262934]/80 text-zinc-400' : 'bg-[#262934]/60',
             )}
           >
             <div className="flex flex-wrap items-center gap-2">

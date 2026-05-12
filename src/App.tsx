@@ -6,6 +6,7 @@ import { DSAPage } from './pages/DSAPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { SystemDesignPage } from './pages/SystemDesignPage'
 import { TasksPage } from './pages/TasksPage'
+import { TimerPage } from './pages/TimerPage'
 import { TodayPage } from './pages/TodayPage'
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/system-design" element={<SystemDesignPage />} />
           <Route path="/behavioral" element={<BehavioralPage />} />
           <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/timer" element={<TimerPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

@@ -27,9 +27,9 @@ import {
   ResumeInlinePreview,
   ResumePreviewToolbar,
 } from '../components/ResumePreview'
-import { useIntervalTick } from '../hooks/useIntervalTick'
+import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
 import { BEHAVIORAL_CATEGORIES, statusPillClass } from '../lib/constants'
-import { dayKey, isRecurrenceComplete } from '../lib/dates'
+import { dayKey, isRecurrenceComplete, isoWeekNumber } from '../lib/dates'
 import {
   hoursMinutesRemaining,
   lastNDailyCounts,
@@ -76,6 +76,7 @@ const SOURCE_COLORS: Record<ApplicationSource, string> = {
 
 export function TodayPage() {
   const tick = useIntervalTick(60_000)
+  const secondTick = useSecondsTick()
   const settings = useLiveQuery(() => ensureDefaults(), [])
   const applications =
     useLiveQuery(() => db.applications.toArray(), []) ?? EMPTY_APPS
@@ -273,7 +274,23 @@ export function TodayPage() {
               {pace.statusLine}
             </p>
           </div>
-          <div className="flex shrink-0 flex-col items-stretch gap-2 md:items-end">
+          <div className="flex shrink-0 flex-col items-stretch gap-3 md:items-end">
+            <div className="flex flex-col items-end gap-0.5 rounded-lg border border-[#3d4150] bg-[#20232c]/60 px-4 py-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] md:min-w-[14rem]">
+              <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+                Local time
+              </span>
+              <span
+                className="font-mono text-2xl font-semibold tabular-nums text-zinc-50"
+                style={{ fontFamily: 'var(--font-mono)' }}
+                aria-live="off"
+              >
+                {format(secondTick, 'HH:mm:ss')}
+              </span>
+              <span className="font-mono text-xs text-zinc-400">
+                {format(secondTick, 'EEE, MMM d')} · W
+                {isoWeekNumber(secondTick)}
+              </span>
+            </div>
             <Link
               to="/applications#quick-log"
               className="btn-primary rounded-md px-5 py-3 text-center text-sm font-semibold"

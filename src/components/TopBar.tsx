@@ -2,7 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { format } from 'date-fns'
 import { db, ensureDefaults } from '../db/database'
 import type { Application } from '../db/types'
-import { useIntervalTick } from '../hooks/useIntervalTick'
+import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
 import {
   computeApplicationStreak,
   isoWeekNumber,
@@ -22,6 +22,7 @@ const EMPTY_APPS: Application[] = []
 
 export function TopBar() {
   const tick = useIntervalTick(60_000)
+  const secondTick = useSecondsTick()
   const settings = useLiveQuery(() => ensureDefaults(), [])
   const rawApps = useLiveQuery(() => db.applications.toArray(), [])
   const applications = rawApps ?? EMPTY_APPS
@@ -31,7 +32,7 @@ export function TopBar() {
   const yearStr = format(tick, 'yyyy')
   const week = isoWeekNumber(tick)
   const grad = weeksToGraduation(tick)
-  const clock = format(tick, 'HH:mm')
+  const clock = format(secondTick, 'HH:mm:ss')
 
   const dailyMin = settings?.dailyMin ?? 30
   const streak = computeApplicationStreak(applications, dailyMin, tick)

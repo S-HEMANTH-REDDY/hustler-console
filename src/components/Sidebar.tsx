@@ -9,6 +9,7 @@ const links = [
   { to: '/system-design', label: 'System Design', hint: 'g y' },
   { to: '/behavioral', label: 'Behavioral', hint: 'g b' },
   { to: '/tasks', label: 'Tasks', hint: 'g k' },
+  { to: '/timer', label: 'Timer', hint: 'g m' },
   { to: '/settings', label: 'Settings', hint: 'g s' },
 ] as const
 

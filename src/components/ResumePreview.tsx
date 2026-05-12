@@ -80,7 +80,7 @@ export function ResumeInlinePreview(props: {
   const height = props.height ?? 320
 
   return (
-    <div className="mt-2 overflow-hidden rounded-md border border-[#3d4150] bg-gradient-to-b from-[#1c1f27] to-[#0d0d10] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
+    <div className="mt-2 overflow-hidden rounded-md border border-[#3d4150] bg-gradient-to-b from-[#1c1f27] to-[#20232c] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
       <div className="flex items-center justify-between gap-2 border-b border-[#3d4150] bg-[#20232c]/80 px-3 py-1.5 font-mono text-xs text-zinc-400">
         <span className="truncate">
           {attachment.fileName} · {humanBytes(attachment.fileSize)}

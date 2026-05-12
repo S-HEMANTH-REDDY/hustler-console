@@ -351,7 +351,7 @@ export function ApplicationsPage() {
                 </td>
               </tr>
               {att && isPreview ? (
-                <tr className="border-b border-[#3d4150]/80 bg-[#0d0d10]">
+                <tr className="border-b border-[#3d4150]/80 bg-[#20232c]">
                   <td colSpan={9} className="px-3 py-3">
                     <ResumeInlinePreview attachment={att} height={420} />
                   </td>

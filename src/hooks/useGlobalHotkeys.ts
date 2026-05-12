@@ -84,6 +84,9 @@ export function useGlobalHotkeys() {
         case 'k':
           navigate('/tasks')
           break
+        case 'm':
+          navigate('/timer')
+          break
         case 's':
           navigate('/settings')
           break
