@@ -23,11 +23,12 @@ export function TimerPage() {
             className="text-2xl font-semibold tracking-tight text-zinc-50"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Practice timer
+            Timer
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            A stopwatch for timed DSA practice and a Pomodoro for focused
-            work blocks. Timers keep running while you navigate the app.
+            A stopwatch for timed DSA practice, and a general-purpose
+            Pomodoro for any focused work block. Timers keep running while
+            you navigate the app.
           </p>
         </div>
         <button
@@ -291,7 +292,8 @@ function PomodoroCard(props: { onShowHelp: () => void }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
-            Pomodoro · {p.focusMin}/{p.shortBreakMin}/{p.longBreakMin}
+            Pomodoro · any focused work · {p.focusMin}/{p.shortBreakMin}/
+            {p.longBreakMin}
           </p>
           <h2 className="text-lg font-semibold text-zinc-100">{phaseLabel}</h2>
         </div>
@@ -525,31 +527,68 @@ function NumberField(props: {
 
 function TipsCard() {
   return (
-    <section className="rounded-xl border border-[#3d4150] bg-[#20232c]/60 p-5 md:p-6">
-      <h2 className="text-lg font-semibold text-zinc-100">
-        Tips for DSA practice
-      </h2>
-      <ul className="mt-3 grid gap-2 text-sm text-zinc-300 sm:grid-cols-2">
-        <li>
-          <span className="font-mono text-lime-300">Easy</span>: target 10–15
-          min per problem. Beat the clock to build pattern recognition.
-        </li>
-        <li>
-          <span className="font-mono text-cyan-300">Medium</span>: aim for
-          25–35 min. If you stall past 30, peek at the approach (not code),
-          then redo from scratch.
-        </li>
-        <li>
-          <span className="font-mono text-indigo-300">Hard</span>: cap at 45
-          min for an attempt; if blocked, study the solution, then code it
-          end-to-end without referring back.
-        </li>
-        <li>
-          Use a Pomodoro focus block (25 min) per 1–2 problems. Take the
-          short break — your hit-rate after a break is measurably higher.
-        </li>
-      </ul>
-    </section>
+    <div className="grid gap-6 md:grid-cols-2">
+      <section className="rounded-xl border border-[#3d4150] bg-[#20232c]/60 p-5 md:p-6">
+        <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+          Stopwatch
+        </p>
+        <h2 className="text-lg font-semibold text-zinc-100">
+          DSA practice tips
+        </h2>
+        <ul className="mt-3 grid gap-2 text-sm text-zinc-300">
+          <li>
+            <span className="font-mono text-lime-300">Easy</span>: target
+            10–15 min per problem. Beat the clock to build pattern
+            recognition.
+          </li>
+          <li>
+            <span className="font-mono text-cyan-300">Medium</span>: aim for
+            25–35 min. If you stall past 30, peek at the approach (not the
+            code), then redo from scratch.
+          </li>
+          <li>
+            <span className="font-mono text-indigo-300">Hard</span>: cap at
+            45 min for an attempt; if blocked, study the solution, then code
+            it end-to-end without referring back.
+          </li>
+          <li>
+            Use Lap between problems to capture per-problem splits — fastest
+            and slowest are colour-coded.
+          </li>
+        </ul>
+      </section>
+
+      <section className="rounded-xl border border-[#3d4150] bg-[#20232c]/60 p-5 md:p-6">
+        <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+          Pomodoro
+        </p>
+        <h2 className="text-lg font-semibold text-zinc-100">
+          How to use it for anything
+        </h2>
+        <ul className="mt-3 grid gap-2 text-sm text-zinc-300">
+          <li>
+            <span className="font-mono text-lime-300">Deep work</span>:
+            writing a system-design doc, drafting a cover letter, reading a
+            paper, refactoring a module — anything that needs continuous
+            attention.
+          </li>
+          <li>
+            <span className="font-mono text-cyan-300">Shallow batches</span>:
+            inbox, applications, code review queue. Batch the small things
+            into one focus block instead of context-switching all day.
+          </li>
+          <li>
+            <span className="font-mono text-indigo-300">Study blocks</span>:
+            one Pomodoro per chapter / lecture / behavioural story.
+            Auto-start breaks if you tend to over-run.
+          </li>
+          <li>
+            Two cycles (≈ 2 hours of focused output) is a great day. Don't
+            chase six.
+          </li>
+        </ul>
+      </section>
+    </div>
   )
 }
 
@@ -596,9 +635,10 @@ function PomodoroHowTo(props: { onClose: () => void }) {
           </p>
           <ol className="space-y-2 pl-5 [list-style:decimal]">
             <li>
-              <strong className="text-zinc-100">Pick one task.</strong> One
-              DSA problem, one system-design write-up, one application
-              packet. Multitasking destroys the effect.
+              <strong className="text-zinc-100">Pick one task.</strong> Any
+              single thing that benefits from focus — writing, reading,
+              coding, studying, drafting, planning. Multitasking destroys
+              the effect.
             </li>
             <li>
               <strong className="text-zinc-100">Focus 25 minutes.</strong>{' '}
@@ -614,7 +654,7 @@ function PomodoroHowTo(props: { onClose: () => void }) {
               <strong className="text-zinc-100">
                 After 4 focus blocks, take a long break (15 min).
               </strong>{' '}
-              This is when your brain consolidates patterns — protect it.
+              This is when your brain consolidates — protect it.
             </li>
             <li>
               <strong className="text-zinc-100">Repeat.</strong> 4 blocks
@@ -648,10 +688,12 @@ function PomodoroHowTo(props: { onClose: () => void }) {
             </ul>
           </div>
           <div className="rounded-md border border-lime-500/30 bg-lime-500/[0.06] px-3 py-2 text-sm text-lime-100">
-            <strong className="font-semibold">Pairs well with</strong> the
-            Stopwatch on the left: start a Pomodoro focus block, then use the
-            stopwatch + laps to track how long each DSA problem takes inside
-            that block.
+            <strong className="font-semibold">Pomodoro is generic</strong> —
+            use it for system-design write-ups, behavioural-story drafts,
+            cover letters, reading, deep refactors, anything. The stopwatch
+            on the left is the DSA-specific tool: start a Pomodoro focus
+            block and use the stopwatch + laps inside it to time individual
+            DSA problems.
           </div>
         </div>
       </div>

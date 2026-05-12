@@ -2,6 +2,9 @@ import type {
   ApplicationStatus,
   BehavioralCategory,
   DsaTopic,
+  SystemDesignHLDTopic,
+  SystemDesignKind,
+  SystemDesignLLDTopic,
   SystemDesignTopic,
 } from '../db/types'
 
@@ -54,7 +57,7 @@ export const DSA_TOPICS: DsaTopic[] = [
   'Design',
 ]
 
-export const SD_TOPICS: SystemDesignTopic[] = [
+export const SD_HLD_TOPICS: SystemDesignHLDTopic[] = [
   'Feeds',
   'Chat',
   'Search',
@@ -72,6 +75,41 @@ export const SD_TOPICS: SystemDesignTopic[] = [
   'Analytics',
   'Other',
 ]
+
+export const SD_LLD_TOPICS: SystemDesignLLDTopic[] = [
+  'Parking Lot',
+  'Elevator',
+  'ATM',
+  'BookMyShow',
+  'Splitwise',
+  'Vending Machine',
+  'Tic Tac Toe',
+  'Chess',
+  'Snake & Ladder',
+  'LRU Cache',
+  'Logger',
+  'File System',
+  'Library',
+  'Hotel Booking',
+  'Online Code Editor',
+  'Ride Sharing',
+  'Other',
+]
+
+/** All system-design topics across both kinds, in legacy order. */
+export const SD_TOPICS: SystemDesignTopic[] = [
+  ...SD_HLD_TOPICS,
+  ...SD_LLD_TOPICS,
+]
+
+export function sdTopicsFor(kind: SystemDesignKind): SystemDesignTopic[] {
+  return kind === 'lld' ? SD_LLD_TOPICS : SD_HLD_TOPICS
+}
+
+export const SD_KIND_LABEL: Record<SystemDesignKind, string> = {
+  hld: 'HLD · High-level',
+  lld: 'LLD · Low-level',
+}
 
 export const BEHAVIORAL_CATEGORIES: BehavioralCategory[] = [
   'Leadership',

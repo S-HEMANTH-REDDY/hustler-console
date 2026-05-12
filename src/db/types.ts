@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 3 as const
+export const SCHEMA_VERSION = 4 as const
 
 export type ApplicationSource =
   | 'LinkedIn'
@@ -88,7 +88,9 @@ export interface DsaProblem {
   createdAt: number
 }
 
-export type SystemDesignTopic =
+export type SystemDesignKind = 'hld' | 'lld'
+
+export type SystemDesignHLDTopic =
   | 'Feeds'
   | 'Chat'
   | 'Search'
@@ -106,12 +108,35 @@ export type SystemDesignTopic =
   | 'Analytics'
   | 'Other'
 
+export type SystemDesignLLDTopic =
+  | 'Parking Lot'
+  | 'Elevator'
+  | 'ATM'
+  | 'BookMyShow'
+  | 'Splitwise'
+  | 'Vending Machine'
+  | 'Tic Tac Toe'
+  | 'Chess'
+  | 'Snake & Ladder'
+  | 'LRU Cache'
+  | 'Logger'
+  | 'File System'
+  | 'Library'
+  | 'Hotel Booking'
+  | 'Online Code Editor'
+  | 'Ride Sharing'
+  | 'Other'
+
+export type SystemDesignTopic = SystemDesignHLDTopic | SystemDesignLLDTopic
+
 export type SystemDesignDifficulty = 'easy' | 'medium' | 'hard'
 
 export interface SystemDesignProblem {
   id: string
   date: string
   title: string
+  /** High-level (distributed system) vs low-level (OOP / class design) */
+  kind: SystemDesignKind
   topic: SystemDesignTopic
   difficulty: SystemDesignDifficulty
   confidence: 1 | 2 | 3 | 4 | 5

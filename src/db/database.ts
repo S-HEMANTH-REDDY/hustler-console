@@ -57,6 +57,28 @@ export class ExecutionDB extends Dexie {
       resumeFiles: 'id, fileName, createdAt',
       settings: 'id',
     })
+
+    this.version(4)
+      .stores({
+        applications:
+          'id, date, company, status, resumeFileId, createdAt',
+        dsaProblems: 'id, date, topic, difficulty, createdAt',
+        systemDesignProblems:
+          'id, date, topic, kind, difficulty, createdAt',
+        behavioralStories: 'id, category, status, updatedAt',
+        tasks: 'id, priority, recurrence, createdAt',
+        resumeFiles: 'id, fileName, createdAt',
+        settings: 'id',
+      })
+      .upgrade(async (trans) => {
+        // Pre-v4 system-design rows are all high-level designs by convention.
+        await trans
+          .table('systemDesignProblems')
+          .toCollection()
+          .modify((p: { kind?: string }) => {
+            if (!p.kind) p.kind = 'hld'
+          })
+      })
   }
 }
 

@@ -1,9 +1,23 @@
 import { db, DEFAULT_SETTINGS, ensureDefaults } from './database'
-import type { BackupPayload, SettingsRow } from './types'
+import type {
+  BackupPayload,
+  SettingsRow,
+  SystemDesignProblem,
+} from './types'
 import { SCHEMA_VERSION } from './types'
 import { deserializeResumes, serializeResumes } from '../lib/resume'
 
-const SUPPORTED_SCHEMA_VERSIONS = new Set<number>([1, 2, 3])
+const SUPPORTED_SCHEMA_VERSIONS = new Set<number>([1, 2, 3, 4])
+
+function normalizeSystemDesign(rows: unknown[]): SystemDesignProblem[] {
+  return (rows ?? []).map((row) => {
+    const p = row as Partial<SystemDesignProblem> & { kind?: string }
+    return {
+      ...(p as SystemDesignProblem),
+      kind: p.kind === 'lld' ? 'lld' : 'hld',
+    }
+  })
+}
 
 export async function exportBackup(): Promise<BackupPayload> {
   const [
@@ -99,7 +113,9 @@ export async function importBackup(
       })
       await db.applications.bulkPut(data.applications ?? [])
       await db.dsaProblems.bulkPut(data.dsaProblems ?? [])
-      await db.systemDesignProblems.bulkPut(data.systemDesignProblems ?? [])
+      await db.systemDesignProblems.bulkPut(
+        normalizeSystemDesign((data.systemDesignProblems ?? []) as unknown[]),
+      )
       await db.behavioralStories.bulkPut(data.behavioralStories ?? [])
       await db.tasks.bulkPut(data.tasks ?? [])
       await db.resumeFiles.bulkPut(restoredResumes)
