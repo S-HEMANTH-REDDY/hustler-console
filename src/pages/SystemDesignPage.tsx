@@ -126,14 +126,14 @@ export function SystemDesignPage() {
                 }}
                 title={`${c.date}: ${c.count}`}
               >
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0A0A0B] px-2 py-1 text-[10px] text-zinc-200 group-hover:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
                   {c.date} · {c.count} problems
                 </div>
               </div>
             )
           })}
         </div>
-        <p className="mt-2 text-xs text-zinc-600">
+        <p className="mt-2 text-xs text-zinc-500">
           13-week columns × 7 weekday rows · older left, newer right.
         </p>
       </section>
@@ -169,7 +169,7 @@ export function SystemDesignPage() {
                   : 'rounded border border-[#232328] bg-[#0a0a0b] px-3 py-2'
               }
             >
-              <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+              <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
                 {t.topic}
               </div>
               <div

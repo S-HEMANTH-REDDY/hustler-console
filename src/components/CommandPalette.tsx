@@ -210,12 +210,12 @@ function PaletteBody() {
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="Type a command or search…"
-          className="w-full border-b border-[#232328] bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+          className="w-full border-b border-[#232328] bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
         />
         <div className="max-h-[60vh] overflow-y-auto py-1">
           {grouped.map((group) => (
             <div key={group.name} className="py-1">
-              <div className="px-4 pb-1 pt-2 font-mono text-[10px] uppercase tracking-wider text-zinc-600">
+              <div className="px-4 pb-1 pt-2 font-mono text-xs uppercase tracking-wider text-zinc-500">
                 {group.name}
               </div>
               {group.items.map(({ item, idx }) => {
@@ -235,7 +235,7 @@ function PaletteBody() {
                   >
                     <span className="truncate">{item.label}</span>
                     {item.shortcut ? (
-                      <kbd className="rounded border border-[#232328] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
+                      <kbd className="rounded border border-[#232328] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-xs text-zinc-500">
                         {item.shortcut}
                       </kbd>
                     ) : null}
@@ -245,12 +245,12 @@ function PaletteBody() {
             </div>
           ))}
           {filtered.length === 0 ? (
-            <div className="px-4 py-6 text-center text-xs text-zinc-600">
+            <div className="px-4 py-6 text-center text-xs text-zinc-500">
               No results
             </div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-[#232328] bg-[#0d0d10] px-3 py-2 font-mono text-[10px] text-zinc-600">
+        <div className="flex items-center justify-between border-t border-[#232328] bg-[#0d0d10] px-3 py-2 font-mono text-xs text-zinc-500">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>

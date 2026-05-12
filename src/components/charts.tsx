@@ -36,7 +36,7 @@ export function HeatStrip(props: {
             style={{ backgroundColor: bg, boxShadow: `inset 0 0 0 1px ${border}` }}
             title={`${c.date} · ${c.count}`}
           >
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0a0a0b] px-2 py-1 font-mono text-[10px] text-zinc-200 shadow-lg group-hover:block">
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#232328] bg-[#0a0a0b] px-2 py-1 font-mono text-xs text-zinc-200 shadow-lg group-hover:block">
               {c.date} · {c.count}
             </div>
           </div>
@@ -48,7 +48,7 @@ export function HeatStrip(props: {
 
 export function HeatLegend(props: { dailyMin: number; dailyMax: number }) {
   return (
-    <div className="flex items-center gap-3 font-mono text-[10px] text-zinc-500">
+    <div className="flex items-center gap-3 font-mono text-xs text-zinc-500">
       <Swatch color="#0f0f12" border="#1f1f24" /> 0
       <Swatch color="rgba(220,38,38,0.55)" border="#7f1d1d80" /> &lt; {props.dailyMin}
       <Swatch color="rgba(132,204,22,0.7)" border="#65a30d80" />{' '}
@@ -84,7 +84,7 @@ export function MiniBars(props: {
   const max = Math.max(1, ...props.items.map((i) => i.count))
   if (props.items.length === 0) {
     return (
-      <p className="text-xs text-zinc-600">{props.emptyLabel ?? 'No data'}</p>
+      <p className="text-xs text-zinc-500">{props.emptyLabel ?? 'No data'}</p>
     )
   }
   return (
@@ -163,7 +163,7 @@ export function FunnelMini(props: {
         const w = `${(s.count / max) * 100}%`
         return (
           <div key={s.label} className="space-y-0.5">
-            <div className="flex items-center justify-between gap-2 font-mono text-[11px] text-zinc-400">
+            <div className="flex items-center justify-between gap-2 font-mono text-xs text-zinc-400">
               <span className="uppercase tracking-wider">{s.label}</span>
               <span className="tabular-nums text-zinc-200">{s.count}</span>
             </div>
@@ -176,7 +176,7 @@ export function FunnelMini(props: {
             {rate ? (
               <div
                 className={cn(
-                  'pl-1 font-mono text-[10px]',
+                  'pl-1 font-mono text-xs',
                   s.count > 0 ? 'text-zinc-500' : 'text-zinc-700',
                 )}
               >

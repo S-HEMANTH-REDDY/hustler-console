@@ -289,7 +289,7 @@ export function BehavioralPage() {
                     />
                   </div>
                 ) : null}
-                <p className="mt-2 text-[11px] text-zinc-600">
+                <p className="mt-2 text-xs text-zinc-500">
                   STAR blocks autosave on blur · ⌘/Ctrl+Enter commits textarea
                 </p>
               </div>

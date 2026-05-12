@@ -141,13 +141,13 @@ export function QuickApplicationForm() {
             Quick log
           </h2>
           <p
-            className="mt-0.5 text-[11px] text-zinc-500"
+            className="mt-0.5 text-xs text-zinc-500"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
             Enter submits · ⌘/Ctrl+Enter submits · A focuses this from anywhere
           </p>
         </div>
-        <span className="font-mono text-[10px] text-zinc-600">
+        <span className="font-mono text-xs text-zinc-500">
           {companies.length} cos · {resumes.length} resumes
         </span>
       </div>
@@ -244,7 +244,7 @@ export function QuickApplicationForm() {
         </Field>
         <div className="col-span-full">
           <label className="block space-y-1">
-            <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+            <span className="font-mono text-xs uppercase tracking-wider text-zinc-500">
               Resume file (optional)
             </span>
             <div className="flex flex-wrap items-center gap-2">
@@ -263,7 +263,7 @@ export function QuickApplicationForm() {
                 />
               </label>
               {pickedFile ? (
-                <span className="inline-flex items-center gap-2 rounded border border-lime-700/40 bg-lime-500/5 px-2 py-1 font-mono text-[11px] text-lime-200">
+                <span className="inline-flex items-center gap-2 rounded border border-lime-700/40 bg-lime-500/5 px-2 py-1 font-mono text-xs text-lime-200">
                   <span>{pickedFile.name}</span>
                   <span className="text-zinc-500">
                     · {humanBytes(pickedFile.size)}
@@ -283,7 +283,7 @@ export function QuickApplicationForm() {
                   </button>
                 </span>
               ) : (
-                <span className="font-mono text-[11px] text-zinc-600">
+                <span className="font-mono text-xs text-zinc-500">
                   stored locally · viewable from the Applications table
                 </span>
               )}
@@ -304,14 +304,14 @@ export function QuickApplicationForm() {
         <div className="mt-5 rounded-md border border-lime-700/30 bg-gradient-to-b from-lime-500/[0.06] to-transparent p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <div className="min-w-0">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-lime-300/80">
+              <div className="font-mono text-xs uppercase tracking-wider text-lime-300/80">
                 Just logged
               </div>
               <div className="truncate text-sm text-zinc-100">
                 <span className="font-semibold">{lastLogged.app.company}</span>
                 <span className="text-zinc-500"> · {lastLogged.app.role}</span>
               </div>
-              <div className="font-mono text-[11px] text-zinc-500">
+              <div className="font-mono text-xs text-zinc-500">
                 {lastLogged.app.source} · resume{' '}
                 <span className="text-zinc-300">
                   {lastLogged.app.resumeVersion}
@@ -322,7 +322,7 @@ export function QuickApplicationForm() {
             <button
               type="button"
               onClick={() => setLastLogged(null)}
-              className="rounded border border-[#232328] px-2 py-0.5 font-mono text-[10px] text-zinc-500 hover:text-zinc-200"
+              className="rounded border border-[#232328] px-2 py-0.5 font-mono text-xs text-zinc-500 hover:text-zinc-200"
             >
               Dismiss
             </button>
@@ -370,7 +370,7 @@ function Field(props: { label: string; children: ReactNode }) {
   return (
     <label className="block space-y-1">
       <span
-        className="font-mono text-[10px] uppercase tracking-wider text-zinc-500"
+        className="font-mono text-xs uppercase tracking-wider text-zinc-500"
       >
         {props.label}
       </span>

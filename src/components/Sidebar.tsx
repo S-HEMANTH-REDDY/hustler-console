@@ -36,11 +36,11 @@ export function Sidebar() {
             >
               Hustler
             </span>
-            <span className="font-mono text-[10px] text-zinc-600">v1</span>
+            <span className="font-mono text-xs text-zinc-500">v1</span>
           </div>
         </div>
         <nav className="flex-1 overflow-y-auto p-2">
-          <div className="px-2 pb-2 pt-1 font-mono text-[10px] uppercase tracking-wider text-zinc-600">
+          <div className="px-2 pb-2 pt-1 font-mono text-xs uppercase tracking-wider text-zinc-500">
             Workspace
           </div>
           <div className="flex flex-col gap-0.5">
@@ -60,7 +60,7 @@ export function Sidebar() {
                 }
               >
                 <span>{l.label}</span>
-                <kbd className="rounded border border-[#232328] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-[10px] text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
+                <kbd className="rounded border border-[#232328] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-xs text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100">
                   {l.hint}
                 </kbd>
               </NavLink>
@@ -74,11 +74,11 @@ export function Sidebar() {
             className="flex w-full items-center justify-between gap-2 rounded-md border border-[#232328] bg-[#131316] px-3 py-2 text-left text-xs text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
           >
             <span>Commands…</span>
-            <kbd className="rounded border border-[#2a2a30] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
+            <kbd className="rounded border border-[#2a2a30] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-xs text-zinc-500">
               ⌘K
             </kbd>
           </button>
-          <p className="mt-2 px-1 font-mono text-[10px] leading-relaxed text-zinc-600">
+          <p className="mt-2 px-1 font-mono text-xs leading-relaxed text-zinc-500">
             ? for help · A to log app · g+letter to jump
           </p>
         </div>

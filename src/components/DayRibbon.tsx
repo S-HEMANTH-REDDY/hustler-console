@@ -154,7 +154,7 @@ export function DayRibbon(props: {
           <button
             type="button"
             onClick={scrollToToday}
-            className="rounded border border-[#232328] px-2 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+            className="rounded border border-[#232328] px-2 py-0.5 font-mono text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
             title="Jump to today"
           >
             Today →
@@ -195,7 +195,7 @@ export function DayRibbon(props: {
                 <div
                   className={cn(
                     'font-mono text-[9px] uppercase tracking-wider',
-                    d.isWeekend ? 'text-zinc-600' : 'text-zinc-500',
+                    d.isWeekend ? 'text-zinc-500' : 'text-zinc-500',
                   )}
                 >
                   {d.dow}
@@ -292,7 +292,7 @@ function TrackTick(props: {
 
 function Legend() {
   return (
-    <div className="hidden items-center gap-2 font-mono text-[10px] text-zinc-500 sm:flex">
+    <div className="hidden items-center gap-2 font-mono text-xs text-zinc-500 sm:flex">
       {TRACKS.map((t) => (
         <span key={t.kind} className="inline-flex items-center gap-1">
           <span

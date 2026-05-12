@@ -61,12 +61,12 @@ export function TopBar() {
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span>{dateStr}</span>
-              <span className="text-zinc-600">{yearStr}</span>
-              <span className="rounded border border-[#232328] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">
+              <span className="text-zinc-500">{yearStr}</span>
+              <span className="rounded border border-[#232328] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
                 {clock}
               </span>
             </div>
-            <div className="font-mono text-[11px] text-zinc-500">
+            <div className="font-mono text-xs text-zinc-500">
               W{week} · {grad.label} · {remainingLabel}
             </div>
           </div>
@@ -94,14 +94,14 @@ export function TopBar() {
             aria-label="Open command palette"
           >
             <span>Commands</span>
-            <kbd className="rounded border border-[#2a2a30] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">
+            <kbd className="rounded border border-[#2a2a30] bg-[#0a0a0b] px-1.5 py-0.5 font-mono text-xs text-zinc-500">
               ⌘K
             </kbd>
           </button>
         </div>
       </div>
       {(backupStale || noBackup) && (
-        <div className="flex items-center justify-between gap-3 border-t border-[#232328] bg-amber-950/20 px-4 py-1.5 font-mono text-[11px] text-amber-200/90">
+        <div className="flex items-center justify-between gap-3 border-t border-[#232328] bg-amber-950/20 px-4 py-1.5 font-mono text-xs text-amber-200/90">
           <span>
             {noBackup
               ? 'No backup recorded · export soon to keep your data safe.'
@@ -123,7 +123,7 @@ export function TopBar() {
 function Stat(props: { label: string; value: string; valueClass?: string }) {
   return (
     <div className="text-right">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
         {props.label}
       </div>
       <div

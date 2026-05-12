@@ -205,7 +205,7 @@ export function ApplicationsPage() {
               </span>
               <span className="text-zinc-200">{s.n}</span>
               {i < funnel.funnelCounts.length - 1 ? (
-                <span className="text-zinc-600">→</span>
+                <span className="text-zinc-500">→</span>
               ) : null}
             </div>
           ))}
@@ -380,7 +380,7 @@ function ResumeFileCell(props: {
   const inputRef = useRef<HTMLInputElement>(null)
   if (!props.file) {
     return (
-      <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-[#232328] bg-[#0f0f12] px-2 py-1 text-[11px] text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
+      <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-[#232328] bg-[#0f0f12] px-2 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
         <PaperclipIcon />
         <span>Attach…</span>
         <input
@@ -405,7 +405,7 @@ function ResumeFileCell(props: {
         onClick={props.onTogglePreview}
         aria-expanded={props.expanded}
         className={cn(
-          'inline-flex max-w-[180px] items-center gap-1 truncate rounded border px-2 py-1 text-[11px] transition-colors',
+          'inline-flex max-w-[180px] items-center gap-1 truncate rounded border px-2 py-1 text-xs transition-colors',
           props.expanded
             ? 'border-lime-500/60 bg-lime-500/15 text-lime-100'
             : 'border-lime-700/40 bg-lime-500/5 text-lime-200 hover:bg-lime-500/10',
@@ -418,7 +418,7 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void downloadResume(f.id)}
-        className="rounded border border-[#232328] px-1.5 py-1 text-[10px] text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded border border-[#232328] px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Download"
       >
         ↓
@@ -426,13 +426,13 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void openResumeInNewTab(f.id)}
-        className="rounded border border-[#232328] px-1.5 py-1 text-[10px] text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded border border-[#232328] px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Open in new tab"
       >
         ↗
       </button>
       <label
-        className="cursor-pointer rounded border border-[#232328] px-1.5 py-1 text-[10px] text-zinc-500 hover:text-lime-300"
+        className="cursor-pointer rounded border border-[#232328] px-1.5 py-1 text-xs text-zinc-500 hover:text-lime-300"
         title="Replace file"
       >
         ↺
@@ -450,7 +450,7 @@ function ResumeFileCell(props: {
       </label>
       <button
         type="button"
-        className="rounded border border-[#232328] px-1.5 py-1 text-[10px] text-zinc-500 hover:border-red-900/60 hover:text-red-300"
+        className="rounded border border-[#232328] px-1.5 py-1 text-xs text-zinc-500 hover:border-red-900/60 hover:text-red-300"
         title="Detach file"
         onClick={() => props.onDetach()}
       >

@@ -245,7 +245,7 @@ export function TodayPage() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
             <p
-              className="text-[10px] font-medium uppercase tracking-wider text-zinc-500"
+              className="text-xs font-medium uppercase tracking-wider text-zinc-500"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Application pace · today
@@ -261,7 +261,7 @@ export function TodayPage() {
                 >
                   {pace.state.replace('onPace', 'on pace')}
                 </span>
-                <span className="font-mono text-[11px] text-zinc-600">
+                <span className="font-mono text-xs text-zinc-500">
                   target {dailyMin}–{dailyMax}
                 </span>
               </div>
@@ -279,11 +279,11 @@ export function TodayPage() {
               className="btn-primary rounded-md px-5 py-3 text-center text-sm font-semibold"
             >
               + Log application
-              <span className="ml-2 rounded border border-lime-800/50 bg-lime-100/20 px-1 py-0.5 font-mono text-[10px] text-lime-950">
+              <span className="ml-2 rounded border border-lime-800/50 bg-lime-100/20 px-1 py-0.5 font-mono text-xs text-lime-950">
                 A
               </span>
             </Link>
-            <p className="font-mono text-[11px] text-zinc-600 md:text-right">
+            <p className="font-mono text-xs text-zinc-500 md:text-right">
               {wr.beforeWindow
                 ? `Window opens ${winStart}`
                 : wr.afterWindow
@@ -431,7 +431,7 @@ export function TodayPage() {
             >
               Last 30 days · application volume
             </h2>
-            <p className="mt-0.5 text-[11px] text-zinc-600">
+            <p className="mt-0.5 text-xs text-zinc-500">
               Color encodes daily band · hover for date · today on the right
             </p>
           </div>
@@ -471,7 +471,7 @@ export function TodayPage() {
           right={
             <Link
               to="/tasks"
-              className="font-mono text-[11px] text-zinc-500 hover:text-lime-300"
+              className="font-mono text-xs text-zinc-500 hover:text-lime-300"
             >
               Tasks →
             </Link>
@@ -479,7 +479,7 @@ export function TodayPage() {
           muted
         >
           {openTasks.length === 0 ? (
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-zinc-500">
               Nothing open ·{' '}
               <Link to="/tasks" className="text-lime-400/90 hover:underline">
                 add on Tasks
@@ -510,18 +510,18 @@ export function TodayPage() {
                     <div className="truncate text-sm text-zinc-300">
                       {t.title}
                     </div>
-                    <div className="mt-0.5 flex flex-wrap gap-2 font-mono text-[10px]">
+                    <div className="mt-0.5 flex flex-wrap gap-2 font-mono text-xs">
                       <span
                         className={cn(
                           'uppercase tracking-wider',
                           t.priority === 'high' && 'text-amber-400/90',
                           t.priority === 'mid' && 'text-zinc-500',
-                          t.priority === 'low' && 'text-zinc-600',
+                          t.priority === 'low' && 'text-zinc-500',
                         )}
                       >
                         {t.priority}
                       </span>
-                      <span className="text-zinc-600">
+                      <span className="text-zinc-500">
                         {recurrenceShort(t.recurrence)}
                       </span>
                     </div>
@@ -531,7 +531,7 @@ export function TodayPage() {
             </ul>
           )}
           {moreTasks > 0 ? (
-            <p className="mt-3 text-xs text-zinc-600">
+            <p className="mt-3 text-xs text-zinc-500">
               +{moreTasks} more on{' '}
               <Link to="/tasks" className="text-zinc-400 hover:text-lime-300">
                 Tasks
@@ -542,7 +542,7 @@ export function TodayPage() {
 
         <Card title="Pipeline">
           {applications.length === 0 ? (
-            <p className="text-sm text-zinc-600">No applications yet.</p>
+            <p className="text-sm text-zinc-500">No applications yet.</p>
           ) : (
             <>
               <FunnelMini stages={funnelStages} />
@@ -581,7 +581,7 @@ export function TodayPage() {
         </Card>
         <Card title="Today's log">
           {todayAppsSorted.length === 0 ? (
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-zinc-500">
               Nothing yet ·{' '}
               <Link
                 to="/applications#quick-log"
@@ -600,7 +600,7 @@ export function TodayPage() {
                 return (
                   <li key={a.id} className="py-2 first:pt-0">
                     <div className="flex items-start gap-3">
-                      <span className="w-12 shrink-0 font-mono text-[11px] text-zinc-500">
+                      <span className="w-12 shrink-0 font-mono text-xs text-zinc-500">
                         {format(new Date(a.createdAt), 'HH:mm')}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -616,14 +616,14 @@ export function TodayPage() {
                             </span>
                           ) : null}
                         </div>
-                        <div className="truncate font-mono text-[11px] text-zinc-500">
+                        <div className="truncate font-mono text-xs text-zinc-500">
                           {a.role} · {a.source}
                           {a.resumeVersion ? ` · ${a.resumeVersion}` : null}
                         </div>
                       </div>
                       <span
                         className={cn(
-                          'shrink-0 rounded border px-1.5 py-0.5 font-mono text-[10px]',
+                          'shrink-0 rounded border px-1.5 py-0.5 font-mono text-xs',
                           statusPillClass(a.status),
                         )}
                       >
@@ -653,7 +653,7 @@ export function TodayPage() {
             </ul>
           )}
           {todayAppsSorted.length > 8 ? (
-            <p className="mt-3 text-xs text-zinc-600">
+            <p className="mt-3 text-xs text-zinc-500">
               +{todayAppsSorted.length - 8} more on{' '}
               <Link
                 to="/applications"
@@ -666,21 +666,21 @@ export function TodayPage() {
         </Card>
       </section>
 
-      <p className="text-center font-mono text-[11px] text-zinc-700">
+      <p className="text-center font-mono text-xs text-zinc-700">
         Press{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-[10px] text-zinc-500">
+        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
           ⌘K
         </kbd>{' '}
         for commands ·{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-[10px] text-zinc-500">
+        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
           A
         </kbd>{' '}
         to log application ·{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-[10px] text-zinc-500">
+        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
           g
         </kbd>{' '}
         +{' '}
-        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-[10px] text-zinc-500">
+        <kbd className="rounded border border-[#232328] bg-[#131316] px-1 py-0.5 text-xs text-zinc-500">
           t/a/d/b/k/s
         </kbd>{' '}
         to navigate
@@ -726,7 +726,7 @@ function ThroughputTile(props: {
 }) {
   return (
     <div className="bg-[#131316] p-3">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
         {props.label}
       </div>
       <div
@@ -738,7 +738,7 @@ function ThroughputTile(props: {
       >
         {props.value}
       </div>
-      <div className="font-mono text-[11px] text-zinc-600">{props.hint}</div>
+      <div className="font-mono text-xs text-zinc-500">{props.hint}</div>
     </div>
   )
 }
@@ -753,7 +753,7 @@ function Kpi(props: {
   return (
     <div className="rounded-lg border border-[#232328] bg-[#131316] p-4">
       <div className="flex items-start justify-between gap-2">
-        <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+        <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
           {props.label}
         </div>
         {props.chart}
@@ -767,7 +767,7 @@ function Kpi(props: {
       >
         {props.primary}
       </div>
-      <div className="font-mono text-[11px] text-zinc-600">
+      <div className="font-mono text-xs text-zinc-500">
         {props.secondary}
       </div>
     </div>
@@ -791,7 +791,7 @@ function Delta(props: {
   const sign = props.colored ? (v > 0 ? '+' : '') : ''
   return (
     <div className="rounded border border-[#232328]/70 bg-[#0f0f12] px-3 py-2">
-      <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+      <div className="font-mono text-xs uppercase tracking-wider text-zinc-500">
         {props.label}
       </div>
       <div
@@ -803,7 +803,7 @@ function Delta(props: {
         {sign}
         {v}
       </div>
-      <div className="font-mono text-[10px] text-zinc-600">{props.muted}</div>
+      <div className="font-mono text-xs text-zinc-500">{props.muted}</div>
     </div>
   )
 }
@@ -866,11 +866,11 @@ function SelectedDayPanel(props: {
           {isToday ? `${label} · TODAY` : label}
         </span>
       </span>
-      <span className="text-zinc-600">|</span>
+      <span className="text-zinc-500">|</span>
       <span>
         <span className="text-zinc-500">Apps </span>
         <span className={cn('tabular-nums', appsClass)}>{apps}</span>
-        <span className="text-zinc-600">/{props.dailyMin}</span>
+        <span className="text-zinc-500">/{props.dailyMin}</span>
       </span>
       <span>
         <span className="text-zinc-500">DSA </span>
