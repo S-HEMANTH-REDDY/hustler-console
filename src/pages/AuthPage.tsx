@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { authRedirectUrl, supabase } from '../lib/supabase'
 import { cn } from '../lib/utils'
 import { useAuthStore } from '../store/authStore'
@@ -9,8 +9,8 @@ type Mode = 'signin' | 'signup' | 'forgot' | 'reset'
 
 /**
  * Email/password + Google OAuth + magic password reset on a single screen.
- * Renders nothing useful if Supabase isn't configured (the gate sends
- * the user back to the app in local-only mode).
+ * When Supabase env vars were not set at build time, shows setup instructions
+ * instead of a blank redirect (common on GitHub Pages without Action secrets).
  */
 export function AuthPage() {
   const status = useAuthStore((s) => s.status)
@@ -31,9 +31,9 @@ export function AuthPage() {
     if (recoveryMode) setMode('reset')
   }, [recoveryMode])
 
-  // If Supabase isn't configured we have no auth gate at all — kick back to the app.
+  // Build has no VITE_SUPABASE_* (e.g. GitHub Pages CI secrets empty).
   if (status === 'disabled') {
-    return <Navigate to="/" replace />
+    return <AuthDisabledNotice />
   }
   // If the user is already signed in (and not in recovery), there's nothing to do here.
   if (status === 'authed' && !recoveryMode) {
@@ -264,6 +264,89 @@ export function AuthPage() {
         <p className="mt-6 text-center font-mono text-xs text-zinc-400">
           Your data is private. We use Supabase Auth + Postgres with
           row-level security — nobody else can read your rows.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function AuthDisabledNotice() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#1c1f27] px-4 py-12">
+      <div className="w-full max-w-lg">
+        <div className="mb-6 text-center">
+          <h1
+            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            Hustler
+          </h1>
+          <p className="mt-1 font-mono text-xs uppercase tracking-wider text-zinc-400">
+            Sign-in is not enabled on this deployment
+          </p>
+        </div>
+
+        <div className="surface-glossy rounded-xl p-6 shadow-2xl">
+          <p className="text-sm leading-relaxed text-zinc-300">
+            This site was built <span className="text-zinc-100">without</span>{' '}
+            Supabase environment variables, so it runs in{' '}
+            <span className="font-mono text-lime-200">local-only</span> mode in
+            the browser. There is no server account or sign-in until you add
+            them to the production build.
+          </p>
+
+          <h2 className="mt-5 font-mono text-xs uppercase tracking-wider text-zinc-400">
+            GitHub Pages (Actions)
+          </h2>
+          <ol className="mt-2 list-decimal space-y-2 pl-5 text-sm text-zinc-300">
+            <li>
+              In your GitHub repo:{' '}
+              <span className="font-mono text-zinc-100">
+                Settings → Secrets and variables → Actions
+              </span>
+              .
+            </li>
+            <li>
+              Create repository secrets{' '}
+              <code className="rounded bg-[#262934] px-1.5 py-0.5 font-mono text-xs text-lime-200">
+                VITE_SUPABASE_URL
+              </code>{' '}
+              and{' '}
+              <code className="rounded bg-[#262934] px-1.5 py-0.5 font-mono text-xs text-lime-200">
+                VITE_SUPABASE_ANON_KEY
+              </code>{' '}
+              (Project Settings → API in the Supabase dashboard).
+            </li>
+            <li>
+              Re-run the deploy workflow (push to{' '}
+              <code className="font-mono text-zinc-100">main</code> or use{' '}
+              <span className="font-mono text-zinc-100">workflow_dispatch</span>
+              ).
+            </li>
+            <li>
+              In Supabase: Authentication → URL configuration — add your site
+              URL and redirect (e.g.{' '}
+              <code className="break-all font-mono text-xs text-zinc-100">
+                https://&lt;user&gt;.github.io/hustler-console/
+              </code>
+              ) for email links and Google OAuth.
+            </li>
+          </ol>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Link
+              to="/"
+              className="inline-flex rounded-md border border-[#3d4150] bg-[#262934] px-4 py-2 text-sm text-zinc-200 hover:border-zinc-600"
+            >
+              ← Back to app
+            </Link>
+          </div>
+        </div>
+
+        <p className="mt-6 text-center font-mono text-xs text-zinc-500">
+          Local dev: set the same vars in{' '}
+          <code className="text-zinc-400">.env</code> · see{' '}
+          <code className="text-zinc-400">supabase/README.md</code>
         </p>
       </div>
     </div>

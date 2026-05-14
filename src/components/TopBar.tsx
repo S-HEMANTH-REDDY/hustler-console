@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useApplicationsHybrid, useSettingsRowHybrid } from '../cloud/hybridData'
 import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
 import {
@@ -100,6 +101,8 @@ export function TopBar() {
             </kbd>
           </button>
 
+          <AuthSetupLink />
+
           <UserChip />
         </div>
       </div>
@@ -120,6 +123,22 @@ export function TopBar() {
         </div>
       )}
     </header>
+  )
+}
+
+function AuthSetupLink() {
+  const status = useAuthStore((s) => s.status)
+
+  if (status !== 'disabled') return null
+
+  return (
+    <Link
+      to="/auth"
+      title="Supabase wasn’t configured at deploy time. Open for steps to enable sign-in on GitHub Pages."
+      className="rounded border border-amber-800/60 bg-amber-950/25 px-2.5 py-1.5 text-xs font-medium text-amber-100/95 hover:border-amber-600/70 hover:bg-amber-950/35"
+    >
+      Sign in (setup)
+    </Link>
   )
 }
 
