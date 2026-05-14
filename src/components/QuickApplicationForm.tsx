@@ -284,7 +284,7 @@ export function QuickApplicationForm() {
                 </span>
               ) : (
                 <span className="font-mono text-xs text-zinc-400">
-                  stored locally · viewable from the Applications table
+                  stored locally · viewable from the APS table
                 </span>
               )}
             </div>
@@ -295,7 +295,7 @@ export function QuickApplicationForm() {
             type="submit"
             className="btn-primary rounded-md px-4 py-2 text-sm font-semibold text-zinc-950"
           >
-            Log application
+            Log APS
           </button>
         </div>
       </form>

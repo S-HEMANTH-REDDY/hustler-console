@@ -42,14 +42,17 @@ export function TopBar() {
   const backupStale = bAge !== null && bAge >= 7
   const noBackup = bAge === null
 
-  const winStart = settings?.windowStart ?? '09:00'
-  const winEnd = settings?.windowEnd ?? '21:00'
+  const winStart = settings?.windowStart ?? '00:00'
+  const winEnd = settings?.windowEnd ?? '23:59'
   const wr = hoursMinutesRemaining(tick, winEnd, winStart)
+  const fullDay = winStart === '00:00' && winEnd === '23:59'
   const remainingLabel = wr.beforeWindow
     ? `Pre-window · opens ${winStart}`
     : wr.afterWindow
-      ? `Window closed · ${winStart}–${winEnd}`
-      : `${wr.hours}h ${String(wr.minutes).padStart(2, '0')}m left`
+      ? `Day done · ${winStart}–${winEnd}`
+      : fullDay
+        ? `${wr.hours}h ${String(wr.minutes).padStart(2, '0')}m left today`
+        : `${wr.hours}h ${String(wr.minutes).padStart(2, '0')}m left`
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-[#3d4150] shadow-[0_1px_0_0_rgba(255,255,255,0.02),0_10px_30px_-20px_rgba(0,0,0,0.9)]">

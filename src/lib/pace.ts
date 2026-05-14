@@ -5,7 +5,7 @@ export type PaceState = 'idle' | 'onPace' | 'behind' | 'pastMax'
 export interface PaceComputation {
   state: PaceState
   todayCount: number
-  /** Expected cumulative applications by now to finish at dailyMin by window end */
+  /** Expected cumulative APS by now to finish at dailyMin by window end */
   expectedNow: number
   delta: number
   fraction: number
@@ -68,23 +68,25 @@ export function computePace(
 
   if (todayCount > settings.dailyMax) {
     state = 'pastMax'
-    statusLine = `Past max · prioritize quality · ${formatClock(now)}`
+    statusLine = `Past max (${settings.dailyMax}) · focus on quality · ${formatClock(now)}`
   } else if (beforeStart || idleEarlyWindow) {
     state = 'idle'
     statusLine = beforeStart
-      ? `Pre-window · ${formatClock(now)}`
-      : `Idle · day not started · ${formatClock(now)}`
+      ? `Day starts at ${settings.windowStart} · ${formatClock(now)}`
+      : `Day just started · log your first APS · ${formatClock(now)}`
   } else if (todayCount + tol < expectedNow) {
     state = 'behind'
     const behind = Math.max(1, Math.ceil(expectedNow - todayCount))
-    statusLine = `Behind by ${behind} · ramp now · ${formatClock(now)}`
+    const togo = Math.max(0, settings.dailyMin - todayCount)
+    statusLine = `Behind by ${behind} APS · ${togo} more to hit ${settings.dailyMin} · ${formatClock(now)}`
   } else if (todayCount >= expectedNow - tol) {
     state = 'onPace'
-    const prefix =
-      Math.abs(delta) < 0.05
-        ? `On pace · ${formatClock(now)}`
-        : `On pace · ${delta >= 0 ? '+' : ''}${delta} vs expected at ${formatClock(now)}`
-    statusLine = prefix
+    const togo = Math.max(0, settings.dailyMin - todayCount)
+    const tail =
+      togo > 0
+        ? `${togo} more to hit ${settings.dailyMin}`
+        : `min ${settings.dailyMin} hit · push to ${settings.dailyMax}`
+    statusLine = `On pace · ${tail} · ${formatClock(now)}`
   } else {
     state = 'behind'
     statusLine = `Behind · ${formatClock(now)}`

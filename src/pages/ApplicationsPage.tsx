@@ -105,7 +105,7 @@ export function ApplicationsPage() {
   }
 
   async function remove(id: string) {
-    if (!window.confirm('Delete this application row?')) return
+    if (!window.confirm('Delete this APS row?')) return
     const row = await db.applications.get(id)
     if (row?.resumeFileId) {
       await db.resumeFiles.delete(row.resumeFileId).catch(() => undefined)
@@ -141,10 +141,11 @@ export function ApplicationsPage() {
             className="text-xl font-semibold text-zinc-100"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Applications
+            APS · Applications
           </h1>
           <p className="text-sm text-zinc-400">
-            Quick log · pipeline · history
+            Quick log · pipeline · history · {' '}
+            <span className="font-mono">goal 30–50 / day (12 AM → 11:59 PM)</span>
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">

@@ -59,7 +59,7 @@ export function TasksPage() {
           Tasks
         </h1>
         <p className="text-xs text-zinc-400">
-          Life lane · demoted priority versus applications
+          Life lane · demoted priority versus APS
         </p>
       </div>
 

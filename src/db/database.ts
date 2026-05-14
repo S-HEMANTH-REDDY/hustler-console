@@ -13,10 +13,15 @@ export const DEFAULT_SETTINGS: SettingsRow = {
   id: 'default',
   dailyMin: 30,
   dailyMax: 50,
-  windowStart: '09:00',
-  windowEnd: '21:00',
+  // Full calendar day: 12:00 AM → 11:59 PM. The whole day is the quota window.
+  windowStart: '00:00',
+  windowEnd: '23:59',
   updatedAt: Date.now(),
 }
+
+// One-time migration flag for users that have the legacy 09:00-21:00 window
+// stored in IndexedDB. Bumping the suffix re-runs the migration for everyone.
+const FULL_DAY_MIGRATION_KEY = 'execution.windowMigrated.v2'
 
 export class ExecutionDB extends Dexie {
   applications!: Table<Application, string>
@@ -86,7 +91,33 @@ export const db = new ExecutionDB()
 
 export async function ensureDefaults(): Promise<SettingsRow> {
   const existing = await db.settings.get('default')
-  if (existing) return existing
-  await db.settings.put({ ...DEFAULT_SETTINGS, updatedAt: Date.now() })
-  return (await db.settings.get('default'))!
+  if (!existing) {
+    await db.settings.put({ ...DEFAULT_SETTINGS, updatedAt: Date.now() })
+    return (await db.settings.get('default'))!
+  }
+
+  // One-time migration: any pre-existing settings get bumped to the new
+  // full-day window so the dashboard math (rate, forecast, recovery) reflects
+  // a 12:00 AM → 11:59 PM quota day. We only do this once per browser; users
+  // can still customize the window afterwards via Settings.
+  try {
+    if (
+      typeof localStorage !== 'undefined' &&
+      !localStorage.getItem(FULL_DAY_MIGRATION_KEY)
+    ) {
+      const migrated: SettingsRow = {
+        ...existing,
+        windowStart: '00:00',
+        windowEnd: '23:59',
+        updatedAt: Date.now(),
+      }
+      await db.settings.put(migrated)
+      localStorage.setItem(FULL_DAY_MIGRATION_KEY, '1')
+      return migrated
+    }
+  } catch {
+    // localStorage may be unavailable (private mode, SSR); skip migration.
+  }
+
+  return existing
 }

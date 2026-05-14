@@ -44,7 +44,7 @@ function PaletteBody() {
       {
         id: 'nav-apps',
         group: 'Navigate',
-        label: 'Applications',
+        label: 'APS (Applications)',
         shortcut: 'g a',
         run: () => navigate('/applications'),
       },
@@ -93,7 +93,7 @@ function PaletteBody() {
       {
         id: 'act-log-app',
         group: 'Actions',
-        label: 'Log application',
+        label: 'Log APS (application)',
         shortcut: 'A',
         run: () => navigate('/applications#quick-log'),
       },

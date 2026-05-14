@@ -32,7 +32,7 @@ export interface TrackDef {
 }
 
 export const TRACKS: TrackDef[] = [
-  { kind: 'apps', letter: 'A', label: 'Applications', color: '#84cc16' },
+  { kind: 'apps', letter: 'A', label: 'APS', color: '#84cc16' },
   { kind: 'dsa', letter: 'D', label: 'DSA', color: '#06b6d4' },
   { kind: 'beh', letter: 'B', label: 'Behavioral', color: '#a78bfa' },
   { kind: 'sd', letter: 'S', label: 'System Design', color: '#f59e0b' },
@@ -182,7 +182,7 @@ export function DayRibbon(props: {
                 type="button"
                 onClick={() => props.onSelect(d.key)}
                 aria-pressed={selected}
-                title={`${d.key} · ${d.apps} apps · ${d.dsa} dsa · ${d.beh} beh · ${d.sd} sd`}
+                title={`${d.key} · ${d.apps} APS · ${d.dsa} dsa · ${d.beh} beh · ${d.sd} sd`}
                 className={cn(
                   'group flex w-[58px] shrink-0 flex-col items-stretch rounded-md border p-1.5 text-center transition-colors',
                   selected

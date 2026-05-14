@@ -4,7 +4,7 @@ import { cn } from '../lib/utils'
 
 const links = [
   { to: '/', label: 'Today', hint: 'g t' },
-  { to: '/applications', label: 'Applications', hint: 'g a' },
+  { to: '/applications', label: 'APS', hint: 'g a' },
   { to: '/dsa', label: 'DSA', hint: 'g d' },
   { to: '/system-design', label: 'System Design', hint: 'g y' },
   { to: '/behavioral', label: 'Behavioral', hint: 'g b' },
@@ -80,7 +80,7 @@ export function Sidebar() {
             </kbd>
           </button>
           <p className="mt-2 px-1 font-mono text-xs leading-relaxed text-zinc-400">
-            ? for help · A to log app · g+letter to jump
+            ? for help · A to log APS · g+letter to jump
           </p>
         </div>
       </aside>
