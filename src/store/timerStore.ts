@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 const STOPWATCH_KEY = 'hustler.stopwatch.v1'
 const POMODORO_KEY = 'hustler.pomodoro.v1'
+const THINK_KEY = 'hustler.thinkTimer.v1'
 
 export interface StopwatchLap {
   id: number
@@ -39,9 +40,33 @@ interface PomodoroPersist {
   autoStartFocus: boolean
 }
 
+/**
+ * Standalone countdown timer for "deep thinking" research sessions — sits
+ * alongside the Pomodoro but with a longer default (45 min) and a notion of
+ * which Passion idea it's currently bound to.
+ */
+export interface ThinkTimerPersist {
+  running: boolean
+  /** ms remaining at the time the run started/paused. */
+  remainingMs: number
+  /** Date.now() at last start, or null if paused. */
+  runStartedAt: number | null
+  /** Default & configured session length in minutes (1..240). */
+  durationMin: number
+  /** Which Passion idea is currently the focus of this session. */
+  ideaId: string | null
+  /** Date.now() of the most recently completed session (chime fired). */
+  lastCompletedAt: number
+  /** Total focused minutes accumulated across all completed sessions. */
+  totalMinutes: number
+  /** Count of completed sessions ever. */
+  sessionsCompleted: number
+}
+
 interface TimerState {
   stopwatch: StopwatchPersist
   pomodoro: PomodoroPersist
+  think: ThinkTimerPersist
 
   swStart: () => void
   swPause: () => void
@@ -60,6 +85,14 @@ interface TimerState {
     autoStartBreak: boolean
     autoStartFocus: boolean
   }) => void
+
+  thinkStart: () => void
+  thinkPause: () => void
+  thinkReset: () => void
+  thinkSetDuration: (min: number) => void
+  thinkSetIdea: (ideaId: string | null) => void
+  /** Mark current session complete (called by UI when remaining hits 0). */
+  thinkComplete: () => { idea: string | null; minutes: number }
 }
 
 function loadStopwatch(): StopwatchPersist {
@@ -132,9 +165,43 @@ function persistPomodoro(p: PomodoroPersist) {
   }
 }
 
+function defaultThink(): ThinkTimerPersist {
+  return {
+    running: false,
+    remainingMs: 45 * 60_000,
+    runStartedAt: null,
+    durationMin: 45,
+    ideaId: null,
+    lastCompletedAt: 0,
+    totalMinutes: 0,
+    sessionsCompleted: 0,
+  }
+}
+
+function loadThink(): ThinkTimerPersist {
+  if (typeof window === 'undefined') return defaultThink()
+  try {
+    const raw = window.localStorage.getItem(THINK_KEY)
+    if (!raw) return defaultThink()
+    const parsed = JSON.parse(raw) as Partial<ThinkTimerPersist>
+    return { ...defaultThink(), ...parsed }
+  } catch {
+    return defaultThink()
+  }
+}
+
+function persistThink(t: ThinkTimerPersist) {
+  try {
+    window.localStorage.setItem(THINK_KEY, JSON.stringify(t))
+  } catch {
+    // ignore quota / private mode failures
+  }
+}
+
 export const useTimerStore = create<TimerState>((set, get) => ({
   stopwatch: loadStopwatch(),
   pomodoro: loadPomodoro(),
+  think: loadThink(),
 
   swStart: () => {
     const sw = get().stopwatch
@@ -253,6 +320,82 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     persistPomodoro(next)
     set({ pomodoro: next })
   },
+
+  thinkStart: () => {
+    const t = get().think
+    if (t.running) return
+    // If the previous session ran to completion, start fresh; otherwise resume.
+    const remainingMs =
+      t.remainingMs > 0 ? t.remainingMs : t.durationMin * 60_000
+    const next: ThinkTimerPersist = {
+      ...t,
+      running: true,
+      remainingMs,
+      runStartedAt: Date.now(),
+    }
+    persistThink(next)
+    set({ think: next })
+  },
+  thinkPause: () => {
+    const t = get().think
+    if (!t.running || t.runStartedAt == null) return
+    const elapsed = Date.now() - t.runStartedAt
+    const next: ThinkTimerPersist = {
+      ...t,
+      running: false,
+      runStartedAt: null,
+      remainingMs: Math.max(0, t.remainingMs - elapsed),
+    }
+    persistThink(next)
+    set({ think: next })
+  },
+  thinkReset: () => {
+    const t = get().think
+    const next: ThinkTimerPersist = {
+      ...t,
+      running: false,
+      runStartedAt: null,
+      remainingMs: t.durationMin * 60_000,
+    }
+    persistThink(next)
+    set({ think: next })
+  },
+  thinkSetDuration: (min) => {
+    const t = get().think
+    const durationMin = clamp(min, 1, 240)
+    const next: ThinkTimerPersist = {
+      ...t,
+      durationMin,
+      // Only re-arm the displayed remaining time when idle. Don't disturb an
+      // in-flight countdown.
+      remainingMs: t.running ? t.remainingMs : durationMin * 60_000,
+    }
+    persistThink(next)
+    set({ think: next })
+  },
+  thinkSetIdea: (ideaId) => {
+    const t = get().think
+    if (t.ideaId === ideaId) return
+    const next: ThinkTimerPersist = { ...t, ideaId }
+    persistThink(next)
+    set({ think: next })
+  },
+  thinkComplete: () => {
+    const t = get().think
+    const minutes = t.durationMin
+    const next: ThinkTimerPersist = {
+      ...t,
+      running: false,
+      runStartedAt: null,
+      remainingMs: t.durationMin * 60_000,
+      lastCompletedAt: Date.now(),
+      totalMinutes: t.totalMinutes + minutes,
+      sessionsCompleted: t.sessionsCompleted + 1,
+    }
+    persistThink(next)
+    set({ think: next })
+    return { idea: t.ideaId, minutes }
+  },
 }))
 
 function clamp(n: number, min: number, max: number): number {
@@ -291,6 +434,14 @@ export function pomodoroRemainingMs(p: PomodoroPersist): number {
     return Math.max(0, p.remainingMs - (Date.now() - p.runStartedAt))
   }
   return p.remainingMs
+}
+
+/** Live ms remaining for the Think (research) timer. */
+export function thinkRemainingMs(t: ThinkTimerPersist): number {
+  if (t.running && t.runStartedAt != null) {
+    return Math.max(0, t.remainingMs - (Date.now() - t.runStartedAt))
+  }
+  return t.remainingMs
 }
 
 /** Live elapsed ms for stopwatch. */

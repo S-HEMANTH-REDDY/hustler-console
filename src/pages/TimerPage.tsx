@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useIntervalTick } from '../hooks/useIntervalTick'
 import { cn } from '../lib/utils'
+import { PassionWorkspace } from '../components/PassionWorkspace'
 import {
   advancePhase,
   pomodoroRemainingMs,
@@ -23,12 +24,13 @@ export function TimerPage() {
             className="text-2xl font-semibold tracking-tight text-zinc-50"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Timer
+            Passion
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            A stopwatch for timed DSA practice, and a general-purpose
-            Pomodoro for any focused work block. Timers keep running while
-            you navigate the app.
+            Research mode for your own ideas, startups, innovation and AGI
+            work — a 45-minute think timer with notes, YouTube links and PDF
+            attachments. The DSA stopwatch and general Pomodoro are right
+            below; all three keep running while you navigate the app.
           </p>
         </div>
         <button
@@ -39,6 +41,18 @@ export function TimerPage() {
           How to use Pomodoro
         </button>
       </header>
+
+      <PassionWorkspace />
+
+      <div className="flex items-center gap-3">
+        <span
+          className="font-mono text-xs uppercase tracking-wider text-zinc-400"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          Execution timers · stopwatch + pomodoro
+        </span>
+        <span className="h-px flex-1 bg-[#3d4150]" />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <StopwatchCard />

@@ -5,9 +5,13 @@ import type {
   SystemDesignProblem,
 } from './types'
 import { SCHEMA_VERSION } from './types'
+import {
+  deserializePassionAttachments,
+  serializePassionAttachments,
+} from '../lib/passion'
 import { deserializeResumes, serializeResumes } from '../lib/resume'
 
-const SUPPORTED_SCHEMA_VERSIONS = new Set<number>([1, 2, 3, 4])
+const SUPPORTED_SCHEMA_VERSIONS = new Set<number>([1, 2, 3, 4, 5])
 
 function normalizeSystemDesign(rows: unknown[]): SystemDesignProblem[] {
   return (rows ?? []).map((row) => {
@@ -28,6 +32,8 @@ export async function exportBackup(): Promise<BackupPayload> {
     behavioralStories,
     tasks,
     resumeRows,
+    passionIdeas,
+    passionAttachmentRows,
   ] = await Promise.all([
     ensureDefaults(),
     db.applications.toArray(),
@@ -36,9 +42,14 @@ export async function exportBackup(): Promise<BackupPayload> {
     db.behavioralStories.toArray(),
     db.tasks.toArray(),
     db.resumeFiles.toArray(),
+    db.passionIdeas.toArray(),
+    db.passionAttachments.toArray(),
   ])
 
   const resumeFiles = await serializeResumes(resumeRows)
+  const passionAttachments = await serializePassionAttachments(
+    passionAttachmentRows,
+  )
 
   return {
     schemaVersion: SCHEMA_VERSION,
@@ -50,6 +61,8 @@ export async function exportBackup(): Promise<BackupPayload> {
     behavioralStories,
     tasks,
     resumeFiles,
+    passionIdeas,
+    passionAttachments,
   }
 }
 
@@ -83,6 +96,13 @@ export async function importBackup(
     data.resumeFiles && Array.isArray(data.resumeFiles)
       ? deserializeResumes(data.resumeFiles)
       : []
+  const restoredPassionAttachments =
+    data.passionAttachments && Array.isArray(data.passionAttachments)
+      ? deserializePassionAttachments(data.passionAttachments)
+      : []
+  const restoredPassionIdeas = Array.isArray(data.passionIdeas)
+    ? data.passionIdeas
+    : []
 
   await db.transaction(
     'rw',
@@ -93,6 +113,8 @@ export async function importBackup(
       db.behavioralStories,
       db.tasks,
       db.resumeFiles,
+      db.passionIdeas,
+      db.passionAttachments,
       db.settings,
     ],
     async () => {
@@ -103,6 +125,8 @@ export async function importBackup(
         await db.behavioralStories.clear()
         await db.tasks.clear()
         await db.resumeFiles.clear()
+        await db.passionIdeas.clear()
+        await db.passionAttachments.clear()
       }
       const s = data.settings as SettingsRow
       await db.settings.put({
@@ -119,6 +143,8 @@ export async function importBackup(
       await db.behavioralStories.bulkPut(data.behavioralStories ?? [])
       await db.tasks.bulkPut(data.tasks ?? [])
       await db.resumeFiles.bulkPut(restoredResumes)
+      await db.passionIdeas.bulkPut(restoredPassionIdeas)
+      await db.passionAttachments.bulkPut(restoredPassionAttachments)
     },
   )
 }
@@ -133,6 +159,8 @@ export async function resetAllData(): Promise<void> {
       db.behavioralStories,
       db.tasks,
       db.resumeFiles,
+      db.passionIdeas,
+      db.passionAttachments,
       db.settings,
     ],
     async () => {
@@ -142,6 +170,8 @@ export async function resetAllData(): Promise<void> {
       await db.behavioralStories.clear()
       await db.tasks.clear()
       await db.resumeFiles.clear()
+      await db.passionIdeas.clear()
+      await db.passionAttachments.clear()
       await db.settings.clear()
       await db.settings.put({ ...DEFAULT_SETTINGS, updatedAt: Date.now() })
     },

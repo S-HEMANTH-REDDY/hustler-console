@@ -79,7 +79,7 @@ function PaletteBody() {
       {
         id: 'nav-timer',
         group: 'Navigate',
-        label: 'Timer (Stopwatch & Pomodoro)',
+        label: 'Passion (Research · Think · Stopwatch · Pomodoro)',
         shortcut: 'g m',
         run: () => navigate('/timer'),
       },

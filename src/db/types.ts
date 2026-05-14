@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 4 as const
+export const SCHEMA_VERSION = 5 as const
 
 export type ApplicationSource =
   | 'LinkedIn'
@@ -191,6 +191,68 @@ export interface SettingsRow {
   updatedAt: number
 }
 
+/**
+ * "Passion" workspace: long-running research threads for original ideas,
+ * startups, AGI research, etc. Each idea has free-form notes, a list of
+ * reference links (YouTube videos, papers, blog posts) and PDF attachments,
+ * plus a dedicated 45-minute think timer.
+ */
+export type PassionTag =
+  | 'idea'
+  | 'startup'
+  | 'agi'
+  | 'research'
+  | 'innovation'
+  | 'other'
+
+export interface PassionLink {
+  id: string
+  url: string
+  /** Optional human label; for YouTube we may also store a title. */
+  label?: string
+  /** Cached video id when the URL is a YouTube link, so we can render thumbnails offline. */
+  youtubeId?: string | null
+  createdAt: number
+}
+
+export interface PassionIdea {
+  id: string
+  title: string
+  tag: PassionTag
+  /** Free-form markdown-ish notes scratch pad. */
+  notes: string
+  links: PassionLink[]
+  /** Attachment ids in `passionAttachments` table. */
+  attachmentIds: string[]
+  /** Default 45 (minutes) — duration of one think session for this idea. */
+  thinkMinutes: number
+  /** Total focused-thinking minutes accumulated across all sessions. */
+  thinkMinutesTotal: number
+  /** Number of completed think sessions. */
+  sessionsCompleted: number
+  createdAt: number
+  updatedAt: number
+}
+
+export interface PassionAttachment {
+  id: string
+  fileName: string
+  fileType: string
+  fileSize: number
+  data: Blob
+  createdAt: number
+}
+
+/** Backup-only serialized form (Blob → base64). */
+export interface SerializedPassionAttachment {
+  id: string
+  fileName: string
+  fileType: string
+  fileSize: number
+  base64: string
+  createdAt: number
+}
+
 export interface BackupPayload {
   schemaVersion: typeof SCHEMA_VERSION
   exportedAt: string
@@ -201,4 +263,6 @@ export interface BackupPayload {
   behavioralStories: BehavioralStory[]
   tasks: LifeTask[]
   resumeFiles?: SerializedResumeAttachment[]
+  passionIdeas?: PassionIdea[]
+  passionAttachments?: SerializedPassionAttachment[]
 }

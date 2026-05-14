@@ -4,6 +4,8 @@ import type {
   BehavioralStory,
   DsaProblem,
   LifeTask,
+  PassionAttachment,
+  PassionIdea,
   ResumeAttachment,
   SettingsRow,
   SystemDesignProblem,
@@ -30,6 +32,8 @@ export class ExecutionDB extends Dexie {
   behavioralStories!: Table<BehavioralStory, string>
   tasks!: Table<LifeTask, string>
   resumeFiles!: Table<ResumeAttachment, string>
+  passionIdeas!: Table<PassionIdea, string>
+  passionAttachments!: Table<PassionAttachment, string>
   settings!: Table<SettingsRow, string>
 
   constructor() {
@@ -84,6 +88,20 @@ export class ExecutionDB extends Dexie {
             if (!p.kind) p.kind = 'hld'
           })
       })
+
+    this.version(5).stores({
+      applications:
+        'id, date, company, status, resumeFileId, createdAt',
+      dsaProblems: 'id, date, topic, difficulty, createdAt',
+      systemDesignProblems:
+        'id, date, topic, kind, difficulty, createdAt',
+      behavioralStories: 'id, category, status, updatedAt',
+      tasks: 'id, priority, recurrence, createdAt',
+      resumeFiles: 'id, fileName, createdAt',
+      passionIdeas: 'id, tag, title, updatedAt, createdAt',
+      passionAttachments: 'id, fileName, createdAt',
+      settings: 'id',
+    })
   }
 }
 
