@@ -1,7 +1,11 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { addDays, format, startOfDay } from 'date-fns'
 import { useMemo, type FormEvent, type KeyboardEvent } from 'react'
-import { db } from '../db/database'
+import {
+  addDsaProblem,
+  deleteDsaById,
+  patchDsaFields,
+} from '../cloud/mutations'
+import { useDsaProblemsHybrid } from '../cloud/hybridData'
 import type {
   DsaDifficulty,
   DsaProblem,
@@ -12,12 +16,10 @@ import { dayKey } from '../lib/dates'
 import { newId } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
 
-const EMPTY_DSA: DsaProblem[] = []
 const HEAT_DAYS = 91
 
 export function DSAPage() {
-  const problemsRaw = useLiveQuery(() => db.dsaProblems.toArray(), [])
-  const problems = (problemsRaw ?? EMPTY_DSA) as DsaProblem[]
+  const problems = useDsaProblemsHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
 
   const byDay = useMemo(() => {
@@ -71,7 +73,7 @@ export function DSAPage() {
       minutes: Number(fd.get('minutes') ?? 0) || 0,
       createdAt: Date.now(),
     }
-    await db.dsaProblems.add(p)
+    await addDsaProblem(p)
     pushToast('save', 'Problem logged')
     e.currentTarget.reset()
   }
@@ -223,7 +225,7 @@ export function DSAPage() {
                       className="field font-mono text-xs"
                       value={p.date}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, { date: e.target.value })
+                        void patchDsaFields(p.id, { date: e.target.value })
                       }}
                     />
                   </td>
@@ -232,7 +234,7 @@ export function DSAPage() {
                       className="field"
                       value={p.title}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, { title: e.target.value })
+                        void patchDsaFields(p.id, { title: e.target.value })
                       }}
                     />
                   </td>
@@ -241,7 +243,7 @@ export function DSAPage() {
                       className="field text-xs"
                       value={p.topic}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, {
+                        void patchDsaFields(p.id, {
                           topic: e.target.value as DsaTopic,
                         })
                       }}
@@ -256,7 +258,7 @@ export function DSAPage() {
                       className="field text-xs"
                       value={p.difficulty}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, {
+                        void patchDsaFields(p.id, {
                           difficulty: e.target.value as DsaDifficulty,
                         })
                       }}
@@ -271,7 +273,7 @@ export function DSAPage() {
                       className="field text-xs"
                       value={p.confidence}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, {
+                        void patchDsaFields(p.id, {
                           confidence: Number(e.target.value) as 1 | 2 | 3 | 4 | 5,
                         })
                       }}
@@ -290,7 +292,7 @@ export function DSAPage() {
                       className="field font-mono text-xs"
                       value={p.minutes}
                       onChange={(e) => {
-                        void db.dsaProblems.update(p.id, {
+                        void patchDsaFields(p.id, {
                           minutes: Number(e.target.value) || 0,
                         })
                       }}
@@ -302,7 +304,7 @@ export function DSAPage() {
                       className="rounded border border-red-900/60 px-2 py-1 text-xs text-red-300"
                       onClick={() => {
                         if (!window.confirm('Delete this problem?')) return
-                        void db.dsaProblems.delete(p.id)
+                        void deleteDsaById(p.id)
                         pushToast('delete', 'Deleted')
                       }}
                     >

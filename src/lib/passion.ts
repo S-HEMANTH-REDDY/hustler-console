@@ -1,4 +1,6 @@
 import { db } from '../db/database'
+import { isCloudDataActiveSnapshot } from '../cloud/active'
+import * as repo from '../cloud/repository'
 import type {
   PassionAttachment,
   PassionIdea,
@@ -63,8 +65,13 @@ export async function attachPassionFile(file: File): Promise<string> {
       `File too large (${humanBytes(file.size)} > ${humanBytes(PASSION_MAX_BYTES)})`,
     )
   }
+  const id = newId()
+  if (isCloudDataActiveSnapshot()) {
+    await repo.uploadPassionAttachment(id, file)
+    return id
+  }
   const row: PassionAttachment = {
-    id: newId(),
+    id,
     fileName: file.name,
     fileType: file.type || 'application/octet-stream',
     fileSize: file.size,
@@ -76,7 +83,9 @@ export async function attachPassionFile(file: File): Promise<string> {
 }
 
 export async function downloadPassionFile(id: string): Promise<void> {
-  const r = await db.passionAttachments.get(id)
+  const r = isCloudDataActiveSnapshot()
+    ? await repo.getPassionAttachment(id)
+    : await db.passionAttachments.get(id)
   if (!r) return
   const url = URL.createObjectURL(r.data)
   const a = document.createElement('a')
@@ -89,7 +98,9 @@ export async function downloadPassionFile(id: string): Promise<void> {
 }
 
 export async function openPassionFileInNewTab(id: string): Promise<void> {
-  const r = await db.passionAttachments.get(id)
+  const r = isCloudDataActiveSnapshot()
+    ? await repo.getPassionAttachment(id)
+    : await db.passionAttachments.get(id)
   if (!r) return
   const url = URL.createObjectURL(r.data)
   const win = window.open(url, '_blank', 'noopener,noreferrer')
@@ -105,7 +116,18 @@ export async function openPassionFileInNewTab(id: string): Promise<void> {
 }
 
 export async function deletePassionFile(id: string): Promise<void> {
+  if (isCloudDataActiveSnapshot()) {
+    await repo.deletePassionAttachmentCloud(id).catch(() => undefined)
+    return
+  }
   await db.passionAttachments.delete(id).catch(() => undefined)
+}
+
+export async function getPassionAttachmentById(
+  id: string,
+): Promise<PassionAttachment | undefined> {
+  if (isCloudDataActiveSnapshot()) return repo.getPassionAttachment(id)
+  return db.passionAttachments.get(id)
 }
 
 /* ----------------------- YouTube URL handling ----------------------- */

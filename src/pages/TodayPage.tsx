@@ -1,16 +1,19 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { format } from 'date-fns'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { db, ensureDefaults } from '../db/database'
+import { patchTaskFields } from '../cloud/mutations'
+import {
+  useApplicationsHybrid,
+  useBehavioralStoriesHybrid,
+  useDsaProblemsHybrid,
+  useResumeFilesHybrid,
+  useSettingsRowHybrid,
+  useSystemDesignHybrid,
+  useTasksHybrid,
+} from '../cloud/hybridData'
 import type {
-  Application,
   ApplicationSource,
-  BehavioralStory,
-  DsaProblem,
-  LifeTask,
   ResumeAttachment,
-  SystemDesignProblem,
   TaskPriority,
   TaskRecurrence,
 } from '../db/types'
@@ -42,13 +45,6 @@ import { computePace } from '../lib/pace'
 import { cn } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
 
-const EMPTY_APPS: Application[] = []
-const EMPTY_DSA: DsaProblem[] = []
-const EMPTY_SD: SystemDesignProblem[] = []
-const EMPTY_STORIES: BehavioralStory[] = []
-const EMPTY_TASKS: LifeTask[] = []
-const EMPTY_RESUMES: ResumeAttachment[] = []
-
 function recurrenceShort(r: TaskRecurrence): string {
   switch (r) {
     case 'oneoff':
@@ -77,18 +73,13 @@ const SOURCE_COLORS: Record<ApplicationSource, string> = {
 export function TodayPage() {
   const tick = useIntervalTick(60_000)
   const secondTick = useSecondsTick()
-  const settings = useLiveQuery(() => ensureDefaults(), [])
-  const applications =
-    useLiveQuery(() => db.applications.toArray(), []) ?? EMPTY_APPS
-  const dsaProblems =
-    useLiveQuery(() => db.dsaProblems.toArray(), []) ?? EMPTY_DSA
-  const sysdesignProblems =
-    useLiveQuery(() => db.systemDesignProblems.toArray(), []) ?? EMPTY_SD
-  const stories =
-    useLiveQuery(() => db.behavioralStories.toArray(), []) ?? EMPTY_STORIES
-  const tasks = useLiveQuery(() => db.tasks.toArray(), []) ?? EMPTY_TASKS
-  const resumeRows =
-    useLiveQuery(() => db.resumeFiles.toArray(), []) ?? EMPTY_RESUMES
+  const settings = useSettingsRowHybrid()
+  const applications = useApplicationsHybrid()
+  const dsaProblems = useDsaProblemsHybrid()
+  const sysdesignProblems = useSystemDesignHybrid()
+  const stories = useBehavioralStoriesHybrid()
+  const tasks = useTasksHybrid()
+  const resumeRows = useResumeFilesHybrid()
   const resumeIndex = useMemo(() => {
     const m = new Map<string, ResumeAttachment>()
     for (const r of resumeRows) m.set(r.id, r)
@@ -541,7 +532,7 @@ export function TodayPage() {
                     checked={false}
                     onChange={(e) => {
                       if (e.target.checked) {
-                        void db.tasks.update(t.id, {
+                        void patchTaskFields(t.id, {
                           lastCompletedAt: dayKey(tick),
                         })
                         pushToast('save', 'Task cleared')

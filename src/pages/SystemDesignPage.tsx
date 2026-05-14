@@ -1,4 +1,3 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { addDays, format, startOfDay } from 'date-fns'
 import {
   useMemo,
@@ -6,7 +5,12 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react'
-import { db } from '../db/database'
+import {
+  addSystemDesign,
+  deleteSystemDesignById,
+  patchSystemDesignFields,
+} from '../cloud/mutations'
+import { useSystemDesignHybrid } from '../cloud/hybridData'
 import type {
   SystemDesignDifficulty,
   SystemDesignKind,
@@ -23,14 +27,12 @@ import { dayKey } from '../lib/dates'
 import { cn, newId } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
 
-const EMPTY_SD: SystemDesignProblem[] = []
 const HEAT_DAYS = 91
 
 type KindFilter = 'all' | SystemDesignKind
 
 export function SystemDesignPage() {
-  const raw = useLiveQuery(() => db.systemDesignProblems.toArray(), [])
-  const problems = (raw ?? EMPTY_SD) as SystemDesignProblem[]
+  const problems = useSystemDesignHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
   const [filter, setFilter] = useState<KindFilter>('all')
   const [formKind, setFormKind] = useState<SystemDesignKind>('hld')
@@ -127,7 +129,7 @@ export function SystemDesignPage() {
       notes: String(fd.get('notes') ?? '').trim(),
       createdAt: Date.now(),
     }
-    await db.systemDesignProblems.add(p)
+    await addSystemDesign(p)
     pushToast(
       'save',
       kind === 'hld' ? 'HLD problem logged' : 'LLD problem logged',
@@ -366,7 +368,7 @@ export function SystemDesignPage() {
                         className="field font-mono text-xs"
                         value={p.date}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             date: e.target.value,
                           })
                         }}
@@ -380,7 +382,7 @@ export function SystemDesignPage() {
                           const next = e.target
                             .value as SystemDesignKind
                           const opts = sdTopicsFor(next)
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             kind: next,
                             topic: opts.includes(p.topic)
                               ? p.topic
@@ -397,7 +399,7 @@ export function SystemDesignPage() {
                         className="field"
                         value={p.title}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             title: e.target.value,
                           })
                         }}
@@ -408,7 +410,7 @@ export function SystemDesignPage() {
                         className="field text-xs"
                         value={p.topic}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             topic: e.target.value as SystemDesignTopic,
                           })
                         }}
@@ -423,7 +425,7 @@ export function SystemDesignPage() {
                         className="field text-xs"
                         value={p.difficulty}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             difficulty: e.target
                               .value as SystemDesignDifficulty,
                           })
@@ -439,7 +441,7 @@ export function SystemDesignPage() {
                         className="field text-xs"
                         value={p.confidence}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             confidence: Number(e.target.value) as
                               | 1
                               | 2
@@ -463,7 +465,7 @@ export function SystemDesignPage() {
                         className="field font-mono text-xs"
                         value={p.minutes}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             minutes: Number(e.target.value) || 0,
                           })
                         }}
@@ -474,7 +476,7 @@ export function SystemDesignPage() {
                         className="field font-mono text-xs"
                         value={p.notes}
                         onChange={(e) => {
-                          void db.systemDesignProblems.update(p.id, {
+                          void patchSystemDesignFields(p.id, {
                             notes: e.target.value,
                           })
                         }}
@@ -486,7 +488,7 @@ export function SystemDesignPage() {
                         className="rounded border border-red-900/60 px-2 py-1 text-xs text-red-300"
                         onClick={() => {
                           if (!window.confirm('Delete this problem?')) return
-                          void db.systemDesignProblems.delete(p.id)
+                          void deleteSystemDesignById(p.id)
                           pushToast('delete', 'Deleted')
                         }}
                       >

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { CommandPalette } from './CommandPalette'
+import { CloudImportPrompt } from './CloudImportPrompt'
 import { Sidebar } from './Sidebar'
 import { ToastHost } from './ToastHost'
 import { TopBar } from './TopBar'
@@ -18,6 +19,7 @@ export function AppLayout() {
       </div>
       <ToastHost />
       <CommandPalette />
+      <CloudImportPrompt />
     </div>
   )
 }

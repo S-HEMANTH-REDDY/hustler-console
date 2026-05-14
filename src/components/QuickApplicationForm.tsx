@@ -1,8 +1,8 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import type { FormEvent, KeyboardEvent, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { db } from '../db/database'
+import { addApplication } from '../cloud/mutations'
+import { useApplicationsHybrid } from '../cloud/hybridData'
 import type {
   Application,
   ApplicationSource,
@@ -15,6 +15,7 @@ import { dayKey } from '../lib/dates'
 import { recentCompanies, recentResumes } from '../lib/insights'
 import {
   attachResumeFromFile,
+  getResume,
   humanBytes,
   RESUME_ACCEPT,
 } from '../lib/resume'
@@ -24,8 +25,6 @@ import {
   ResumeInlinePreview,
   ResumePreviewToolbar,
 } from './ResumePreview'
-
-const EMPTY: Application[] = []
 
 export function QuickApplicationForm() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -42,7 +41,7 @@ export function QuickApplicationForm() {
   } | null>(null)
   const [previewOpen, setPreviewOpen] = useState(true)
 
-  const apps = useLiveQuery(() => db.applications.toArray(), []) ?? EMPTY
+  const apps = useApplicationsHybrid()
   const companies = recentCompanies(apps as Application[], 12)
   const resumes = recentResumes(apps as Application[], 8)
 
@@ -91,14 +90,14 @@ export function QuickApplicationForm() {
       priority: (fd.get('priority') as TaskPriority) || 'mid',
       createdAt: Date.now(),
     }
-    await db.applications.add(app)
+    await addApplication(app)
     pushToast(
       'save',
       pickedFile ? `Logged ${company} · file attached` : `Logged ${company}`,
     )
     let attachment: ResumeAttachment | null = null
     if (resumeFileId) {
-      attachment = (await db.resumeFiles.get(resumeFileId)) ?? null
+      attachment = (await getResume(resumeFileId)) ?? null
     }
     setLastLogged({ app, attachment })
     setPreviewOpen(Boolean(attachment))

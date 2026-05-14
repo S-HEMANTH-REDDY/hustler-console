@@ -1,17 +1,18 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, type FormEvent } from 'react'
-import { db } from '../db/database'
+import {
+  addTask as createTaskRecord,
+  deleteTaskById,
+  patchTaskFields,
+} from '../cloud/mutations'
+import { useTasksHybrid } from '../cloud/hybridData'
 import type { LifeTask, TaskPriority, TaskRecurrence } from '../db/types'
 import { dayKey, isRecurrenceComplete } from '../lib/dates'
 import { useIntervalTick } from '../hooks/useIntervalTick'
 import { useUiStore } from '../store/uiStore'
 import { cn, newId } from '../lib/utils'
 
-const EMPTY_TASKS: LifeTask[] = []
-
 export function TasksPage() {
-  const raw = useLiveQuery(() => db.tasks.toArray(), [])
-  const tasks = (raw ?? EMPTY_TASKS) as LifeTask[]
+  const tasks = useTasksHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
   const today = useIntervalTick(60_000)
 
@@ -44,7 +45,7 @@ export function TasksPage() {
       lastCompletedAt: null,
       createdAt: Date.now(),
     }
-    await db.tasks.add(t)
+    await createTaskRecord(t)
     pushToast('save', 'Task added')
     e.currentTarget.reset()
   }
@@ -120,7 +121,7 @@ export function TasksPage() {
                 checked={done}
                 onChange={(e) => {
                   const checked = e.target.checked
-                  void db.tasks.update(t.id, {
+                  void patchTaskFields(t.id, {
                     lastCompletedAt: checked ? dayKey(today) : null,
                   })
                   pushToast('save', checked ? 'Marked done' : 'Reopened')
@@ -133,7 +134,7 @@ export function TasksPage() {
                 )}
                 defaultValue={t.title}
                 onBlur={(e) => {
-                  void db.tasks.update(t.id, { title: e.target.value })
+                  void patchTaskFields(t.id, { title: e.target.value })
                   pushToast('save', 'Saved')
                 }}
               />
@@ -141,7 +142,7 @@ export function TasksPage() {
                 className="field w-24 border-zinc-800 bg-transparent text-xs"
                 value={t.priority}
                 onChange={(e) => {
-                  void db.tasks.update(t.id, {
+                  void patchTaskFields(t.id, {
                     priority: e.target.value as TaskPriority,
                   })
                   pushToast('save', 'Saved')
@@ -155,7 +156,7 @@ export function TasksPage() {
                 className="field w-28 border-zinc-800 bg-transparent text-xs"
                 value={t.recurrence}
                 onChange={(e) => {
-                  void db.tasks.update(t.id, {
+                  void patchTaskFields(t.id, {
                     recurrence: e.target.value as TaskRecurrence,
                   })
                   pushToast('save', 'Saved')
@@ -171,7 +172,7 @@ export function TasksPage() {
                 className="text-xs text-red-400/80 hover:text-red-300"
                 onClick={() => {
                   if (!window.confirm('Delete task?')) return
-                  void db.tasks.delete(t.id)
+                  void deleteTaskById(t.id)
                   pushToast('delete', 'Deleted')
                 }}
               >

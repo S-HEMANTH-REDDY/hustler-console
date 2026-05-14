@@ -1,4 +1,3 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import {
   type ChangeEvent,
   type FormEvent,
@@ -7,7 +6,14 @@ import {
   useRef,
   useState,
 } from 'react'
-import { db } from '../db/database'
+import {
+  addPassionIdeaRow,
+  creditPassionThinkSession,
+  deletePassionIdeaCascade,
+  fetchPassionIdeaRow,
+  patchPassionIdeaRow,
+} from '../cloud/mutations'
+import { usePassionAttachmentsHybrid, usePassionIdeasHybrid } from '../cloud/hybridData'
 import type {
   PassionAttachment,
   PassionIdea,
@@ -22,6 +28,7 @@ import {
   attachPassionFile,
   deletePassionFile,
   downloadPassionFile,
+  getPassionAttachmentById,
   humanBytes,
   isYoutubeLink,
   linkHost,
@@ -40,17 +47,9 @@ import {
 } from '../store/timerStore'
 import { useUiStore } from '../store/uiStore'
 
-const EMPTY_IDEAS: PassionIdea[] = []
-const EMPTY_ATTACHMENTS: PassionAttachment[] = []
-
 export function PassionWorkspace() {
-  const ideas =
-    useLiveQuery(
-      () => db.passionIdeas.orderBy('updatedAt').reverse().toArray(),
-      [],
-    ) ?? EMPTY_IDEAS
-  const attachments =
-    useLiveQuery(() => db.passionAttachments.toArray(), []) ?? EMPTY_ATTACHMENTS
+  const ideas = usePassionIdeasHybrid()
+  const attachments = usePassionAttachmentsHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
   const think = useTimerStore((s) => s.think)
   const thinkSetIdea = useTimerStore((s) => s.thinkSetIdea)
@@ -90,17 +89,17 @@ export function PassionWorkspace() {
 
   async function createIdea() {
     const idea = newIdea({ title: 'New idea' })
-    await db.passionIdeas.add(idea)
+    await addPassionIdeaRow(idea)
     setActiveId(idea.id)
     pushToast('save', 'Idea created · start thinking')
   }
 
   async function patch(id: string, partial: Partial<PassionIdea>) {
-    await db.passionIdeas.update(id, { ...partial, updatedAt: Date.now() })
+    await patchPassionIdeaRow(id, partial)
   }
 
   async function removeIdea(id: string) {
-    const idea = await db.passionIdeas.get(id)
+    const idea = await fetchPassionIdeaRow(id)
     if (!idea) return
     if (
       !window.confirm(
@@ -110,10 +109,7 @@ export function PassionWorkspace() {
       return
     }
     // Cascade-delete attachments owned by this idea.
-    for (const aid of idea.attachmentIds) {
-      await deletePassionFile(aid)
-    }
-    await db.passionIdeas.delete(id)
+    await deletePassionIdeaCascade(id)
     pushToast('delete', 'Idea deleted')
   }
 
@@ -292,17 +288,7 @@ function ThinkTimerPanel(props: {
     const { idea, minutes } = complete()
     // Credit the idea atomically inside the DB.
     if (idea) {
-      void db.passionIdeas
-        .get(idea)
-        .then((row) => {
-          if (!row) return
-          return db.passionIdeas.update(idea, {
-            sessionsCompleted: row.sessionsCompleted + 1,
-            thinkMinutesTotal: row.thinkMinutesTotal + minutes,
-            updatedAt: Date.now(),
-          })
-        })
-        .catch(() => undefined)
+      void creditPassionThinkSession(idea, minutes).catch(() => undefined)
     }
     props.onComplete('save', `Think session complete · ${minutes}m logged`)
     try {
@@ -825,9 +811,24 @@ function AttachmentRow(props: {
 
   useEffect(() => {
     if (!props.expanded) return
-    const u = URL.createObjectURL(attachment.data)
-    setUrl(u)
-    return () => URL.revokeObjectURL(u)
+    let cancelled = false
+    let objectUrl: string | null = null
+    async function resolve() {
+      let blob = attachment.data
+      if (blob.size === 0) {
+        const full = await getPassionAttachmentById(attachment.id)
+        if (cancelled || !full) return
+        blob = full.data
+      }
+      objectUrl = URL.createObjectURL(blob)
+      setUrl(objectUrl)
+    }
+    void resolve()
+    return () => {
+      cancelled = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+      setUrl(null)
+    }
   }, [props.expanded, attachment.id, attachment.data])
 
   const lower = attachment.fileName.toLowerCase()

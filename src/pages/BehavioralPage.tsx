@@ -1,6 +1,10 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, useState, type FormEvent } from 'react'
-import { db } from '../db/database'
+import {
+  addBehavioralStory,
+  deleteBehavioralById,
+  patchBehavioralFields,
+} from '../cloud/mutations'
+import { useBehavioralStoriesHybrid } from '../cloud/hybridData'
 import type {
   BehavioralCategory,
   BehavioralStatus,
@@ -10,11 +14,8 @@ import { BEHAVIORAL_CATEGORIES } from '../lib/constants'
 import { cn, newId } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
 
-const EMPTY_STORIES: BehavioralStory[] = []
-
 export function BehavioralPage() {
-  const raw = useLiveQuery(() => db.behavioralStories.toArray(), [])
-  const stories = (raw ?? EMPTY_STORIES) as BehavioralStory[]
+  const stories = useBehavioralStoriesHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
   const [openId, setOpenId] = useState<string | null>(null)
 
@@ -52,7 +53,7 @@ export function BehavioralPage() {
       result: '',
       updatedAt: Date.now(),
     }
-    await db.behavioralStories.add(s)
+    await addBehavioralStory(s)
     pushToast('save', 'Story added')
     e.currentTarget.reset()
   }
@@ -175,7 +176,7 @@ export function BehavioralPage() {
                     className="field min-w-[10rem] flex-[2] text-sm"
                     defaultValue={s.title}
                     onBlur={(e) => {
-                      void db.behavioralStories.update(s.id, {
+                      void patchBehavioralFields(s.id, {
                         title: e.target.value,
                         updatedAt: Date.now(),
                       })
@@ -186,7 +187,7 @@ export function BehavioralPage() {
                     className="field w-40 text-xs"
                     value={s.category}
                     onChange={(e) => {
-                      void db.behavioralStories.update(s.id, {
+                      void patchBehavioralFields(s.id, {
                         category: e.target.value as BehavioralCategory,
                         updatedAt: Date.now(),
                       })
@@ -201,7 +202,7 @@ export function BehavioralPage() {
                     className="field w-32 text-xs"
                     value={s.status}
                     onChange={(e) => {
-                      void db.behavioralStories.update(s.id, {
+                      void patchBehavioralFields(s.id, {
                         status: e.target.value as BehavioralStatus,
                         updatedAt: Date.now(),
                       })
@@ -216,7 +217,7 @@ export function BehavioralPage() {
                     className="field w-24 text-xs"
                     value={s.confidence}
                     onChange={(e) => {
-                      void db.behavioralStories.update(s.id, {
+                      void patchBehavioralFields(s.id, {
                         confidence: Number(e.target.value) as 1 | 2 | 3 | 4 | 5,
                         updatedAt: Date.now(),
                       })
@@ -234,7 +235,7 @@ export function BehavioralPage() {
                     className="rounded border border-red-900/50 px-2 py-1 text-xs text-red-300"
                     onClick={() => {
                       if (!window.confirm('Delete story?')) return
-                      void db.behavioralStories.delete(s.id)
+                      void deleteBehavioralById(s.id)
                       pushToast('delete', 'Deleted')
                     }}
                   >
@@ -247,7 +248,7 @@ export function BehavioralPage() {
                       label="Situation"
                       value={s.situation}
                       onCommit={(v) =>
-                        db.behavioralStories.update(s.id, {
+                        patchBehavioralFields(s.id, {
                           situation: v,
                           updatedAt: Date.now(),
                         })
@@ -258,7 +259,7 @@ export function BehavioralPage() {
                       label="Task"
                       value={s.task}
                       onCommit={(v) =>
-                        db.behavioralStories.update(s.id, {
+                        patchBehavioralFields(s.id, {
                           task: v,
                           updatedAt: Date.now(),
                         })
@@ -269,7 +270,7 @@ export function BehavioralPage() {
                       label="Action"
                       value={s.action}
                       onCommit={(v) =>
-                        db.behavioralStories.update(s.id, {
+                        patchBehavioralFields(s.id, {
                           action: v,
                           updatedAt: Date.now(),
                         })
@@ -280,7 +281,7 @@ export function BehavioralPage() {
                       label="Result"
                       value={s.result}
                       onCommit={(v) =>
-                        db.behavioralStories.update(s.id, {
+                        patchBehavioralFields(s.id, {
                           result: v,
                           updatedAt: Date.now(),
                         })

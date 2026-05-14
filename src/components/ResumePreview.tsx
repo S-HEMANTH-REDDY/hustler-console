@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { ResumeAttachment } from '../db/types'
-import { downloadResume, humanBytes, openResumeInNewTab } from '../lib/resume'
+import { downloadResume, getResume, humanBytes, openResumeInNewTab } from '../lib/resume'
 import { cn } from '../lib/utils'
 
 export function ResumePreviewToolbar(props: {
@@ -63,10 +63,22 @@ export function ResumeInlinePreview(props: {
   const [url, setUrl] = useState<string | null>(null)
 
   useEffect(() => {
-    const u = URL.createObjectURL(attachment.data)
-    setUrl(u)
+    let cancelled = false
+    let objectUrl: string | null = null
+    async function resolve() {
+      let blob = attachment.data
+      if (blob.size === 0) {
+        const full = await getResume(attachment.id)
+        if (cancelled || !full) return
+        blob = full.data
+      }
+      objectUrl = URL.createObjectURL(blob)
+      setUrl(objectUrl)
+    }
+    void resolve()
     return () => {
-      URL.revokeObjectURL(u)
+      cancelled = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
     }
   }, [attachment.id, attachment.data])
 

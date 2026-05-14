@@ -1,6 +1,12 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { Fragment, useMemo, useRef, useState } from 'react'
-import { db } from '../db/database'
+import {
+  deleteApplicationAndResume,
+  patchApplicationFields,
+} from '../cloud/mutations'
+import {
+  useApplicationsHybrid,
+  useResumeFilesHybrid,
+} from '../cloud/hybridData'
 import { QuickApplicationForm } from '../components/QuickApplicationForm'
 import type {
   Application,
@@ -28,21 +34,16 @@ import { useUiStore } from '../store/uiStore'
 import { ResumeInlinePreview } from '../components/ResumePreview'
 
 const EMPTY_APPS: Application[] = []
-const EMPTY_RESUMES: ResumeAttachment[] = []
 
 export function ApplicationsPage() {
-  const raw = useLiveQuery(
-    () => db.applications.orderBy('createdAt').reverse().toArray(),
-    [],
-  )
-  const resumeRows =
-    useLiveQuery(() => db.resumeFiles.toArray(), []) ?? EMPTY_RESUMES
+  const raw = useApplicationsHybrid('byCreated')
+  const resumeRows = useResumeFilesHybrid()
   const resumeIndex = useMemo(() => {
     const m = new Map<string, ResumeAttachment>()
     for (const r of resumeRows) m.set(r.id, r)
     return m
   }, [resumeRows])
-  const rows = raw ?? EMPTY_APPS
+  const rows = raw.length ? raw : EMPTY_APPS
   const [q, setQ] = useState('')
   const [statusFilter, setStatusFilter] = useState<ApplicationStatus | 'all'>(
     'all',
@@ -101,16 +102,12 @@ export function ApplicationsPage() {
   }, [rows])
 
   async function patch(id: string, partial: Partial<Application>) {
-    await db.applications.update(id, partial)
+    await patchApplicationFields(id, partial)
   }
 
   async function remove(id: string) {
     if (!window.confirm('Delete this APS row?')) return
-    const row = await db.applications.get(id)
-    if (row?.resumeFileId) {
-      await db.resumeFiles.delete(row.resumeFileId).catch(() => undefined)
-    }
-    await db.applications.delete(id)
+    await deleteApplicationAndResume(id)
     pushToast('delete', 'Deleted')
   }
 

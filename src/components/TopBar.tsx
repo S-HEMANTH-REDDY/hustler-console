@@ -1,8 +1,6 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { format } from 'date-fns'
 import { useEffect, useRef, useState } from 'react'
-import { db, ensureDefaults } from '../db/database'
-import type { Application } from '../db/types'
+import { useApplicationsHybrid, useSettingsRowHybrid } from '../cloud/hybridData'
 import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
 import {
   computeApplicationStreak,
@@ -20,14 +18,11 @@ import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
 import { MobileHeaderToggle } from './Sidebar'
 
-const EMPTY_APPS: Application[] = []
-
 export function TopBar() {
   const tick = useIntervalTick(60_000)
   const secondTick = useSecondsTick()
-  const settings = useLiveQuery(() => ensureDefaults(), [])
-  const rawApps = useLiveQuery(() => db.applications.toArray(), [])
-  const applications = rawApps ?? EMPTY_APPS
+  const settings = useSettingsRowHybrid()
+  const applications = useApplicationsHybrid()
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen)
 
   const dateStr = format(tick, 'EEE MMM d')

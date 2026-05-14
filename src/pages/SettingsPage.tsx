@@ -1,13 +1,13 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
-import { db, ensureDefaults } from '../db/database'
-import { exportBackup, importBackup, resetAllData } from '../db/backup'
+import { useSettingsRowHybrid } from '../cloud/hybridData'
+import { persistSettings, resetAllDataEverywhere } from '../cloud/mutations'
+import { exportBackup, importBackup } from '../db/backup'
 import { SCHEMA_VERSION, type SettingsRow } from '../db/types'
 import { recordBackupNow } from '../lib/insights'
 import { useUiStore } from '../store/uiStore'
 
 export function SettingsPage() {
-  const stored = useLiveQuery(() => ensureDefaults(), [])
+  const stored = useSettingsRowHybrid()
 
   if (!stored) {
     return <div className="text-sm text-zinc-400">Loading settings…</div>
@@ -26,7 +26,7 @@ function SettingsEditor(props: { settings: SettingsRow }) {
       return
     }
     void (async () => {
-      await db.settings.put({
+      await persistSettings({
         ...draft,
         id: 'default',
         updatedAt: Date.now(),
@@ -63,7 +63,7 @@ function SettingsEditor(props: { settings: SettingsRow }) {
   async function onReset() {
     const ok = window.confirm('Delete ALL local data? This cannot be undone.')
     if (!ok) return
-    await resetAllData()
+    await resetAllDataEverywhere()
     pushToast('reset', 'Storage cleared')
   }
 

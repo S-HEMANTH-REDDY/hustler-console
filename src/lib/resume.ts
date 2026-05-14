@@ -1,3 +1,5 @@
+import * as repo from '../cloud/repository'
+import { isCloudDataActiveSnapshot } from '../cloud/active'
 import { db } from '../db/database'
 import type {
   ResumeAttachment,
@@ -27,8 +29,13 @@ export async function attachResumeFromFile(file: File): Promise<string> {
       `File too large (${humanBytes(file.size)} > ${humanBytes(RESUME_MAX_BYTES)})`,
     )
   }
+  const id = newId()
+  if (isCloudDataActiveSnapshot()) {
+    await repo.uploadResumeFile(id, file)
+    return id
+  }
   const row: ResumeAttachment = {
-    id: newId(),
+    id,
     fileName: file.name,
     fileType: file.type || 'application/octet-stream',
     fileSize: file.size,
@@ -42,6 +49,7 @@ export async function attachResumeFromFile(file: File): Promise<string> {
 export async function getResume(
   id: string,
 ): Promise<ResumeAttachment | undefined> {
+  if (isCloudDataActiveSnapshot()) return repo.getResumeAttachment(id)
   return db.resumeFiles.get(id)
 }
 
@@ -79,6 +87,17 @@ export async function replaceResume(
   appId: string,
   file: File,
 ): Promise<string> {
+  if (isCloudDataActiveSnapshot()) {
+    const app = await repo.fetchApplicationById(appId)
+    if (!app) throw new Error('Application not found')
+    if (app.resumeFileId) {
+      await repo.deleteResumeFileRecord(app.resumeFileId).catch(() => undefined)
+    }
+    const id = newId()
+    await repo.uploadResumeFile(id, file)
+    await repo.patchApplication(appId, { resumeFileId: id })
+    return id
+  }
   const app = await db.applications.get(appId)
   if (!app) throw new Error('Application not found')
   if (app.resumeFileId) {
@@ -90,6 +109,13 @@ export async function replaceResume(
 }
 
 export async function detachResume(appId: string): Promise<void> {
+  if (isCloudDataActiveSnapshot()) {
+    const app = await repo.fetchApplicationById(appId)
+    if (!app?.resumeFileId) return
+    await repo.deleteResumeFileRecord(app.resumeFileId).catch(() => undefined)
+    await repo.patchApplication(appId, { resumeFileId: null })
+    return
+  }
   const app = await db.applications.get(appId)
   if (!app?.resumeFileId) return
   await db.resumeFiles.delete(app.resumeFileId).catch(() => undefined)
@@ -100,6 +126,10 @@ export async function deleteOrphanResume(
   fileId: string | null | undefined,
 ): Promise<void> {
   if (!fileId) return
+  if (isCloudDataActiveSnapshot()) {
+    await repo.deleteResumeFileRecord(fileId).catch(() => undefined)
+    return
+  }
   await db.resumeFiles.delete(fileId).catch(() => undefined)
 }
 
