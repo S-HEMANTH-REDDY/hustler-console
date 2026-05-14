@@ -37,7 +37,7 @@ export function Sidebar() {
             >
               Hustler
             </span>
-            <span className="font-mono text-xs text-zinc-400">v1</span>
+            <span className="font-mono text-xs text-zinc-400">v3</span>
           </div>
         </div>
         <nav className="flex-1 overflow-y-auto p-2">
