@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { format } from 'date-fns'
+import { useEffect, useRef, useState } from 'react'
 import { db, ensureDefaults } from '../db/database'
 import type { Application } from '../db/types'
 import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
@@ -15,6 +16,7 @@ import {
   trendStats,
 } from '../lib/insights'
 import { cn } from '../lib/utils'
+import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
 import { MobileHeaderToggle } from './Sidebar'
 
@@ -102,6 +104,8 @@ export function TopBar() {
               ⌘K
             </kbd>
           </button>
+
+          <UserChip />
         </div>
       </div>
       {(backupStale || noBackup) && (
@@ -121,6 +125,78 @@ export function TopBar() {
         </div>
       )}
     </header>
+  )
+}
+
+function UserChip() {
+  const status = useAuthStore((s) => s.status)
+  const user = useAuthStore((s) => s.user)
+  const signOut = useAuthStore((s) => s.signOut)
+  const pushToast = useUiStore((s) => s.pushToast)
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function onDoc(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    window.addEventListener('mousedown', onDoc)
+    return () => window.removeEventListener('mousedown', onDoc)
+  }, [open])
+
+  if (status !== 'authed' || !user) return null
+
+  const email = user.email ?? 'signed in'
+  const initial = (email.match(/[a-z0-9]/i)?.[0] ?? '?').toUpperCase()
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-2 rounded-full border border-[#3d4150] bg-[#262934] py-1 pl-1 pr-3 text-xs text-zinc-200 transition-colors hover:border-zinc-700 hover:bg-[#2c2f3a]"
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <span
+          aria-hidden
+          className="flex h-6 w-6 items-center justify-center rounded-full bg-lime-500/20 font-mono text-xs font-semibold text-lime-200 ring-1 ring-lime-500/40"
+        >
+          {initial}
+        </span>
+        <span className="hidden max-w-[10rem] truncate font-mono sm:inline">
+          {email}
+        </span>
+      </button>
+      {open ? (
+        <div
+          role="menu"
+          className="absolute right-0 mt-2 w-60 overflow-hidden rounded-md border border-[#3d4150] bg-[#20232c] shadow-2xl"
+        >
+          <div className="border-b border-[#3d4150] px-3 py-2">
+            <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+              Signed in as
+            </p>
+            <p className="truncate text-sm text-zinc-100">{email}</p>
+          </div>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={async () => {
+              setOpen(false)
+              await signOut()
+              pushToast('info', 'Signed out')
+            }}
+            className="block w-full px-3 py-2 text-left text-sm text-zinc-200 hover:bg-[#262934]"
+          >
+            Sign out
+          </button>
+        </div>
+      ) : null}
+    </div>
   )
 }
 

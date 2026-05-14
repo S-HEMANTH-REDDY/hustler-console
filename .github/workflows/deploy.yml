@@ -27,6 +27,12 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: '1'
+          # Multi-user mode env vars. Leave the repo secrets blank to ship
+          # the local-only build; set them under
+          # Settings → Secrets and variables → Actions → Repository secrets
+          # to enable Supabase auth + cloud data on the deployed site.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - run: cp dist/index.html dist/404.html
       - run: touch dist/.nojekyll
       - uses: actions/upload-pages-artifact@v3
