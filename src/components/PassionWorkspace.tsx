@@ -1,6 +1,9 @@
 import {
+  Component,
   type ChangeEvent,
+  type ErrorInfo,
   type FormEvent,
+  type ReactNode,
   useEffect,
   useMemo,
   useRef,
@@ -47,6 +50,34 @@ import {
   type ThinkTimerPersist,
 } from '../store/timerStore'
 import { useUiStore } from '../store/uiStore'
+
+class PassionScheduleErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false }
+
+  static getDerivedStateFromError(): { hasError: boolean } {
+    return { hasError: true }
+  }
+
+  componentDidCatch(err: Error, info: ErrorInfo) {
+    console.error('PassionSchedule', err, info.componentStack)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+          Your timetable could not load (browser storage or sync issue).
+          Ideas and timers below still work; try a refresh, or clear site data if
+          this persists.
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 export function PassionWorkspace() {
   const ideas = usePassionIdeasHybrid()
@@ -144,7 +175,9 @@ export function PassionWorkspace() {
         </button>
       </header>
 
-      <PassionScheduleSection />
+      <PassionScheduleErrorBoundary>
+        <PassionScheduleSection />
+      </PassionScheduleErrorBoundary>
 
       <IdeaTabs
         ideas={ideas}

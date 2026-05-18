@@ -27,6 +27,7 @@ import {
   fetchTasks,
 } from './repository'
 import { useCloudSyncTick } from './syncBus'
+import { createEmptyPassionScheduleDoc } from '../lib/passionScheduleDoc'
 
 const EMPTY_APPS: Application[] = []
 const EMPTY_DSA: DsaProblem[] = []
@@ -258,7 +259,11 @@ export function usePassionAttachmentsHybrid(): PassionAttachment[] {
 export function usePassionScheduleHybrid(): PassionScheduleDoc | undefined {
   const cloud = useCloudDataMode()
   const bump = useCloudSyncTick()
-  const local = useLiveQuery(() => ensurePassionScheduleDoc(), [])
+  const local = useLiveQuery(
+    () =>
+      ensurePassionScheduleDoc().catch(() => createEmptyPassionScheduleDoc()),
+    [],
+  )
   const [remote, setRemote] = useState<PassionScheduleDoc | undefined>()
   useEffect(() => {
     if (!cloud) {
@@ -271,7 +276,8 @@ export function usePassionScheduleHybrid(): PassionScheduleDoc | undefined {
         if (!cancelled) setRemote(doc)
       })
       .catch(() => {
-        if (!cancelled) setRemote(undefined)
+        // Missing migration, network, or RLS — still show an empty editable grid
+        if (!cancelled) setRemote(createEmptyPassionScheduleDoc())
       })
     return () => {
       cancelled = true

@@ -13,7 +13,7 @@ export function AppLayout() {
       <Sidebar />
       <div className="flex min-h-full flex-1 flex-col md:pl-56">
         <TopBar />
-        <main className="flex-1 p-4 md:p-6">
+        <main className="min-h-0 flex-1 p-4 md:p-6">
           <Outlet />
         </main>
       </div>

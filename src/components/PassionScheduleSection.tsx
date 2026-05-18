@@ -22,7 +22,7 @@ export function PassionScheduleSection() {
   useEffect(() => {
     if (!draft) return
     const t = window.setTimeout(() => {
-      void persistPassionSchedule(draft)
+      void persistPassionSchedule(draft).catch(() => undefined)
     }, 650)
     return () => window.clearTimeout(t)
   }, [draft])
