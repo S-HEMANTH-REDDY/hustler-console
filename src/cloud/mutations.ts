@@ -5,6 +5,7 @@ import type {
   DsaProblem,
   LifeTask,
   PassionIdea,
+  PassionScheduleDoc,
   SettingsRow,
   SystemDesignProblem,
 } from '../db/types'
@@ -152,6 +153,18 @@ export async function deletePassionIdeaCascade(id: string): Promise<void> {
   for (const aid of idea.attachmentIds) await deletePassionFile(aid)
   if (isCloudDataActiveSnapshot()) await repo.deletePassionIdea(id)
   else await db.passionIdeas.delete(id)
+}
+
+export async function persistPassionSchedule(
+  doc: PassionScheduleDoc,
+): Promise<void> {
+  const next: PassionScheduleDoc = {
+    ...doc,
+    id: 'default',
+    updatedAt: Date.now(),
+  }
+  if (isCloudDataActiveSnapshot()) await repo.upsertPassionSchedule(next)
+  else await db.passionSchedule.put(next)
 }
 
 export async function creditPassionThinkSession(

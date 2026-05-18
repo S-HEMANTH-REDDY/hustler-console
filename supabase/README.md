@@ -33,6 +33,7 @@ The simplest way to apply it:
 1. Supabase Dashboard → **SQL** → **New query**.
 2. Paste the entire contents of `00001_init.sql`.
 3. Click **Run**. It's idempotent — safe to re-run if you tweak it.
+4. Run [`migrations/00002_passion_schedule.sql`](./migrations/00002_passion_schedule.sql) the same way **after** `00001_init.sql` (adds the private per-user Passion timetable table).
 
 If you prefer the CLI:
 
@@ -46,7 +47,8 @@ After it runs you should see in the dashboard:
 
 - **Database → Tables**: `profiles`, `settings`, `applications`,
   `dsa_problems`, `system_design_problems`, `behavioral_stories`, `tasks`,
-  `passion_ideas`, `passion_attachments`, `resume_files`.
+  `passion_ideas`, `passion_attachments`, `resume_files`, and (after
+  `00002_passion_schedule.sql`) `passion_schedule`.
 - **Database → Policies**: 4 policies per table (`*_select`, `*_insert`,
   `*_update`, `*_delete`).
 - **Storage → Buckets**: `resumes` and `passion`, both private.

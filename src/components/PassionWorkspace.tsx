@@ -21,6 +21,7 @@ import type {
   PassionTag,
 } from '../db/types'
 import { useIntervalTick } from '../hooks/useIntervalTick'
+import { PassionScheduleSection } from './PassionScheduleSection'
 import {
   PASSION_ACCEPT,
   PASSION_TAGS,
@@ -142,6 +143,8 @@ export function PassionWorkspace() {
           + New idea
         </button>
       </header>
+
+      <PassionScheduleSection />
 
       <IdeaTabs
         ideas={ideas}

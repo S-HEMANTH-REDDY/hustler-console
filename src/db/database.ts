@@ -1,4 +1,5 @@
 import Dexie, { type Table } from 'dexie'
+import { createEmptyPassionScheduleDoc, normalizePassionScheduleDoc } from '../lib/passionScheduleDoc'
 import type {
   Application,
   BehavioralStory,
@@ -6,6 +7,7 @@ import type {
   LifeTask,
   PassionAttachment,
   PassionIdea,
+  PassionScheduleDoc,
   ResumeAttachment,
   SettingsRow,
   SystemDesignProblem,
@@ -34,6 +36,7 @@ export class ExecutionDB extends Dexie {
   resumeFiles!: Table<ResumeAttachment, string>
   passionIdeas!: Table<PassionIdea, string>
   passionAttachments!: Table<PassionAttachment, string>
+  passionSchedule!: Table<PassionScheduleDoc, string>
   settings!: Table<SettingsRow, string>
 
   constructor() {
@@ -102,6 +105,21 @@ export class ExecutionDB extends Dexie {
       passionAttachments: 'id, fileName, createdAt',
       settings: 'id',
     })
+
+    this.version(6).stores({
+      applications:
+        'id, date, company, status, resumeFileId, createdAt',
+      dsaProblems: 'id, date, topic, difficulty, createdAt',
+      systemDesignProblems:
+        'id, date, topic, kind, difficulty, createdAt',
+      behavioralStories: 'id, category, status, updatedAt',
+      tasks: 'id, priority, recurrence, createdAt',
+      resumeFiles: 'id, fileName, createdAt',
+      passionIdeas: 'id, tag, title, updatedAt, createdAt',
+      passionAttachments: 'id, fileName, createdAt',
+      passionSchedule: 'id, updatedAt',
+      settings: 'id',
+    })
   }
 }
 
@@ -138,4 +156,14 @@ export async function ensureDefaults(): Promise<SettingsRow> {
   }
 
   return existing
+}
+
+export async function ensurePassionScheduleDoc(): Promise<PassionScheduleDoc> {
+  const existing = await db.passionSchedule.get('default')
+  if (!existing) {
+    const empty = createEmptyPassionScheduleDoc()
+    await db.passionSchedule.put(empty)
+    return empty
+  }
+  return normalizePassionScheduleDoc(existing)
 }

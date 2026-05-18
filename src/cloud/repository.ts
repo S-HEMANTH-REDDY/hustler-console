@@ -7,10 +7,15 @@ import type {
   PassionAttachment,
   PassionIdea,
   PassionLink,
+  PassionScheduleDoc,
   ResumeAttachment,
   SettingsRow,
   SystemDesignProblem,
 } from '../db/types'
+import {
+  createEmptyPassionScheduleDoc,
+  normalizePassionScheduleDoc,
+} from '../lib/passionScheduleDoc'
 import { DEFAULT_SETTINGS } from '../db/database'
 import { bumpCloudSync } from './syncBus'
 
@@ -827,6 +832,41 @@ export async function deletePassionAttachmentCloud(id: string): Promise<void> {
   bumpCloudSync()
 }
 
+/** Per-user Passion timetable · empty template until the user saves (RLS hides others). */
+export async function fetchPassionSchedule(): Promise<PassionScheduleDoc> {
+  const userId = await requireUser()
+  const { data, error } = await sb()
+    .from('passion_schedule')
+    .select('daily_json, weekend_json, updated_at')
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (error) throw error
+  if (!data) return createEmptyPassionScheduleDoc()
+  return normalizePassionScheduleDoc({
+    id: 'default',
+    dailyRows: data.daily_json,
+    weekendRows: data.weekend_json,
+    updatedAt: tsFromIso(data.updated_at as string),
+  })
+}
+
+export async function upsertPassionSchedule(doc: PassionScheduleDoc): Promise<void> {
+  const userId = await requireUser()
+  const { error } = await sb()
+    .from('passion_schedule')
+    .upsert(
+      {
+        user_id: userId,
+        daily_json: doc.dailyRows,
+        weekend_json: doc.weekendRows,
+        updated_at: isoFromMs(doc.updatedAt),
+      },
+      { onConflict: 'user_id' },
+    )
+  if (error) throw error
+  bumpCloudSync()
+}
+
 export async function deleteAllUserCloudData(): Promise<void> {
   const userId = await requireUser()
 
@@ -849,6 +889,7 @@ export async function deleteAllUserCloudData(): Promise<void> {
   await sb().from('passion_ideas').delete().eq('user_id', userId)
   await sb().from('resume_files').delete().eq('user_id', userId)
   await sb().from('passion_attachments').delete().eq('user_id', userId)
+  await sb().from('passion_schedule').delete().eq('user_id', userId)
   await sb().from('settings').delete().eq('user_id', userId)
   bumpCloudSync()
 }

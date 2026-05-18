@@ -1,4 +1,4 @@
-import { db, DEFAULT_SETTINGS, ensureDefaults } from './database'
+import { db, DEFAULT_SETTINGS, ensureDefaults, ensurePassionScheduleDoc } from './database'
 import type {
   Application,
   BackupPayload,
@@ -15,6 +15,10 @@ import { SCHEMA_VERSION } from './types'
 import { isCloudDataActiveSnapshot } from '../cloud/active'
 import * as repo from '../cloud/repository'
 import { deserializePassionAttachments, serializePassionAttachments } from '../lib/passion'
+import {
+  createEmptyPassionScheduleDoc,
+  normalizePassionScheduleDoc,
+} from '../lib/passionScheduleDoc'
 import { deserializeResumes, serializeResumes } from '../lib/resume'
 const SUPPORTED_SCHEMA_VERSIONS = new Set<number>([1, 2, 3, 4, 5])
 
@@ -73,6 +77,7 @@ export async function exportBackup(): Promise<BackupPayload> {
       resumeMeta,
       passionIdeas,
       passionMeta,
+      passionSchedule,
     ] = await Promise.all([
       repo.fetchSettingsRow(),
       repo.fetchApplications(),
@@ -83,6 +88,7 @@ export async function exportBackup(): Promise<BackupPayload> {
       repo.fetchResumeFilesMeta(),
       repo.fetchPassionIdeas(),
       repo.fetchPassionAttachmentsMeta(),
+      repo.fetchPassionSchedule(),
     ])
     const resumeRows: ResumeAttachment[] = []
     for (const m of resumeMeta) {
@@ -110,6 +116,7 @@ export async function exportBackup(): Promise<BackupPayload> {
       resumeFiles,
       passionIdeas,
       passionAttachments,
+      passionSchedule,
     }
   }
 
@@ -123,6 +130,7 @@ export async function exportBackup(): Promise<BackupPayload> {
     resumeRows,
     passionIdeas,
     passionAttachmentRows,
+    passionSchedule,
   ] = await Promise.all([
     ensureDefaults(),
     db.applications.toArray(),
@@ -133,6 +141,7 @@ export async function exportBackup(): Promise<BackupPayload> {
     db.resumeFiles.toArray(),
     db.passionIdeas.toArray(),
     db.passionAttachments.toArray(),
+    ensurePassionScheduleDoc(),
   ])
 
   const resumeFiles = await serializeResumes(resumeRows)
@@ -152,6 +161,7 @@ export async function exportBackup(): Promise<BackupPayload> {
     resumeFiles,
     passionIdeas,
     passionAttachments,
+    passionSchedule,
   }
 }
 
@@ -202,6 +212,13 @@ export async function importBackup(
       ...(data.settings as SettingsRow),
       id: 'default',
     }
+    const scheduleFromBackup =
+      data.passionSchedule != null && typeof data.passionSchedule === 'object'
+        ? normalizePassionScheduleDoc(data.passionSchedule)
+        : mode === 'replace'
+          ? createEmptyPassionScheduleDoc()
+          : null
+
     await hydrateSupabaseFromDexieShapes(
       s,
       data.applications as Application[],
@@ -213,6 +230,7 @@ export async function importBackup(
       restoredPassionIdeas,
       restoredPassionAttachments,
     )
+    if (scheduleFromBackup) await repo.upsertPassionSchedule(scheduleFromBackup)
     return
   }
 
@@ -227,6 +245,7 @@ export async function importBackup(
       db.resumeFiles,
       db.passionIdeas,
       db.passionAttachments,
+      db.passionSchedule,
       db.settings,
     ],
     async () => {
@@ -239,6 +258,7 @@ export async function importBackup(
         await db.resumeFiles.clear()
         await db.passionIdeas.clear()
         await db.passionAttachments.clear()
+        await db.passionSchedule.clear()
       }
       const s = data.settings as SettingsRow
       await db.settings.put({
@@ -257,6 +277,13 @@ export async function importBackup(
       await db.resumeFiles.bulkPut(restoredResumes)
       await db.passionIdeas.bulkPut(restoredPassionIdeas)
       await db.passionAttachments.bulkPut(restoredPassionAttachments)
+      const scheduleFromBackup =
+        data.passionSchedule != null && typeof data.passionSchedule === 'object'
+          ? normalizePassionScheduleDoc(data.passionSchedule)
+          : mode === 'replace'
+            ? createEmptyPassionScheduleDoc()
+            : null
+      if (scheduleFromBackup) await db.passionSchedule.put(scheduleFromBackup)
     },
   )
 }
@@ -273,6 +300,7 @@ export async function resetAllData(): Promise<void> {
       db.resumeFiles,
       db.passionIdeas,
       db.passionAttachments,
+      db.passionSchedule,
       db.settings,
     ],
     async () => {
@@ -284,8 +312,10 @@ export async function resetAllData(): Promise<void> {
       await db.resumeFiles.clear()
       await db.passionIdeas.clear()
       await db.passionAttachments.clear()
+      await db.passionSchedule.clear()
       await db.settings.clear()
       await db.settings.put({ ...DEFAULT_SETTINGS, updatedAt: Date.now() })
+      await db.passionSchedule.put(createEmptyPassionScheduleDoc())
     },
   )
 }

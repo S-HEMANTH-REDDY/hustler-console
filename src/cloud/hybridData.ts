@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useState } from 'react'
-import { db, ensureDefaults } from '../db/database'
+import { db, ensureDefaults, ensurePassionScheduleDoc } from '../db/database'
 import type {
   Application,
   BehavioralStory,
@@ -8,6 +8,7 @@ import type {
   LifeTask,
   PassionAttachment,
   PassionIdea,
+  PassionScheduleDoc,
   ResumeAttachment,
   SettingsRow,
   SystemDesignProblem,
@@ -19,6 +20,7 @@ import {
   fetchDsaProblems,
   fetchPassionAttachmentsMeta,
   fetchPassionIdeas,
+  fetchPassionSchedule,
   fetchResumeFilesMeta,
   fetchSettingsRow,
   fetchSystemDesignProblems,
@@ -250,4 +252,30 @@ export function usePassionAttachmentsHybrid(): PassionAttachment[] {
     }
   }, [cloud, bump])
   return cloud ? remote : local ?? EMPTY_PASSION_ATTACH
+}
+
+/** Editable Passion timetables · Postgres row per user (RLS); local Dexie when offline. */
+export function usePassionScheduleHybrid(): PassionScheduleDoc | undefined {
+  const cloud = useCloudDataMode()
+  const bump = useCloudSyncTick()
+  const local = useLiveQuery(() => ensurePassionScheduleDoc(), [])
+  const [remote, setRemote] = useState<PassionScheduleDoc | undefined>()
+  useEffect(() => {
+    if (!cloud) {
+      setRemote(undefined)
+      return
+    }
+    let cancelled = false
+    void fetchPassionSchedule()
+      .then((doc) => {
+        if (!cancelled) setRemote(doc)
+      })
+      .catch(() => {
+        if (!cancelled) setRemote(undefined)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [cloud, bump])
+  return cloud ? remote : local ?? undefined
 }

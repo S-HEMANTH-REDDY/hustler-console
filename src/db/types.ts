@@ -253,6 +253,31 @@ export interface SerializedPassionAttachment {
   createdAt: number
 }
 
+/** Editable Passion tab daily timetable (only you can see yours in cloud builds). */
+export interface PassionDailySlotRow {
+  id: string
+  /** e.g. "6:00 AM – 7:00 AM" */
+  timeRange: string
+  activity: string
+  /** e.g. "1 HOUR" */
+  duration: string
+}
+
+/** Weekend / RA-style blocks (Fri–Sun sessions, etc.). */
+export interface PassionWeekendSlotRow {
+  id: string
+  day: string
+  session: string
+  duration: string
+}
+
+export interface PassionScheduleDoc {
+  id: 'default'
+  dailyRows: PassionDailySlotRow[]
+  weekendRows: PassionWeekendSlotRow[]
+  updatedAt: number
+}
+
 export interface BackupPayload {
   schemaVersion: typeof SCHEMA_VERSION
   exportedAt: string
@@ -265,4 +290,6 @@ export interface BackupPayload {
   resumeFiles?: SerializedResumeAttachment[]
   passionIdeas?: PassionIdea[]
   passionAttachments?: SerializedPassionAttachment[]
+  /** Optional · stored per user in cloud; local IndexedDB when not signed in. */
+  passionSchedule?: PassionScheduleDoc
 }
