@@ -1,7 +1,6 @@
 import { format } from 'date-fns'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { patchTaskFields } from '../cloud/mutations'
 import {
   useApplicationsHybrid,
   useBehavioralStoriesHybrid,
@@ -11,12 +10,7 @@ import {
   useSystemDesignHybrid,
   useTasksHybrid,
 } from '../cloud/hybridData'
-import type {
-  ApplicationSource,
-  ResumeAttachment,
-  TaskPriority,
-  TaskRecurrence,
-} from '../db/types'
+import type { ApplicationSource, ResumeAttachment } from '../db/types'
 import {
   FunnelMini,
   HeatLegend,
@@ -30,6 +24,7 @@ import {
   ResumeInlinePreview,
   ResumePreviewToolbar,
 } from '../components/ResumePreview'
+import { TodayTasksCard } from '../components/TodayTasksCard'
 import { useIntervalTick, useSecondsTick } from '../hooks/useIntervalTick'
 import { BEHAVIORAL_CATEGORIES, statusPillClass } from '../lib/constants'
 import { dayKey, isRecurrenceComplete, isoWeekNumber } from '../lib/dates'
@@ -43,22 +38,6 @@ import {
 } from '../lib/insights'
 import { computePace } from '../lib/pace'
 import { cn } from '../lib/utils'
-import { useUiStore } from '../store/uiStore'
-
-function recurrenceShort(r: TaskRecurrence): string {
-  switch (r) {
-    case 'oneoff':
-      return 'once'
-    case 'daily':
-      return 'daily'
-    case 'weekly':
-      return 'wk'
-    case 'monthly':
-      return 'mo'
-    default:
-      return r
-  }
-}
 
 const SOURCE_COLORS: Record<ApplicationSource, string> = {
   LinkedIn: '#06b6d4',
@@ -85,8 +64,6 @@ export function TodayPage() {
     for (const r of resumeRows) m.set(r.id, r)
     return m
   }, [resumeRows])
-  const pushToast = useUiStore((s) => s.pushToast)
-
   const today = dayKey(tick)
   const [selectedKey, setSelectedKey] = useState<string>(today)
   const [previewedAppId, setPreviewedAppId] = useState<string | null>(null)
@@ -170,16 +147,6 @@ export function TodayPage() {
   ).length
   const tasksTotal = tasks.length
 
-  const openTasks = useMemo(() => {
-    const pr: Record<TaskPriority, number> = { high: 0, mid: 1, low: 2 }
-    return tasks
-      .filter(
-        (t) =>
-          !isRecurrenceComplete(t.lastCompletedAt, t.recurrence, tick),
-      )
-      .sort((a, b) => pr[a.priority] - pr[b.priority])
-  }, [tasks, tick])
-
   const sourceMixToday = useMemo(
     () =>
       mixBy(todayApps.map((a) => a.source)).map((s) => ({
@@ -224,9 +191,6 @@ export function TodayPage() {
         : pace.state === 'behind'
           ? 'border-amber-500/60 text-amber-200'
           : 'border-red-500/60 text-red-300'
-
-  const showTasks = openTasks.slice(0, 8)
-  const moreTasks = openTasks.length - showTasks.length
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -500,79 +464,7 @@ export function TodayPage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <Card
-          title="Open tasks"
-          right={
-            <Link
-              to="/tasks"
-              className="font-mono text-xs text-zinc-400 hover:text-lime-300"
-            >
-              Tasks →
-            </Link>
-          }
-          muted
-        >
-          {openTasks.length === 0 ? (
-            <p className="text-sm text-zinc-400">
-              Nothing open ·{' '}
-              <Link to="/tasks" className="text-lime-400/90 hover:underline">
-                add on Tasks
-              </Link>
-            </p>
-          ) : (
-            <ul className="-my-1 divide-y divide-[#3d4150]/60">
-              {showTasks.map((t) => (
-                <li
-                  key={t.id}
-                  className="flex items-start gap-3 py-2 first:pt-0"
-                >
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-lime-500"
-                    checked={false}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        void patchTaskFields(t.id, {
-                          lastCompletedAt: dayKey(tick),
-                        })
-                        pushToast('save', 'Task cleared')
-                      }
-                    }}
-                    aria-label={`Done: ${t.title}`}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm text-zinc-300">
-                      {t.title}
-                    </div>
-                    <div className="mt-0.5 flex flex-wrap gap-2 font-mono text-xs">
-                      <span
-                        className={cn(
-                          'uppercase tracking-wider',
-                          t.priority === 'high' && 'text-amber-400/90',
-                          t.priority === 'mid' && 'text-zinc-400',
-                          t.priority === 'low' && 'text-zinc-400',
-                        )}
-                      >
-                        {t.priority}
-                      </span>
-                      <span className="text-zinc-400">
-                        {recurrenceShort(t.recurrence)}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-          {moreTasks > 0 ? (
-            <p className="mt-3 text-xs text-zinc-400">
-              +{moreTasks} more on{' '}
-              <Link to="/tasks" className="text-zinc-400 hover:text-lime-300">
-                Tasks
-              </Link>
-            </p>
-          ) : null}
-        </Card>
+        <TodayTasksCard />
 
         <Card title="Pipeline">
           {applications.length === 0 ? (

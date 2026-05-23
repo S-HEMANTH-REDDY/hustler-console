@@ -34,6 +34,7 @@ The simplest way to apply it:
 2. Paste the entire contents of `00001_init.sql`.
 3. Click **Run**. It's idempotent — safe to re-run if you tweak it.
 4. Run [`migrations/00002_passion_schedule.sql`](./migrations/00002_passion_schedule.sql) the same way **after** `00001_init.sql` (adds the private per-user Passion timetable table).
+5. Run [`migrations/00003_tasks_due.sql`](./migrations/00003_tasks_due.sql) to add **`due_date`** and **`due_time`** on `tasks` (powers the Today card countdown and Yesterday/Today/Tomorrow tabs).
 
 If you prefer the CLI:
 

@@ -120,6 +120,37 @@ export class ExecutionDB extends Dexie {
       passionSchedule: 'id, updatedAt',
       settings: 'id',
     })
+
+    this.version(7)
+      .stores({
+        applications:
+          'id, date, company, status, resumeFileId, createdAt',
+        dsaProblems: 'id, date, topic, difficulty, createdAt',
+        systemDesignProblems:
+          'id, date, topic, kind, difficulty, createdAt',
+        behavioralStories: 'id, category, status, updatedAt',
+        tasks: 'id, priority, recurrence, dueDate, createdAt',
+        resumeFiles: 'id, fileName, createdAt',
+        passionIdeas: 'id, tag, title, updatedAt, createdAt',
+        passionAttachments: 'id, fileName, createdAt',
+        passionSchedule: 'id, updatedAt',
+        settings: 'id',
+      })
+      .upgrade(async (trans) => {
+        // Existing tasks predate the due-date/time fields. Default them to
+        // null so the UI groups them under "Today" until the user assigns one.
+        await trans
+          .table('tasks')
+          .toCollection()
+          .modify(
+            (
+              t: { dueDate?: string | null; dueTime?: string | null },
+            ) => {
+              if (t.dueDate === undefined) t.dueDate = null
+              if (t.dueTime === undefined) t.dueTime = null
+            },
+          )
+      })
   }
 }
 

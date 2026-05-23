@@ -178,6 +178,10 @@ export interface LifeTask {
   recurrence: TaskRecurrence
   /** YYYY-MM-DD when task was marked done for current recurrence period */
   lastCompletedAt: string | null
+  /** YYYY-MM-DD the task is due. `null` = no specific date (treated as today). */
+  dueDate: string | null
+  /** HH:mm 24h time the task is due. `null` = end of day. */
+  dueTime: string | null
   createdAt: number
 }
 

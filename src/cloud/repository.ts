@@ -572,6 +572,8 @@ export async function fetchTasks(): Promise<LifeTask[]> {
     recurrence: r.recurrence as LifeTask['recurrence'],
     lastCompletedAt:
       (r.last_completed_at as string | null)?.slice(0, 10) ?? null,
+    dueDate: (r.due_date as string | null)?.slice(0, 10) ?? null,
+    dueTime: (r.due_time as string | null) ?? null,
     createdAt: tsFromIso(r.created_at as string),
   }))
 }
@@ -586,6 +588,8 @@ export async function upsertTask(t: LifeTask): Promise<void> {
       priority: t.priority,
       recurrence: t.recurrence,
       last_completed_at: t.lastCompletedAt,
+      due_date: t.dueDate,
+      due_time: t.dueTime,
       created_at: isoFromMs(t.createdAt),
     },
     { onConflict: 'id' },
@@ -605,6 +609,8 @@ export async function patchTask(
   if (partial.recurrence !== undefined) payload.recurrence = partial.recurrence
   if (partial.lastCompletedAt !== undefined)
     payload.last_completed_at = partial.lastCompletedAt
+  if (partial.dueDate !== undefined) payload.due_date = partial.dueDate
+  if (partial.dueTime !== undefined) payload.due_time = partial.dueTime
   if (partial.createdAt !== undefined)
     payload.created_at = isoFromMs(partial.createdAt)
   const { error } = await sb()
