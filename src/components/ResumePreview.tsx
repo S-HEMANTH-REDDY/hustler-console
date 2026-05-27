@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ResumeAttachment } from '../db/types'
 import { docxBlobToHtml, isDocxFile, isLegacyDocFile } from '../lib/docx'
 import { downloadResume, getResume, humanBytes, openResumeInNewTab } from '../lib/resume'
+import { useUiStore } from '../store/uiStore'
 import { cn } from '../lib/utils'
 
 export function ResumePreviewToolbar(props: {
@@ -11,6 +12,29 @@ export function ResumePreviewToolbar(props: {
   compact?: boolean
 }) {
   const { attachment, expanded, onToggle, compact } = props
+  const pushToast = useUiStore((s) => s.pushToast)
+  const [busy, setBusy] = useState<'download' | 'open' | null>(null)
+
+  async function handle(
+    action: 'download' | 'open',
+    run: () => Promise<void>,
+  ) {
+    if (busy) return
+    setBusy(action)
+    try {
+      await run()
+    } catch (err) {
+      pushToast(
+        'info',
+        err instanceof Error
+          ? `${action === 'download' ? 'Download' : 'Open'} failed: ${err.message}`
+          : 'Could not load resume file.',
+      )
+    } finally {
+      setBusy(null)
+    }
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-1">
       <button
@@ -30,22 +54,28 @@ export function ResumePreviewToolbar(props: {
       </button>
       <button
         type="button"
-        onClick={() => void downloadResume(attachment.id)}
-        className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+        disabled={busy !== null}
+        onClick={() =>
+          void handle('download', () => downloadResume(attachment.id))
+        }
+        className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
         title="Download file"
       >
         <DownloadIcon />
-        <span>Download</span>
+        <span>{busy === 'download' ? '…' : 'Download'}</span>
       </button>
       {!compact ? (
         <button
           type="button"
-          onClick={() => void openResumeInNewTab(attachment.id)}
-          className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          disabled={busy !== null}
+          onClick={() =>
+            void handle('open', () => openResumeInNewTab(attachment.id))
+          }
+          className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
           title="Open in new tab"
         >
           <ExternalIcon />
-          <span>Open</span>
+          <span>{busy === 'open' ? '…' : 'Open'}</span>
         </button>
       ) : null}
       <span className="ml-1 truncate font-mono text-xs text-zinc-400">
@@ -76,16 +106,36 @@ export function ResumeInlinePreview(props: {
   const [url, setUrl] = useState<string | null>(null)
   const [docxHtml, setDocxHtml] = useState<string | null>(null)
   const [docxError, setDocxError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
     let objectUrl: string | null = null
+    setLoadError(null)
+    setDocxError(null)
+    setDocxHtml(null)
+    setUrl(null)
     async function resolve() {
       let blob = attachment.data
+      // Cloud mode seeds attachment.data as an empty placeholder Blob; the
+      // real bytes have to be fetched from Supabase storage on demand.
       if (blob.size === 0) {
-        const full = await getResume(attachment.id)
-        if (cancelled || !full) return
-        blob = full.data
+        try {
+          const full = await getResume(attachment.id)
+          if (cancelled) return
+          if (!full || full.data.size === 0) {
+            setLoadError('File not found on server.')
+            return
+          }
+          blob = full.data
+        } catch (err) {
+          if (!cancelled) {
+            setLoadError(
+              err instanceof Error ? err.message : 'Failed to load file.',
+            )
+          }
+          return
+        }
       }
       if (isDocx) {
         // .docx → HTML via mammoth (pure client, images inlined as data URIs)
@@ -146,6 +196,7 @@ export function ResumeInlinePreview(props: {
         url,
         docxHtml,
         docxError,
+        loadError,
         lower,
       })}
     </div>
@@ -163,6 +214,7 @@ function renderBody(args: {
   url: string | null
   docxHtml: string | null
   docxError: string | null
+  loadError: string | null
   lower: string
 }) {
   const {
@@ -176,8 +228,20 @@ function renderBody(args: {
     url,
     docxHtml,
     docxError,
+    loadError,
     lower,
   } = args
+
+  if (loadError) {
+    return (
+      <div
+        className="px-6 py-10 text-center font-mono text-xs text-amber-200"
+        style={{ minHeight: height }}
+      >
+        {loadError}
+      </div>
+    )
+  }
 
   if (isDocx) {
     if (docxError) {

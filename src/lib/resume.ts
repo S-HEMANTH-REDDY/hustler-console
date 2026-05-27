@@ -53,9 +53,24 @@ export async function getResume(
   return db.resumeFiles.get(id)
 }
 
+/**
+ * Resolve a full ResumeAttachment for `id`, honouring cloud vs local mode.
+ * In cloud mode `useResumeFilesHybrid` only seeds placeholder rows with an
+ * empty Blob, so anything that needs real bytes (download / open / preview)
+ * MUST go through `getResume` rather than reading Dexie directly.
+ */
+async function loadResumeBlob(
+  id: string,
+): Promise<ResumeAttachment | undefined> {
+  if (isCloudDataActiveSnapshot()) {
+    return repo.getResumeAttachment(id)
+  }
+  return db.resumeFiles.get(id)
+}
+
 export async function openResumeInNewTab(id: string): Promise<void> {
-  const r = await db.resumeFiles.get(id)
-  if (!r) return
+  const r = await loadResumeBlob(id)
+  if (!r || r.data.size === 0) return
   const url = URL.createObjectURL(r.data)
   const win = window.open(url, '_blank', 'noopener,noreferrer')
   // Some browsers may pop-up-block: if so, fall back to a download.
@@ -71,8 +86,8 @@ export async function openResumeInNewTab(id: string): Promise<void> {
 }
 
 export async function downloadResume(id: string): Promise<void> {
-  const r = await db.resumeFiles.get(id)
-  if (!r) return
+  const r = await loadResumeBlob(id)
+  if (!r || r.data.size === 0) return
   const url = URL.createObjectURL(r.data)
   const a = document.createElement('a')
   a.href = url
