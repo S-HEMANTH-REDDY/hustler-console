@@ -8,10 +8,19 @@ import * as repo from './repository'
 export async function importLocalDexieIntoSupabase(): Promise<void> {
   const settings = await ensureDefaults()
   await repo.saveSettingsRow(settings)
+  // Pre-index applications so each resume upload can carry company/date in
+  // its Supabase storage object name.
+  const apps = await db.applications.toArray()
+  const resumeMeta = new Map<string, { company: string; date: string }>()
+  for (const a of apps) {
+    if (a.resumeFileId)
+      resumeMeta.set(a.resumeFileId, { company: a.company, date: a.date })
+  }
   for (const r of await db.resumeFiles.toArray()) {
     await repo.uploadResumeFile(
       r.id,
       new File([r.data], r.fileName, { type: r.fileType }),
+      resumeMeta.get(r.id),
     )
   }
   for (const r of await db.passionAttachments.toArray()) {
@@ -20,7 +29,7 @@ export async function importLocalDexieIntoSupabase(): Promise<void> {
       new File([r.data], r.fileName, { type: r.fileType }),
     )
   }
-  for (const a of await db.applications.toArray()) await repo.upsertApplication(a)
+  for (const a of apps) await repo.upsertApplication(a)
   for (const p of await db.dsaProblems.toArray()) await repo.upsertDsaProblem(p)
   for (const p of await db.systemDesignProblems.toArray())
     await repo.upsertSystemDesignProblem(p)

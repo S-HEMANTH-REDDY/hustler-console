@@ -67,7 +67,10 @@ export function QuickApplicationForm() {
     let resumeFileId: string | undefined
     if (pickedFile) {
       try {
-        resumeFileId = await attachResumeFromFile(pickedFile)
+        resumeFileId = await attachResumeFromFile(pickedFile, {
+          company,
+          date: today,
+        })
       } catch (err) {
         pushToast(
           'info',

@@ -33,8 +33,48 @@ function fileExt(name: string): string {
   return i >= 0 ? name.slice(i) : '.bin'
 }
 
-export function resumeObjectPath(userId: string, id: string, fileName: string): string {
-  return `${userId}/${id}${fileExt(fileName)}`
+/** Slugify a label for use as a storage object filename segment. */
+function slugSegment(input: string | undefined | null, max = 40): string {
+  if (!input) return ''
+  const cleaned = String(input)
+    .normalize('NFKD')
+    .replace(/[^A-Za-z0-9-_]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-')
+  return cleaned.slice(0, max)
+}
+
+/** Strip the extension before slugifying so we can re-append it cleanly. */
+function slugFileBase(fileName: string, max = 40): string {
+  const dot = fileName.lastIndexOf('.')
+  const base = dot >= 0 ? fileName.slice(0, dot) : fileName
+  return slugSegment(base, max)
+}
+
+/**
+ * Build the storage object key for a resume upload. The first path segment
+ * **must** stay the user id — the storage RLS policy splits on `/` and only
+ * permits writes when `split_part(name, '/', 1)` matches `auth.uid()`.
+ *
+ * Optional `meta` (company + YYYY-MM-DD date) makes the object name
+ * human-readable from the Supabase dashboard:
+ *   `<uid>/2026-05-27_Stripe_a1b2c3d4_my-resume.pdf`
+ * Falls back to the legacy `<uid>/<id><ext>` shape if no meta is supplied.
+ */
+export function resumeObjectPath(
+  userId: string,
+  id: string,
+  fileName: string,
+  meta?: { company?: string | null; date?: string | null },
+): string {
+  const ext = fileExt(fileName)
+  const company = slugSegment(meta?.company, 32)
+  const date = (meta?.date ?? '').trim()
+  const base = slugFileBase(fileName, 40)
+  const shortId = id.replace(/-/g, '').slice(0, 8) || 'r'
+  const parts = [date, company, shortId, base].filter(Boolean)
+  if (parts.length === 0) return `${userId}/${id}${ext}`
+  return `${userId}/${parts.join('_')}${ext}`
 }
 
 export function passionObjectPath(
@@ -282,9 +322,10 @@ export async function getResumeAttachment(
 export async function uploadResumeFile(
   id: string,
   file: File,
+  meta?: { company?: string | null; date?: string | null },
 ): Promise<{ storagePath: string }> {
   const userId = await requireUser()
-  const path = resumeObjectPath(userId, id, file.name)
+  const path = resumeObjectPath(userId, id, file.name, meta)
   const { error: upErr } = await sb().storage
     .from('resumes')
     .upload(path, file, { upsert: true, contentType: file.type || undefined })

@@ -20,7 +20,18 @@ export function humanBytes(n: number): string {
   return `${(n / 1024 / 1024).toFixed(2)} MB`
 }
 
-export async function attachResumeFromFile(file: File): Promise<string> {
+/** Optional context that goes into the Supabase storage object key so the
+ * file is identifiable from the dashboard (e.g. company, application date). */
+export interface ResumeUploadContext {
+  company?: string | null
+  /** YYYY-MM-DD */
+  date?: string | null
+}
+
+export async function attachResumeFromFile(
+  file: File,
+  context?: ResumeUploadContext,
+): Promise<string> {
   if (file.size === 0) {
     throw new Error('Empty file')
   }
@@ -31,7 +42,7 @@ export async function attachResumeFromFile(file: File): Promise<string> {
   }
   const id = newId()
   if (isCloudDataActiveSnapshot()) {
-    await repo.uploadResumeFile(id, file)
+    await repo.uploadResumeFile(id, file, context)
     return id
   }
   const row: ResumeAttachment = {
@@ -109,7 +120,10 @@ export async function replaceResume(
       await repo.deleteResumeFileRecord(app.resumeFileId).catch(() => undefined)
     }
     const id = newId()
-    await repo.uploadResumeFile(id, file)
+    await repo.uploadResumeFile(id, file, {
+      company: app.company,
+      date: app.date,
+    })
     await repo.patchApplication(appId, { resumeFileId: id })
     return id
   }
@@ -118,7 +132,10 @@ export async function replaceResume(
   if (app.resumeFileId) {
     await db.resumeFiles.delete(app.resumeFileId).catch(() => undefined)
   }
-  const newFileId = await attachResumeFromFile(file)
+  const newFileId = await attachResumeFromFile(file, {
+    company: app.company,
+    date: app.date,
+  })
   await db.applications.update(appId, { resumeFileId: newFileId })
   return newFileId
 }
