@@ -11,9 +11,12 @@ export function AppLayout() {
   return (
     <div className="flex min-h-full">
       <Sidebar />
-      <div className="flex min-h-full flex-1 flex-col md:pl-56">
+      {/* min-w-0 is essential so wide tables / textareas trigger horizontal
+          scroll inside this column instead of pushing the whole layout wider
+          than the viewport (which was making split-screen views overflow). */}
+      <div className="flex min-h-full min-w-0 flex-1 flex-col lg:pl-56">
         <TopBar />
-        <main className="min-h-0 flex-1 p-4 md:p-6">
+        <main className="min-h-0 min-w-0 flex-1 p-3 sm:p-4 lg:p-6">
           <Outlet />
         </main>
       </div>

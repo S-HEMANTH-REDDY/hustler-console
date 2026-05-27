@@ -54,45 +54,51 @@ export function TopBar() {
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-[#3d4150] shadow-[0_1px_0_0_rgba(255,255,255,0.02),0_10px_30px_-20px_rgba(0,0,0,0.9)]">
-      <div className="flex min-h-14 flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2">
-        <div className="flex items-center gap-3">
+      <div className="flex min-h-14 flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2 sm:gap-x-4 sm:px-4 md:gap-x-6">
+        <div className="flex min-w-0 items-center gap-3">
           <MobileHeaderToggle />
-          <div>
+          <div className="min-w-0">
             <div
               className="flex items-baseline gap-2 text-sm font-semibold tracking-tight text-zinc-50 tabular-nums"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span>{dateStr}</span>
-              <span className="text-zinc-400">{yearStr}</span>
+              <span className="hidden text-zinc-400 sm:inline">{yearStr}</span>
               <span className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
                 {clock}
               </span>
             </div>
-            <div className="font-mono text-xs text-zinc-400">
+            <div className="truncate font-mono text-xs text-zinc-400">
               W{week} · {grad.label} · {remainingLabel}
             </div>
           </div>
         </div>
 
-        <div className="ml-auto flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+        <div className="ml-auto flex flex-wrap items-center gap-2 text-xs sm:gap-3 sm:text-sm">
           <Stat
             label="Streak"
             value={`${streak}d`}
             valueClass={streak > 0 ? 'text-lime-300' : 'text-zinc-400'}
           />
           <Stat label="Today" value={String(trends.today)} />
+          {/* Secondary stats hide on very narrow screens to keep the top bar tidy. */}
           <Stat
+            className="hidden sm:block"
             label="Δ y'day"
             value={fmtDelta(trends.deltaVsYesterday)}
             valueClass={deltaClass(trends.deltaVsYesterday)}
           />
-          <Stat label="7d avg" value={String(avg7)} />
-          <Stat label="30d avg" value={String(trends.avg30)} />
+          <Stat className="hidden md:block" label="7d avg" value={String(avg7)} />
+          <Stat
+            className="hidden md:block"
+            label="30d avg"
+            value={String(trends.avg30)}
+          />
 
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="hidden items-center gap-2 rounded border border-[#3d4150] bg-[#262934] px-2.5 py-1.5 text-xs text-zinc-400 hover:border-zinc-700 hover:text-zinc-200 sm:flex"
+            className="hidden items-center gap-2 rounded border border-[#3d4150] bg-[#262934] px-2.5 py-1.5 text-xs text-zinc-400 hover:border-zinc-700 hover:text-zinc-200 md:flex"
             aria-label="Open command palette"
           >
             <span>Commands</span>
@@ -214,15 +220,20 @@ function UserChip() {
   )
 }
 
-function Stat(props: { label: string; value: string; valueClass?: string }) {
+function Stat(props: {
+  label: string
+  value: string
+  valueClass?: string
+  className?: string
+}) {
   return (
-    <div className="text-right">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+    <div className={cn('text-right', props.className)}>
+      <div className="font-mono text-[10px] uppercase tracking-wider text-zinc-400 sm:text-xs">
         {props.label}
       </div>
       <div
         className={cn(
-          'font-mono text-base font-semibold tabular-nums',
+          'font-mono text-sm font-semibold tabular-nums sm:text-base',
           props.valueClass ?? 'text-zinc-100',
         )}
         style={{ fontFamily: 'var(--font-mono)' }}

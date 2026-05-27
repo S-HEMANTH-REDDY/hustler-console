@@ -125,9 +125,9 @@ export function TasksPage() {
 
       <form
         onSubmit={addTask}
-        className="grid gap-2 rounded-lg border border-[#3d4150]/80 bg-[#262934]/60 p-3 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto] sm:items-end"
+        className="grid grid-cols-1 gap-2 rounded-lg border border-[#3d4150]/80 bg-[#262934]/60 p-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_8.5rem_6.5rem_7rem_auto] lg:items-end"
       >
-        <label className="block space-y-1">
+        <label className="block space-y-1 sm:col-span-2 lg:col-span-1">
           <span className="text-xs text-zinc-400">Title</span>
           <input
             name="title"
@@ -141,7 +141,7 @@ export function TasksPage() {
             type="date"
             name="dueDate"
             defaultValue={todayStr}
-            className="field border-zinc-800 bg-[#1c1f27] font-mono text-xs"
+            className="field w-full border-zinc-800 bg-[#1c1f27] font-mono text-xs"
           />
         </label>
         <label className="block space-y-1">
@@ -149,7 +149,7 @@ export function TasksPage() {
           <input
             type="time"
             name="dueTime"
-            className="field border-zinc-800 bg-[#1c1f27] font-mono text-xs"
+            className="field w-full border-zinc-800 bg-[#1c1f27] font-mono text-xs"
           />
         </label>
         <label className="block space-y-1">
@@ -157,7 +157,7 @@ export function TasksPage() {
           <select
             name="recurrence"
             defaultValue="oneoff"
-            className="field border-zinc-800 bg-[#1c1f27] text-xs"
+            className="field w-full border-zinc-800 bg-[#1c1f27] text-xs"
           >
             <option value="oneoff">once</option>
             <option value="daily">daily</option>
@@ -167,7 +167,7 @@ export function TasksPage() {
         </label>
         <button
           type="submit"
-          className="btn-primary rounded-md px-3 py-2 text-xs font-semibold"
+          className="btn-primary w-full rounded-md px-3 py-2 text-xs font-semibold sm:col-span-2 lg:col-span-1 lg:w-auto"
         >
           + Add task
         </button>
@@ -248,7 +248,7 @@ function TaskRow(props: {
   const showCountdown = !done
 
   return (
-    <li className="flex flex-wrap items-center gap-3 px-3 py-2">
+    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-3 py-2 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:gap-x-2">
       <input
         type="checkbox"
         className="h-4 w-4 shrink-0 accent-lime-500"
@@ -263,31 +263,12 @@ function TaskRow(props: {
           if (v && v !== task.title) props.onPatch({ title: v })
         }}
         className={cn(
-          'field min-w-0 flex-1 border-transparent bg-transparent text-sm',
+          'field min-w-0 border-transparent bg-transparent text-sm',
           done && 'text-zinc-500 line-through',
         )}
       />
-      <input
-        type="date"
-        defaultValue={task.dueDate ?? ''}
-        onChange={(e) => {
-          const v = e.target.value
-          props.onPatch({ dueDate: v.length === 10 ? v : null })
-        }}
-        className="field w-[8.5rem] border-zinc-800 bg-[#1c1f27] font-mono text-[11px]"
-        title="Due date"
-      />
-      <input
-        type="time"
-        defaultValue={task.dueTime ?? ''}
-        onChange={(e) => {
-          const v = e.target.value
-          props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null })
-        }}
-        className="field w-[6.5rem] border-zinc-800 bg-[#1c1f27] font-mono text-[11px]"
-        title="Due time"
-      />
-      <div className="flex shrink-0 flex-col items-end font-mono text-[11px] leading-tight tabular-nums">
+      {/* Countdown / due time on the right — always visible. */}
+      <div className="flex shrink-0 flex-col items-end justify-self-end font-mono text-[11px] leading-tight tabular-nums">
         {due12 ? (
           <span className="text-zinc-400">{due12}</span>
         ) : (
@@ -308,14 +289,46 @@ function TaskRow(props: {
           </span>
         ) : null}
       </div>
+      {/* Delete only inline on sm+ screens; on mobile it moves below. */}
       <button
         type="button"
         onClick={props.onDelete}
-        className="rounded border border-[#3d4150] px-2 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+        className="hidden shrink-0 justify-self-end rounded border border-[#3d4150] px-2 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300 sm:inline-flex"
         aria-label="Delete task"
       >
         Delete
       </button>
+      {/* Editors flow to a second row · keeps narrow widths from horizontal scroll. */}
+      <div className="col-span-3 flex flex-wrap items-center gap-2 sm:col-span-4">
+        <input
+          type="date"
+          defaultValue={task.dueDate ?? ''}
+          onChange={(e) => {
+            const v = e.target.value
+            props.onPatch({ dueDate: v.length === 10 ? v : null })
+          }}
+          className="field min-w-0 flex-1 border-zinc-800 bg-[#1c1f27] font-mono text-[11px] sm:flex-none sm:w-[8.5rem]"
+          title="Due date"
+        />
+        <input
+          type="time"
+          defaultValue={task.dueTime ?? ''}
+          onChange={(e) => {
+            const v = e.target.value
+            props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null })
+          }}
+          className="field min-w-0 flex-1 border-zinc-800 bg-[#1c1f27] font-mono text-[11px] sm:flex-none sm:w-[6.5rem]"
+          title="Due time"
+        />
+        <button
+          type="button"
+          onClick={props.onDelete}
+          className="ml-auto rounded border border-[#3d4150] px-2 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300 sm:hidden"
+          aria-label="Delete task"
+        >
+          Delete
+        </button>
+      </div>
     </li>
   )
 }

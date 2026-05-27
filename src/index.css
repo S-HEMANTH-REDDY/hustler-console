@@ -22,12 +22,34 @@
 @layer base {
   html {
     color-scheme: dark;
-    font-size: 18px;
+    /* Mobile-first base size; scales up on tablet / desktop so the layout
+       breathes without overflowing narrow / split-screen viewports. */
+    font-size: 15px;
+  }
+  @media (min-width: 640px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  @media (min-width: 1024px) {
+    html {
+      font-size: 17px;
+    }
+  }
+  @media (min-width: 1440px) {
+    html {
+      font-size: 18px;
+    }
   }
   html,
   body,
   #root {
     height: 100%;
+  }
+  /* Stop long URLs / mono text from stretching the page wider than the viewport. */
+  body {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   body {
     @apply text-zinc-50 font-sans;

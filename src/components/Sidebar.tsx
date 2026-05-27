@@ -22,11 +22,11 @@ export function Sidebar() {
     <>
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-56 flex-col border-r border-[#3d4150] transition-transform max-md:w-[min(280px,85vw)]',
+          'fixed inset-y-0 left-0 z-40 flex w-56 flex-col border-r border-[#3d4150] transition-transform max-lg:w-[min(280px,85vw)]',
           'bg-gradient-to-b from-[#20232c] to-[#1c1f27]',
           'shadow-[inset_-1px_0_0_0_rgba(255,255,255,0.02)]',
-          sidebarOpen ? 'translate-x-0' : 'max-md:-translate-x-full',
-          'md:translate-x-0',
+          sidebarOpen ? 'translate-x-0' : 'max-lg:-translate-x-full',
+          'lg:translate-x-0',
         )}
       >
         <div className="flex h-14 items-center justify-between border-b border-[#3d4150] px-4">
@@ -88,7 +88,7 @@ export function Sidebar() {
         <button
           type="button"
           aria-label="Close menu"
-          className="fixed inset-0 z-30 bg-black/60 md:hidden"
+          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       ) : null}
@@ -101,7 +101,7 @@ export function MobileHeaderToggle() {
   return (
     <button
       type="button"
-      className="flex h-9 w-9 items-center justify-center rounded border border-[#3d4150] text-zinc-300 md:hidden"
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-[#3d4150] text-zinc-300 lg:hidden"
       onClick={() => setOpen(true)}
       aria-label="Open menu"
     >

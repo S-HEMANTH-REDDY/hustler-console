@@ -173,7 +173,7 @@ export function BehavioralPage() {
                     {open ? '▼' : '▶'}
                   </button>
                   <input
-                    className="field min-w-[10rem] flex-[2] text-sm"
+                    className="field min-w-0 flex-[2] basis-full text-sm sm:basis-[10rem]"
                     defaultValue={s.title}
                     onBlur={(e) => {
                       void patchBehavioralFields(s.id, {
