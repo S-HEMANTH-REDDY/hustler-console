@@ -23,6 +23,7 @@ import type {
   PassionLink,
   PassionTag,
 } from '../db/types'
+import { docxBlobToHtml, isDocxFile, isLegacyDocFile } from '../lib/docx'
 import { useIntervalTick } from '../hooks/useIntervalTick'
 import { PassionScheduleSection } from './PassionScheduleSection'
 import {
@@ -843,7 +844,21 @@ function AttachmentRow(props: {
   onRemove: () => void
 }) {
   const { attachment } = props
+  const lower = attachment.fileName.toLowerCase()
+  const isPdf = attachment.fileType.includes('pdf') || lower.endsWith('.pdf')
+  const isImage =
+    attachment.fileType.startsWith('image/') ||
+    /\.(png|jpe?g|gif|webp)$/i.test(attachment.fileName)
+  const isText =
+    attachment.fileType.startsWith('text/') ||
+    lower.endsWith('.txt') ||
+    lower.endsWith('.md')
+  const isDocx = isDocxFile(attachment.fileType, attachment.fileName)
+  const isLegacyDoc = isLegacyDocFile(attachment.fileType, attachment.fileName)
+
   const [url, setUrl] = useState<string | null>(null)
+  const [docxHtml, setDocxHtml] = useState<string | null>(null)
+  const [docxError, setDocxError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!props.expanded) return
@@ -856,6 +871,21 @@ function AttachmentRow(props: {
         if (cancelled || !full) return
         blob = full.data
       }
+      if (isDocx) {
+        try {
+          const html = await docxBlobToHtml(blob)
+          if (!cancelled) setDocxHtml(html)
+        } catch (err) {
+          if (!cancelled) {
+            setDocxError(
+              err instanceof Error
+                ? err.message
+                : 'Could not parse Word document.',
+            )
+          }
+        }
+        return
+      }
       objectUrl = URL.createObjectURL(blob)
       setUrl(objectUrl)
     }
@@ -864,18 +894,10 @@ function AttachmentRow(props: {
       cancelled = true
       if (objectUrl) URL.revokeObjectURL(objectUrl)
       setUrl(null)
+      setDocxHtml(null)
+      setDocxError(null)
     }
-  }, [props.expanded, attachment.id, attachment.data])
-
-  const lower = attachment.fileName.toLowerCase()
-  const isPdf = attachment.fileType.includes('pdf') || lower.endsWith('.pdf')
-  const isImage =
-    attachment.fileType.startsWith('image/') ||
-    /\.(png|jpe?g|gif|webp)$/i.test(attachment.fileName)
-  const isText =
-    attachment.fileType.startsWith('text/') ||
-    lower.endsWith('.txt') ||
-    lower.endsWith('.md')
+  }, [props.expanded, attachment.id, attachment.data, isDocx])
 
   return (
     <li className="rounded-md border border-[#3d4150] bg-[#262934]">
@@ -924,26 +946,51 @@ function AttachmentRow(props: {
           ×
         </button>
       </div>
-      {props.expanded && url ? (
-        isPdf || isText ? (
-          <iframe
-            src={url}
-            title={attachment.fileName}
-            className="block w-full border-t border-[#3d4150] bg-[#1c1f27]"
-            style={{ height: 360 }}
-          />
-        ) : isImage ? (
-          <img
-            src={url}
-            alt={attachment.fileName}
-            className="block max-h-[420px] w-full border-t border-[#3d4150] bg-black object-contain"
-          />
-        ) : (
-          <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
-            Inline preview not supported for this type. Use Download / Open.
-          </div>
-        )
-      ) : null}
+      {props.expanded
+        ? isDocx
+          ? docxError ? (
+              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-amber-200">
+                Could not render Word document: {docxError}
+              </div>
+            ) : docxHtml === null ? (
+              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+                Rendering Word document…
+              </div>
+            ) : (
+              <div
+                className="docx-preview block w-full overflow-auto border-t border-[#3d4150] bg-[#f8f7f3] px-6 py-5 text-sm text-zinc-900"
+                style={{ maxHeight: 420 }}
+                dangerouslySetInnerHTML={{ __html: docxHtml }}
+              />
+            )
+          : isLegacyDoc ? (
+            <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+              Legacy <span className="text-zinc-200">.doc</span> files can&apos;t
+              be previewed inline. Re-save as{' '}
+              <span className="text-lime-300">.docx</span> or use Download /
+              Open.
+            </div>
+          ) : url ? (
+            isPdf || isText ? (
+              <iframe
+                src={url}
+                title={attachment.fileName}
+                className="block w-full border-t border-[#3d4150] bg-[#1c1f27]"
+                style={{ height: 360 }}
+              />
+            ) : isImage ? (
+              <img
+                src={url}
+                alt={attachment.fileName}
+                className="block max-h-[420px] w-full border-t border-[#3d4150] bg-black object-contain"
+              />
+            ) : (
+              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+                Inline preview not supported for this type. Use Download / Open.
+              </div>
+            )
+          ) : null
+        : null}
     </li>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { ResumeAttachment } from '../db/types'
+import { docxBlobToHtml, isDocxFile, isLegacyDocFile } from '../lib/docx'
 import { downloadResume, getResume, humanBytes, openResumeInNewTab } from '../lib/resume'
 import { cn } from '../lib/utils'
 
@@ -60,7 +61,21 @@ export function ResumeInlinePreview(props: {
   height?: number
 }) {
   const { attachment } = props
+  const lower = attachment.fileName.toLowerCase()
+  const isPdf = attachment.fileType.includes('pdf') || lower.endsWith('.pdf')
+  const isText =
+    attachment.fileType.startsWith('text/') ||
+    lower.endsWith('.txt') ||
+    lower.endsWith('.md')
+  const isImage =
+    attachment.fileType.startsWith('image/') ||
+    /\.(png|jpe?g|gif|webp|avif)$/i.test(attachment.fileName)
+  const isDocx = isDocxFile(attachment.fileType, attachment.fileName)
+  const isLegacyDoc = isLegacyDocFile(attachment.fileType, attachment.fileName)
+
   const [url, setUrl] = useState<string | null>(null)
+  const [docxHtml, setDocxHtml] = useState<string | null>(null)
+  const [docxError, setDocxError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -72,6 +87,23 @@ export function ResumeInlinePreview(props: {
         if (cancelled || !full) return
         blob = full.data
       }
+      if (isDocx) {
+        // .docx → HTML via mammoth (pure client, images inlined as data URIs)
+        try {
+          const html = await docxBlobToHtml(blob)
+          if (!cancelled) setDocxHtml(html)
+        } catch (err) {
+          if (!cancelled) {
+            setDocxError(
+              err instanceof Error
+                ? err.message
+                : 'Could not parse Word document.',
+            )
+          }
+        }
+        return
+      }
+      // Everything else (PDF, text, image) renders via an object URL.
       objectUrl = URL.createObjectURL(blob)
       setUrl(objectUrl)
     }
@@ -80,16 +112,20 @@ export function ResumeInlinePreview(props: {
       cancelled = true
       if (objectUrl) URL.revokeObjectURL(objectUrl)
     }
-  }, [attachment.id, attachment.data])
+  }, [attachment.id, attachment.data, isDocx])
 
-  const lower = attachment.fileName.toLowerCase()
-  const isPdf =
-    attachment.fileType.includes('pdf') || lower.endsWith('.pdf')
-  const isText =
-    attachment.fileType.startsWith('text/') ||
-    lower.endsWith('.txt') ||
-    lower.endsWith('.md')
   const height = props.height ?? 320
+  const typeLabel = isPdf
+    ? 'PDF'
+    : isText
+      ? 'TEXT'
+      : isDocx
+        ? 'DOCX'
+        : isLegacyDoc
+          ? 'DOC'
+          : isImage
+            ? 'IMG'
+            : attachment.fileType.split('/').pop()?.toUpperCase() || 'FILE'
 
   return (
     <div className="mt-2 overflow-hidden rounded-md border border-[#3d4150] bg-gradient-to-b from-[#1c1f27] to-[#20232c] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
@@ -97,41 +133,141 @@ export function ResumeInlinePreview(props: {
         <span className="truncate">
           {attachment.fileName} · {humanBytes(attachment.fileSize)}
         </span>
-        <span className="uppercase tracking-wider">
-          {isPdf
-            ? 'PDF'
-            : isText
-              ? 'TEXT'
-              : attachment.fileType.split('/').pop()?.toUpperCase() || 'FILE'}
+        <span className="uppercase tracking-wider">{typeLabel}</span>
+      </div>
+      {renderBody({
+        attachment,
+        height,
+        isPdf,
+        isText,
+        isDocx,
+        isLegacyDoc,
+        isImage,
+        url,
+        docxHtml,
+        docxError,
+        lower,
+      })}
+    </div>
+  )
+}
+
+function renderBody(args: {
+  attachment: ResumeAttachment
+  height: number
+  isPdf: boolean
+  isText: boolean
+  isDocx: boolean
+  isLegacyDoc: boolean
+  isImage: boolean
+  url: string | null
+  docxHtml: string | null
+  docxError: string | null
+  lower: string
+}) {
+  const {
+    attachment,
+    height,
+    isPdf,
+    isText,
+    isDocx,
+    isLegacyDoc,
+    isImage,
+    url,
+    docxHtml,
+    docxError,
+    lower,
+  } = args
+
+  if (isDocx) {
+    if (docxError) {
+      return (
+        <div
+          className="px-6 py-10 text-center font-mono text-xs text-amber-200"
+          style={{ minHeight: height }}
+        >
+          Could not render Word document: {docxError}
+        </div>
+      )
+    }
+    if (docxHtml === null) {
+      return (
+        <div className="px-3 py-6 text-center font-mono text-xs text-zinc-400">
+          Rendering Word document…
+        </div>
+      )
+    }
+    return (
+      <div
+        className="docx-preview overflow-auto bg-[#f8f7f3] px-6 py-5 text-sm text-zinc-900"
+        style={{ maxHeight: height }}
+        dangerouslySetInnerHTML={{ __html: docxHtml }}
+      />
+    )
+  }
+
+  if (isLegacyDoc) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center gap-1 px-6 py-10 text-center font-mono text-xs text-zinc-400"
+        style={{ minHeight: height }}
+      >
+        <span>
+          Legacy <span className="text-zinc-200">.doc</span> files can&apos;t be
+          previewed inline.
+        </span>
+        <span className="text-zinc-500">
+          Re-save the file as{' '}
+          <span className="text-lime-300">.docx</span> from Word, or use{' '}
+          <span className="text-lime-300">Download</span> /{' '}
+          <span className="text-lime-300">Open</span>.
         </span>
       </div>
-      {url ? (
-        isPdf || isText ? (
-          <iframe
-            src={url}
-            title={attachment.fileName}
-            style={{ height }}
-            className="block w-full bg-[#1c1f27]"
-          />
-        ) : (
-          <div
-            className="flex items-center justify-center px-6 py-10 text-center font-mono text-xs text-zinc-400"
-            style={{ minHeight: height }}
-          >
-            Inline preview not supported for{' '}
-            <span className="mx-1 text-zinc-300">
-              {attachment.fileType || lower.split('.').pop() || 'this type'}
-            </span>
-            <br />
-            Use <span className="mx-1 text-lime-300">Download</span> or{' '}
-            <span className="mx-1 text-lime-300">Open</span> to view.
-          </div>
-        )
-      ) : (
-        <div className="px-3 py-6 text-center font-mono text-xs text-zinc-400">
-          Loading…
-        </div>
-      )}
+    )
+  }
+
+  if (!url) {
+    return (
+      <div className="px-3 py-6 text-center font-mono text-xs text-zinc-400">
+        Loading…
+      </div>
+    )
+  }
+
+  if (isPdf || isText) {
+    return (
+      <iframe
+        src={url}
+        title={attachment.fileName}
+        style={{ height }}
+        className="block w-full bg-[#1c1f27]"
+      />
+    )
+  }
+
+  if (isImage) {
+    return (
+      <img
+        src={url}
+        alt={attachment.fileName}
+        className="block max-h-[420px] w-full bg-black object-contain"
+        style={{ maxHeight: height }}
+      />
+    )
+  }
+
+  return (
+    <div
+      className="flex items-center justify-center px-6 py-10 text-center font-mono text-xs text-zinc-400"
+      style={{ minHeight: height }}
+    >
+      Inline preview not supported for{' '}
+      <span className="mx-1 text-zinc-300">
+        {attachment.fileType || lower.split('.').pop() || 'this type'}
+      </span>
+      <br />
+      Use <span className="mx-1 text-lime-300">Download</span> or{' '}
+      <span className="mx-1 text-lime-300">Open</span> to view.
     </div>
   )
 }

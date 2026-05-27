@@ -184,6 +184,57 @@ input[type='time'].field {
   border-radius: 4px;
 }
 
+/* mammoth-rendered Word documents · a light, readable panel that doesn't
+   inherit the app's dark theme so the page contents stay legible. */
+.docx-preview {
+  font-family: var(--font-sans);
+  line-height: 1.55;
+}
+.docx-preview p {
+  margin: 0 0 0.6em;
+}
+.docx-preview h1,
+.docx-preview h2,
+.docx-preview h3,
+.docx-preview h4 {
+  font-weight: 600;
+  margin: 1em 0 0.4em;
+  line-height: 1.25;
+}
+.docx-preview h1 {
+  font-size: 1.4rem;
+}
+.docx-preview h2 {
+  font-size: 1.2rem;
+}
+.docx-preview h3 {
+  font-size: 1.05rem;
+}
+.docx-preview a {
+  color: #1e5fb4;
+  text-decoration: underline;
+}
+.docx-preview ul,
+.docx-preview ol {
+  margin: 0 0 0.8em 1.4em;
+}
+.docx-preview li {
+  margin-bottom: 0.2em;
+}
+.docx-preview table {
+  border-collapse: collapse;
+  margin: 0.6em 0;
+}
+.docx-preview td,
+.docx-preview th {
+  border: 1px solid #d4d2c8;
+  padding: 4px 8px;
+}
+.docx-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
 .hairline {
   background: linear-gradient(
     to right,
