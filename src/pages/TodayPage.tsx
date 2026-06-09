@@ -91,10 +91,18 @@ export function TodayPage() {
     return computePace(tick, todayApps.length, settings)
   }, [settings, tick, todayApps.length])
 
+  const firstAppMs = useMemo(() => {
+    if (todayApps.length === 0) return null
+    return todayApps.reduce(
+      (min, a) => (a.createdAt < min ? a.createdAt : min),
+      todayApps[0].createdAt,
+    )
+  }, [todayApps])
+
   const tput = useMemo(() => {
     if (!settings) return null
-    return throughput(tick, todayApps.length, settings)
-  }, [settings, tick, todayApps.length])
+    return throughput(tick, todayApps.length, settings, firstAppMs)
+  }, [settings, tick, todayApps.length, firstAppMs])
 
   const trends = useMemo(
     () => trendStats(applications, tick),
@@ -287,24 +295,32 @@ export function TodayPage() {
               <ThroughputTile
                 label="Logged today"
                 value={`${pace.todayCount} APS`}
-                hint={`since ${winStart} · ${tput.rate.toFixed(1)}/hr live`}
+                hint={
+                  tput.measuring && tput.activeSinceMs
+                    ? `${tput.rate.toFixed(1)}/hr since first APS at ${formatHm(tput.activeSinceMs)}`
+                    : pace.todayCount === 1 && tput.activeSinceMs
+                      ? `started ${formatHm(tput.activeSinceMs)} · log 1 more for a rate`
+                      : 'log your first APS to start the clock'
+                }
               />
               <ThroughputTile
                 label="Forecast by 11:59 PM"
-                value={`${tput.projected.toFixed(0)} APS`}
+                value={tput.measuring ? `${tput.projected.toFixed(0)} APS` : '—'}
                 hint={
-                  tput.projected >= dailyMin
-                    ? `On track for the ${dailyMin}–${dailyMax} band`
-                    : tput.projected > 0
-                      ? `Below ${dailyMin} at this pace`
+                  tput.measuring
+                    ? tput.projected >= dailyMin
+                      ? `On track for the ${dailyMin}–${dailyMax} band`
+                      : `Below ${dailyMin} at this pace`
+                    : pace.todayCount > 0
+                      ? 'Need 2+ APS to project a finish'
                       : 'No pace yet · log one to start'
                 }
                 valueClass={
-                  tput.projected >= dailyMin
-                    ? 'text-lime-300'
-                    : tput.projected > 0
-                      ? 'text-amber-300'
-                      : 'text-zinc-300'
+                  !tput.measuring
+                    ? 'text-zinc-300'
+                    : tput.projected >= dailyMin
+                      ? 'text-lime-300'
+                      : 'text-amber-300'
                 }
               />
               <ThroughputTile
@@ -642,6 +658,10 @@ function Card(props: {
       {props.children}
     </div>
   )
+}
+
+function formatHm(ms: number): string {
+  return format(new Date(ms), 'HH:mm')
 }
 
 function ThroughputTile(props: {

@@ -76,9 +76,13 @@ export function trendStats(
 }
 
 export interface ThroughputStats {
-  /** Apps per hour so far during work window. 0 if window not started. */
+  /**
+   * Sustained apps/hour measured from the FIRST application of the day (the
+   * real start of activity), not from the work-window start. 0 until there is
+   * a measurable span.
+   */
   rate: number
-  /** Projected total at window end at current rate. */
+  /** Projected total by window end: what's done + sustained rate × time left. */
   projected: number
   /** Apps per hour needed to hit dailyMin from now. 0 if already met. */
   recoveryRate: number
@@ -88,34 +92,60 @@ export interface ThroughputStats {
   hoursRemaining: number
   /** Whether the work window is currently active. */
   windowActive: boolean
+  /** Epoch ms of the first application today — the anchor the rate starts from. */
+  activeSinceMs: number | null
+  /** True once there's enough activity (≥2 apps over a real span) for a live rate. */
+  measuring: boolean
 }
 
 export function throughput(
   now: Date,
   todayCount: number,
   settings: SettingsRow,
+  firstAppMs?: number | null,
 ): ThroughputStats {
   const startM = toMinutes(settings.windowStart)
   const endM = toMinutes(settings.windowEnd)
   const nowM = now.getHours() * 60 + now.getMinutes()
   const totalMin = Math.max(1, endM - startM)
-  const elapsedMin = Math.min(totalMin, Math.max(0, nowM - startM))
-  const remainingMin = Math.max(0, totalMin - elapsedMin)
-  const elapsedHrs = elapsedMin / 60
+  // Time left until the work-window end (used for forecast + recovery/push).
+  const remainingMin = Math.max(0, Math.min(totalMin, endM - nowM))
   const remainingHrs = remainingMin / 60
-  const rate = elapsedHrs > 0 ? todayCount / elapsedHrs : 0
-  const projected = round1(rate * (totalMin / 60))
+
+  // Realistic rate: anchor the clock on the first application of the day rather
+  // than the window start, so the dead time before someone starts applying
+  // (e.g. nothing until 1pm) doesn't drag the rate toward 0. A single app has
+  // no measurable span, so we wait for at least two before showing a live rate.
+  const anchorMs = firstAppMs ?? null
+  let rate = 0
+  let measuring = false
+  if (anchorMs != null && todayCount >= 2) {
+    const activeHrs = Math.max(0, now.getTime() - anchorMs) / 3_600_000
+    if (activeHrs >= 1 / 60) {
+      rate = round1(todayCount / activeHrs)
+      measuring = true
+    }
+  }
+
+  // Forecast from what's already logged plus the sustained rate over the time
+  // left — not a naive rate × full-window which assumes you started at open.
+  const projected = measuring
+    ? round1(todayCount + rate * remainingHrs)
+    : todayCount
+
   const needForMin = Math.max(0, settings.dailyMin - todayCount)
   const needForMax = Math.max(0, settings.dailyMax - todayCount)
   const recoveryRate = remainingHrs > 0 ? round1(needForMin / remainingHrs) : 0
   const pushRate = remainingHrs > 0 ? round1(needForMax / remainingHrs) : 0
   return {
-    rate: round1(rate),
-    projected: Number.isFinite(projected) ? projected : 0,
+    rate,
+    projected: Number.isFinite(projected) ? projected : todayCount,
     recoveryRate,
     pushRate,
     hoursRemaining: round1(remainingHrs),
     windowActive: nowM >= startM && nowM < endM,
+    activeSinceMs: anchorMs,
+    measuring,
   }
 }
 
