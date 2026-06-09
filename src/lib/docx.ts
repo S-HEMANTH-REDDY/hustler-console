@@ -1,6 +1,23 @@
-// Use the prebuilt browser bundle so Vite doesn't try to resolve
-// Node-only deps like `path-is-absolute` or `@xmldom/xmldom`.
-import mammoth from 'mammoth/mammoth.browser'
+// mammoth is heavy (~hundreds of KB) and only needed when a user actually
+// previews a .docx. Load it lazily via dynamic import so it stays out of the
+// main bundle and the app's first paint is fast.
+type MammothModule = {
+  convertToHtml: (
+    input: { arrayBuffer: ArrayBuffer },
+    options?: Record<string, unknown>,
+  ) => Promise<{ value: string }>
+}
+
+let mammothPromise: Promise<MammothModule> | null = null
+function loadMammoth(): Promise<MammothModule> {
+  if (!mammothPromise) {
+    // Prebuilt browser bundle avoids Node-only deps (@xmldom/xmldom, etc.).
+    mammothPromise = import('mammoth/mammoth.browser').then(
+      (m) => (m.default ?? m) as MammothModule,
+    )
+  }
+  return mammothPromise
+}
 
 /** Return true if the file looks like a Word `.docx` document. */
 export function isDocxFile(
@@ -27,6 +44,7 @@ export function isLegacyDocFile(
  */
 export async function docxBlobToHtml(blob: Blob): Promise<string> {
   const arrayBuffer = await blob.arrayBuffer()
+  const mammoth = await loadMammoth()
   const result = await mammoth.convertToHtml({ arrayBuffer })
   return result.value || ''
 }
