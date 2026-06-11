@@ -588,7 +588,7 @@ function TipsCard() {
           </li>
           <li>
             <span className="font-mono text-cyan-300">Shallow batches</span>:
-            inbox, APS, code review queue. Batch the small things
+            inbox, applications, code review queue. Batch the small things
             into one focus block instead of context-switching all day.
           </li>
           <li>

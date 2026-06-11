@@ -83,14 +83,14 @@ function SettingsEditor(props: { settings: SettingsRow }) {
       <section className="space-y-4 rounded border border-[#3d4150] bg-[#262934] p-4">
         <p className="rounded border border-[#3d4150]/60 bg-[#20232c]/60 p-3 text-xs leading-relaxed text-zinc-400">
           <span className="font-mono uppercase tracking-wider text-zinc-300">
-            APS quota
+            Application quota
           </span>{' '}
           is the count of applications you log per day.{' '}
           <span className="font-mono text-zinc-300">Window start/end</span>{' '}
           defines what counts as &ldquo;today&rdquo; for pace and rate. Default
           is <span className="font-mono text-lime-300">00:00 → 23:59</span>{' '}
           (full calendar day, 12:00 AM to 11:59 PM) so you have the entire day
-          to hit your {draft.dailyMin}–{draft.dailyMax} APS goal. The{' '}
+          to hit your {draft.dailyMin}–{draft.dailyMax} applications goal. The{' '}
           <span className="font-mono text-lime-300">
             {sweetSpot(draft.dailyMin, draft.dailyMax).min}–
             {sweetSpot(draft.dailyMin, draft.dailyMax).max}

@@ -38,7 +38,7 @@ const EMPTY_RESUMES: ResumeAttachment[] = []
 const EMPTY_IDEAS: PassionIdea[] = []
 const EMPTY_PASSION_ATTACH: PassionAttachment[] = []
 
-/** Settings for dashboard / APS — Postgres when authenticated with Supabase. */
+/** Settings for dashboard / applications — Postgres when authenticated with Supabase. */
 export function useSettingsRowHybrid(): SettingsRow | undefined {
   const cloud = useCloudDataMode()
   const bump = useCloudSyncTick()
@@ -66,7 +66,7 @@ export function useSettingsRowHybrid(): SettingsRow | undefined {
   return cloud ? remote : localRow ?? undefined
 }
 
-/** `byCreated` mirrors the APS table · `unordered` matches Dexie `toArray()` (insights, Today page). */
+/** `byCreated` mirrors the Applications table · `unordered` matches Dexie `toArray()` (insights, Today page). */
 export function useApplicationsHybrid(
   order: 'byCreated' | 'unordered' = 'unordered',
 ): Application[] {

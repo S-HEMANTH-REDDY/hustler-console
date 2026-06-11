@@ -213,7 +213,7 @@ export function TodayPage() {
               className="text-xs font-medium uppercase tracking-wider text-zinc-400"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              APS today · goal {dailyMin}–{dailyMax} · sweet spot {sweet.min}–{sweet.max}
+              Applications today · goal {dailyMin}–{dailyMax} · sweet spot {sweet.min}–{sweet.max}
             </p>
             <div className="mt-1 flex flex-wrap items-baseline gap-3">
               <PaceHeroNumber count={pace.todayCount} state={pace.state} />
@@ -241,9 +241,9 @@ export function TodayPage() {
               {pace.statusLine}
             </p>
             <p className="mt-2 max-w-xl text-xs text-zinc-400">
-              <span className="font-mono">APS = applications.</span> Your day
+              <span className="font-mono">Applications you log.</span> Your day
               runs <span className="text-zinc-200 font-mono">12:00 AM → 11:59 PM</span>.
-              Goal: log <span className="text-lime-300 font-mono">{dailyMin}–{dailyMax} APS</span>{' '}
+              Goal: log <span className="text-lime-300 font-mono">{dailyMin}–{dailyMax} applications</span>{' '}
               before midnight ·{' '}
               <span className="text-lime-300 font-mono">{sweet.min}–{sweet.max}</span> is the
               sweet spot.
@@ -270,7 +270,7 @@ export function TodayPage() {
               to="/applications#quick-log"
               className="btn-primary rounded-md px-5 py-3 text-center text-sm font-semibold"
             >
-              + Log APS
+              + Log application
               <span className="ml-2 rounded border border-lime-800/50 bg-lime-100/20 px-1 py-0.5 font-mono text-xs text-lime-950">
                 A
               </span>
@@ -297,25 +297,25 @@ export function TodayPage() {
             <div className="relative mt-2 grid gap-px overflow-hidden rounded border border-[#3d4150] bg-[#3d4150] sm:grid-cols-2 lg:grid-cols-4">
               <ThroughputTile
                 label="Logged today"
-                value={`${pace.todayCount} APS`}
+                value={`${pace.todayCount} applications`}
                 hint={
                   tput.measuring && tput.activeSinceMs
-                    ? `${tput.rate.toFixed(1)}/hr since first APS at ${formatHm(tput.activeSinceMs)}`
+                    ? `${tput.rate.toFixed(1)}/hr since first application at ${formatHm(tput.activeSinceMs)}`
                     : pace.todayCount === 1 && tput.activeSinceMs
                       ? `started ${formatHm(tput.activeSinceMs)} · log 1 more for a rate`
-                      : 'log your first APS to start the clock'
+                      : 'log your first application to start the clock'
                 }
               />
               <ThroughputTile
                 label="Forecast by 11:59 PM"
-                value={tput.measuring ? `${tput.projected.toFixed(0)} APS` : '—'}
+                value={tput.measuring ? `${tput.projected.toFixed(0)} applications` : '—'}
                 hint={
                   tput.measuring
                     ? tput.projected >= dailyMin
                       ? `On track for the ${dailyMin}–${dailyMax} band`
                       : `Below ${dailyMin} at this pace`
                     : pace.todayCount > 0
-                      ? 'Need 2+ APS to project a finish'
+                      ? 'Need 2+ applications to project a finish'
                       : 'No pace yet · log one to start'
                 }
                 valueClass={
@@ -330,7 +330,7 @@ export function TodayPage() {
                 label={`To hit minimum (${dailyMin})`}
                 value={
                   tput.recoveryRate > 0
-                    ? `+${Math.max(0, dailyMin - pace.todayCount)} APS`
+                    ? `+${Math.max(0, dailyMin - pace.todayCount)} applications`
                     : 'Done'
                 }
                 hint={
@@ -346,7 +346,7 @@ export function TodayPage() {
                 label={`To hit max (${dailyMax})`}
                 value={
                   tput.pushRate > 0
-                    ? `+${Math.max(0, dailyMax - pace.todayCount)} APS`
+                    ? `+${Math.max(0, dailyMax - pace.todayCount)} applications`
                     : 'Max hit'
                 }
                 hint={
@@ -383,7 +383,7 @@ export function TodayPage() {
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Kpi
-          label="APS"
+          label="Applications"
           primary={`${todayApps.length} / ${dailyMin}`}
           secondary={`goal band ${dailyMin}–${dailyMax}`}
         />
@@ -446,7 +446,7 @@ export function TodayPage() {
               className="text-xs font-medium uppercase tracking-wider text-zinc-400"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              Last 30 days · APS volume
+              Last 30 days · application volume
             </h2>
             <p className="mt-0.5 text-xs text-zinc-400">
               Each square is one day (12 AM–11:59 PM) · color = how close to the {dailyMin}–{dailyMax} goal · today on the right
@@ -460,7 +460,7 @@ export function TodayPage() {
           dailyMax={dailyMax}
         />
         <div className="mt-4 grid gap-2 sm:grid-cols-4">
-          <Delta label="Today" value={trends.today} muted="APS" />
+          <Delta label="Today" value={trends.today} muted="apps" />
           <Delta
             label="vs yesterday"
             value={trends.deltaVsYesterday}
@@ -487,7 +487,7 @@ export function TodayPage() {
 
         <Card title="Pipeline">
           {applications.length === 0 ? (
-            <p className="text-sm text-zinc-400">No APS yet.</p>
+            <p className="text-sm text-zinc-400">No applications yet.</p>
           ) : (
             <>
               <FunnelMini stages={funnelStages} />
@@ -521,7 +521,7 @@ export function TodayPage() {
         <Card title="Source mix · today">
           <MiniBars
             items={sourceMixToday}
-            emptyLabel="No APS logged today yet."
+            emptyLabel="No applications logged today yet."
           />
         </Card>
         <Card title="Today's log">
@@ -532,7 +532,7 @@ export function TodayPage() {
                 to="/applications#quick-log"
                 className="text-lime-400/90 hover:underline"
               >
-                log your first APS
+                log your first application
               </Link>
             </p>
           ) : (
@@ -604,7 +604,7 @@ export function TodayPage() {
                 to="/applications"
                 className="text-zinc-400 hover:text-lime-300"
               >
-                APS
+                Applications
               </Link>
             </p>
           ) : null}
@@ -620,7 +620,7 @@ export function TodayPage() {
         <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           A
         </kbd>{' '}
-        to log APS ·{' '}
+        to log applications ·{' '}
         <kbd className="rounded border border-[#3d4150] bg-[#262934] px-1 py-0.5 text-xs text-zinc-400">
           g
         </kbd>{' '}
@@ -817,7 +817,7 @@ function SelectedDayPanel(props: {
       </span>
       <span className="text-zinc-400">|</span>
       <span>
-        <span className="text-zinc-400">APS </span>
+        <span className="text-zinc-400">Apps </span>
         <span className={cn('tabular-nums', appsClass)}>{apps}</span>
         <span className="text-zinc-400">/{props.dailyMin}</span>
       </span>

@@ -137,7 +137,7 @@ export function AuthPage() {
             Hustler
           </h1>
           <p className="mt-1 font-mono text-xs uppercase tracking-wider text-zinc-400">
-            APS · DSA · Behavioral · Passion · all in one dashboard
+            Applications · DSA · Behavioral · Passion · all in one dashboard
           </p>
         </div>
 

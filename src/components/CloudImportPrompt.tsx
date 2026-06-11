@@ -107,7 +107,7 @@ export function CloudImportPrompt() {
           This browser still has data in{' '}
           <span className="font-mono text-zinc-300">IndexedDB</span>. Your cloud
           workspace is empty — copy everything from this device into your account
-          now (resumes, APS, DSA, Passion, etc.).{' '}
+          now (resumes, applications, DSA, Passion, etc.).{' '}
           <span className="text-zinc-500">
             Skip if you intend to start fresh online.
           </span>

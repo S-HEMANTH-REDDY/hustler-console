@@ -5,7 +5,7 @@ export type PaceState = 'idle' | 'onPace' | 'behind' | 'pastMax'
 export interface PaceComputation {
   state: PaceState
   todayCount: number
-  /** Expected cumulative APS by now to finish at dailyMin by window end */
+  /** Expected cumulative applications by now to finish at dailyMin by window end */
   expectedNow: number
   delta: number
   fraction: number
@@ -89,12 +89,12 @@ export function computePace(
     state = 'idle'
     statusLine = beforeStart
       ? `Day starts at ${settings.windowStart} · ${formatClock(now)}`
-      : `Day just started · log your first APS · ${formatClock(now)}`
+      : `Day just started · log your first application · ${formatClock(now)}`
   } else if (todayCount + tol < expectedNow) {
     state = 'behind'
     const behind = Math.max(1, Math.ceil(expectedNow - todayCount))
     const togo = Math.max(0, settings.dailyMin - todayCount)
-    statusLine = `Behind by ${behind} APS · ${togo} more to hit ${settings.dailyMin} · ${formatClock(now)}`
+    statusLine = `Behind by ${behind} applications · ${togo} more to hit ${settings.dailyMin} · ${formatClock(now)}`
   } else if (todayCount >= expectedNow - tol) {
     state = 'onPace'
     const togo = Math.max(0, settings.dailyMin - todayCount)

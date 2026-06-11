@@ -106,7 +106,7 @@ export function ApplicationsPage() {
   }
 
   async function remove(id: string) {
-    if (!window.confirm('Delete this APS row?')) return
+    if (!window.confirm('Delete this application row?')) return
     await deleteApplicationAndResume(id)
     pushToast('delete', 'Deleted')
   }
@@ -138,7 +138,7 @@ export function ApplicationsPage() {
             className="text-xl font-semibold text-zinc-100"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            APS · Applications
+            Applications
           </h1>
           <p className="text-sm text-zinc-400">
             Quick log · pipeline · history · {' '}
