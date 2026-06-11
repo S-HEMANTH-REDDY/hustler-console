@@ -15,7 +15,7 @@ import type {
 
 export const DEFAULT_SETTINGS: SettingsRow = {
   id: 'default',
-  dailyMin: 30,
+  dailyMin: 25,
   dailyMax: 50,
   // Full calendar day: 12:00 AM → 11:59 PM. The whole day is the quota window.
   windowStart: '00:00',

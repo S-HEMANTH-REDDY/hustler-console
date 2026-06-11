@@ -36,7 +36,7 @@ import {
   throughput,
   trendStats,
 } from '../lib/insights'
-import { computePace } from '../lib/pace'
+import { computePace, sweetSpot } from '../lib/pace'
 import { cn } from '../lib/utils'
 
 const SOURCE_COLORS: Record<ApplicationSource, string> = {
@@ -72,8 +72,9 @@ export function TodayPage() {
     [applications, today],
   )
 
-  const dailyMin = settings?.dailyMin ?? 30
+  const dailyMin = settings?.dailyMin ?? 25
   const dailyMax = settings?.dailyMax ?? 50
+  const sweet = sweetSpot(dailyMin, dailyMax)
   const winStart = settings?.windowStart ?? '00:00'
   const winEnd = settings?.windowEnd ?? '23:59'
 
@@ -81,7 +82,7 @@ export function TodayPage() {
     if (!settings) {
       return computePace(tick, todayApps.length, {
         id: 'default',
-        dailyMin: 30,
+        dailyMin: 25,
         dailyMax: 50,
         windowStart: '00:00',
         windowEnd: '23:59',
@@ -212,7 +213,7 @@ export function TodayPage() {
               className="text-xs font-medium uppercase tracking-wider text-zinc-400"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              APS today · goal {dailyMin}–{dailyMax}
+              APS today · goal {dailyMin}–{dailyMax} · sweet spot {sweet.min}–{sweet.max}
             </p>
             <div className="mt-1 flex flex-wrap items-baseline gap-3">
               <PaceHeroNumber count={pace.todayCount} state={pace.state} />
@@ -243,7 +244,9 @@ export function TodayPage() {
               <span className="font-mono">APS = applications.</span> Your day
               runs <span className="text-zinc-200 font-mono">12:00 AM → 11:59 PM</span>.
               Goal: log <span className="text-lime-300 font-mono">{dailyMin}–{dailyMax} APS</span>{' '}
-              before midnight.
+              before midnight ·{' '}
+              <span className="text-lime-300 font-mono">{sweet.min}–{sweet.max}</span> is the
+              sweet spot.
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-stretch gap-3 md:items-end">

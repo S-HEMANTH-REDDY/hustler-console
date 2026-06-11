@@ -32,7 +32,7 @@ export function TopBar() {
   const grad = weeksToGraduation(tick)
   const clock = format(secondTick, 'HH:mm:ss')
 
-  const dailyMin = settings?.dailyMin ?? 30
+  const dailyMin = settings?.dailyMin ?? 25
   const streak = computeApplicationStreak(applications, dailyMin, tick)
   const avg7 = rollingAvgLastNDays(applications, 7, tick)
   const trends = trendStats(applications, tick)

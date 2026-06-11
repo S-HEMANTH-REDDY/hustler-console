@@ -4,6 +4,7 @@ import { persistSettings, resetAllDataEverywhere } from '../cloud/mutations'
 import { exportBackup, importBackup } from '../db/backup'
 import { SCHEMA_VERSION, type SettingsRow } from '../db/types'
 import { recordBackupNow } from '../lib/insights'
+import { sweetSpot } from '../lib/pace'
 import { useUiStore } from '../store/uiStore'
 
 export function SettingsPage() {
@@ -89,7 +90,12 @@ function SettingsEditor(props: { settings: SettingsRow }) {
           defines what counts as &ldquo;today&rdquo; for pace and rate. Default
           is <span className="font-mono text-lime-300">00:00 → 23:59</span>{' '}
           (full calendar day, 12:00 AM to 11:59 PM) so you have the entire day
-          to hit your {draft.dailyMin}–{draft.dailyMax} APS goal.
+          to hit your {draft.dailyMin}–{draft.dailyMax} APS goal. The{' '}
+          <span className="font-mono text-lime-300">
+            {sweetSpot(draft.dailyMin, draft.dailyMax).min}–
+            {sweetSpot(draft.dailyMin, draft.dailyMax).max}
+          </span>{' '}
+          sweet spot (the middle of your band) is the ideal daily target.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="space-y-1">

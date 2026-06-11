@@ -12,6 +12,22 @@ export interface PaceComputation {
   statusLine: string
 }
 
+/**
+ * The "sweet spot" — the ideal sub-band inside the [dailyMin, dailyMax] range
+ * where effort and quality balance out. Derived from the goal band (middle
+ * 40–60%), so for the default 25–50 range it lands on 35–40 and scales
+ * sensibly if the user changes their min/max.
+ */
+export function sweetSpot(
+  dailyMin: number,
+  dailyMax: number,
+): { min: number; max: number } {
+  const range = Math.max(0, dailyMax - dailyMin)
+  const min = Math.round(dailyMin + range * 0.4)
+  const max = Math.round(dailyMin + range * 0.6)
+  return { min, max: Math.max(min, max) }
+}
+
 function parseHm(s: string): { h: number; m: number } {
   const [h, m] = s.split(':').map(Number)
   return { h: h ?? 0, m: m ?? 0 }

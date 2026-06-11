@@ -1,4 +1,5 @@
 import type { PaceComputation, PaceState } from '../lib/pace'
+import { sweetSpot } from '../lib/pace'
 import { cn } from '../lib/utils'
 
 function stateColors(state: PaceState): {
@@ -45,6 +46,9 @@ export function PaceBar(props: {
   const scaleMax = headroom
   const idealStartPct = (dailyMin / scaleMax) * 100
   const idealEndPct = (dailyMax / scaleMax) * 100
+  const sweet = sweetSpot(dailyMin, dailyMax)
+  const sweetStartPct = (sweet.min / scaleMax) * 100
+  const sweetEndPct = (sweet.max / scaleMax) * 100
   const actualPct = Math.min(100, (pace.todayCount / scaleMax) * 100)
   const nowPct = Math.min(100, (pace.expectedNow / scaleMax) * 100)
   const colors = stateColors(pace.state)
@@ -63,6 +67,15 @@ export function PaceBar(props: {
             left: `${idealStartPct}%`,
             width: `${Math.max(0, idealEndPct - idealStartPct)}%`,
           }}
+        />
+        {/* sweet spot (brighter band within the ideal band) */}
+        <div
+          className="absolute inset-y-0 bg-lime-400/30"
+          style={{
+            left: `${sweetStartPct}%`,
+            width: `${Math.max(0, sweetEndPct - sweetStartPct)}%`,
+          }}
+          title={`Sweet spot ${sweet.min}–${sweet.max}`}
         />
         {/* tick marks */}
         {ticks.map((v) => (
@@ -117,6 +130,10 @@ export function PaceBar(props: {
           Scale 0–{scaleMax} · Band{' '}
           <span className="text-lime-400/90">
             {dailyMin}–{dailyMax}
+          </span>{' '}
+          · Sweet spot{' '}
+          <span className="text-lime-300">
+            {sweet.min}–{sweet.max}
           </span>
         </span>
         <span>
