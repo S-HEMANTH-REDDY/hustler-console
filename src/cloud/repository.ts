@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase'
 import type {
   Application,
+  BehavioralAttachment,
   BehavioralStory,
   DsaProblem,
   LifeTask,
@@ -914,6 +915,99 @@ export async function upsertPassionSchedule(doc: PassionScheduleDoc): Promise<vo
   bumpCloudSync()
 }
 
+/** Metadata only — use `getBehavioralAttachment` when bytes are needed. */
+export async function fetchBehavioralAttachmentsMeta(): Promise<
+  BehavioralAttachment[]
+> {
+  const userId = await requireUser()
+  const { data, error } = await sb()
+    .from('behavioral_attachments')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    fileName: r.file_name as string,
+    fileType: r.file_type as string,
+    fileSize: Number(r.file_size),
+    data: new Blob([], { type: String(r.file_type) }),
+    createdAt: tsFromIso(r.created_at as string),
+  }))
+}
+
+export async function getBehavioralAttachment(
+  id: string,
+): Promise<BehavioralAttachment | undefined> {
+  const userId = await requireUser()
+  const { data, error } = await sb()
+    .from('behavioral_attachments')
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (error || !data) return undefined
+  const dl = await sb()
+    .storage.from('passion')
+    .download(data.storage_path as string)
+  if (dl.error) throw dl.error
+  return {
+    id: data.id as string,
+    fileName: data.file_name as string,
+    fileType: data.file_type as string,
+    fileSize: Number(data.file_size),
+    data: dl.data,
+    createdAt: tsFromIso(data.created_at as string),
+  }
+}
+
+export async function uploadBehavioralAttachment(
+  id: string,
+  file: File,
+): Promise<void> {
+  const userId = await requireUser()
+  const path = passionObjectPath(userId, id, file.name)
+  const { error: upErr } = await sb().storage
+    .from('passion')
+    .upload(path, file, { upsert: true, contentType: file.type || undefined })
+  if (upErr) throw upErr
+  const { error: dbErr } = await sb().from('behavioral_attachments').upsert(
+    {
+      id,
+      user_id: userId,
+      file_name: file.name,
+      file_type: file.type || 'application/octet-stream',
+      file_size: file.size,
+      storage_path: path,
+      created_at: isoFromMs(Date.now()),
+    },
+    { onConflict: 'id' },
+  )
+  if (dbErr) throw dbErr
+  bumpCloudSync()
+}
+
+export async function deleteBehavioralAttachmentRecord(
+  id: string,
+): Promise<void> {
+  const userId = await requireUser()
+  const { data } = await sb()
+    .from('behavioral_attachments')
+    .select('storage_path')
+    .eq('id', id)
+    .eq('user_id', userId)
+    .maybeSingle()
+  if (data?.storage_path) {
+    await sb().storage.from('passion').remove([data.storage_path as string])
+  }
+  await sb()
+    .from('behavioral_attachments')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId)
+  bumpCloudSync()
+}
+
 export async function deleteAllUserCloudData(): Promise<void> {
   const userId = await requireUser()
 
@@ -936,6 +1030,7 @@ export async function deleteAllUserCloudData(): Promise<void> {
   await sb().from('passion_ideas').delete().eq('user_id', userId)
   await sb().from('resume_files').delete().eq('user_id', userId)
   await sb().from('passion_attachments').delete().eq('user_id', userId)
+  await sb().from('behavioral_attachments').delete().eq('user_id', userId)
   await sb().from('passion_schedule').delete().eq('user_id', userId)
   await sb().from('settings').delete().eq('user_id', userId)
   bumpCloudSync()

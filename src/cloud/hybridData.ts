@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { db, ensureDefaults, ensurePassionScheduleDoc } from '../db/database'
 import type {
   Application,
+  BehavioralAttachment,
   BehavioralStory,
   DsaProblem,
   LifeTask,
@@ -16,6 +17,7 @@ import type {
 import { useCloudDataMode } from './active'
 import {
   fetchApplications,
+  fetchBehavioralAttachmentsMeta,
   fetchBehavioralStories,
   fetchDsaProblems,
   fetchPassionAttachmentsMeta,
@@ -37,6 +39,7 @@ const EMPTY_TASKS: LifeTask[] = []
 const EMPTY_RESUMES: ResumeAttachment[] = []
 const EMPTY_IDEAS: PassionIdea[] = []
 const EMPTY_PASSION_ATTACH: PassionAttachment[] = []
+const EMPTY_BEHAVIORAL_ATTACH: BehavioralAttachment[] = []
 
 /** Settings for dashboard / applications — Postgres when authenticated with Supabase. */
 export function useSettingsRowHybrid(): SettingsRow | undefined {
@@ -253,6 +256,29 @@ export function usePassionAttachmentsHybrid(): PassionAttachment[] {
     }
   }, [cloud, bump])
   return cloud ? remote : local ?? EMPTY_PASSION_ATTACH
+}
+
+export function useBehavioralAttachmentsHybrid(): BehavioralAttachment[] {
+  const cloud = useCloudDataMode()
+  const bump = useCloudSyncTick()
+  const local = useLiveQuery(() => db.behavioralAttachments.toArray(), [])
+  const [remote, setRemote] = useState<BehavioralAttachment[]>([])
+  useEffect(() => {
+    if (!cloud) {
+      setRemote([])
+      return
+    }
+    let cancelled = false
+    void fetchBehavioralAttachmentsMeta().then((rows) => {
+      if (!cancelled) setRemote(rows)
+    }).catch(() => {
+      if (!cancelled) setRemote([])
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [cloud, bump])
+  return cloud ? remote : local ?? EMPTY_BEHAVIORAL_ATTACH
 }
 
 /** Editable Passion timetables · Postgres row per user (RLS); local Dexie when offline. */

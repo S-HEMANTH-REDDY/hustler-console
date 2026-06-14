@@ -3,6 +3,7 @@ import { createEmptyPassionScheduleDoc, normalizePassionScheduleDoc } from '../l
 import type {
   Application,
   BehavioralStory,
+  BehavioralAttachment,
   DsaProblem,
   LifeTask,
   PassionAttachment,
@@ -36,6 +37,7 @@ export class ExecutionDB extends Dexie {
   resumeFiles!: Table<ResumeAttachment, string>
   passionIdeas!: Table<PassionIdea, string>
   passionAttachments!: Table<PassionAttachment, string>
+  behavioralAttachments!: Table<BehavioralAttachment, string>
   passionSchedule!: Table<PassionScheduleDoc, string>
   settings!: Table<SettingsRow, string>
 
@@ -151,6 +153,22 @@ export class ExecutionDB extends Dexie {
             },
           )
       })
+
+    this.version(8).stores({
+      applications:
+        'id, date, company, status, resumeFileId, createdAt',
+      dsaProblems: 'id, date, topic, difficulty, createdAt',
+      systemDesignProblems:
+        'id, date, topic, kind, difficulty, createdAt',
+      behavioralStories: 'id, category, status, updatedAt',
+      tasks: 'id, priority, recurrence, dueDate, createdAt',
+      resumeFiles: 'id, fileName, createdAt',
+      passionIdeas: 'id, tag, title, updatedAt, createdAt',
+      passionAttachments: 'id, fileName, createdAt',
+      behavioralAttachments: 'id, fileName, createdAt',
+      passionSchedule: 'id, updatedAt',
+      settings: 'id',
+    })
   }
 }
 

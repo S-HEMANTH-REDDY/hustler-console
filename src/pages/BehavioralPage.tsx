@@ -13,6 +13,7 @@ import type {
 import { BEHAVIORAL_CATEGORIES } from '../lib/constants'
 import { cn, newId } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
+import { BehavioralQuestionBank } from '../components/BehavioralQuestionBank'
 
 export function BehavioralPage() {
   const stories = useBehavioralStoriesHybrid()
@@ -67,8 +68,12 @@ export function BehavioralPage() {
         >
           Behavioral
         </h1>
-        <p className="text-sm text-zinc-400">STAR archive · coverage grid</p>
+        <p className="text-sm text-zinc-400">
+          STAR archive · question bank · study guides
+        </p>
       </div>
+
+      <BehavioralQuestionBank />
 
       <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
         <h2 className="mb-3 text-xs font-mono uppercase text-zinc-400">

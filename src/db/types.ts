@@ -247,6 +247,9 @@ export interface PassionAttachment {
   createdAt: number
 }
 
+/** Same shape as passion/resume attachments — private per user in cloud mode. */
+export type BehavioralAttachment = PassionAttachment
+
 /** Backup-only serialized form (Blob → base64). */
 export interface SerializedPassionAttachment {
   id: string

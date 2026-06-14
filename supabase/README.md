@@ -35,6 +35,7 @@ The simplest way to apply it:
 3. Click **Run**. It's idempotent — safe to re-run if you tweak it.
 4. Run [`migrations/00002_passion_schedule.sql`](./migrations/00002_passion_schedule.sql) the same way **after** `00001_init.sql` (adds the private per-user Passion timetable table).
 5. Run [`migrations/00003_tasks_due.sql`](./migrations/00003_tasks_due.sql) to add **`due_date`** and **`due_time`** on `tasks` (powers the Today card countdown and Yesterday/Today/Tomorrow tabs).
+6. Run [`migrations/00004_behavioral_attachments.sql`](./migrations/00004_behavioral_attachments.sql) for per-user **Behavioral** study-guide uploads (metadata in Postgres; bytes reuse the private `passion` storage bucket).
 
 If you prefer the CLI:
 
