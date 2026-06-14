@@ -11,12 +11,16 @@ import {
   openBehavioralFileInNewTab,
 } from '../lib/behavioralFiles'
 import {
+  AMAZON_LEADERSHIP_PRINCIPLES,
   BEHAVIORAL_EXPERIENCE_LABELS,
+  BEHAVIORAL_PREP_TIPS,
   BEHAVIORAL_QUESTIONS,
   BUILTIN_BEHAVIORAL_GUIDES,
   behavioralGuideUrl,
   filterBehavioralQuestions,
+  getEssentialQuestions,
   pickRandomQuestion,
+  type AmazonLeadershipPrinciple,
   type BehavioralExperienceLevel,
   type BehavioralQuestion,
 } from '../lib/behavioralQuestions'
@@ -31,19 +35,27 @@ export function BehavioralQuestionBank() {
   const uploads = useBehavioralAttachmentsHybrid()
   const [experience, setExperience] = useState<ExperienceFilter>('all')
   const [category, setCategory] = useState<BehavioralCategory | 'all'>('all')
+  const [lp, setLp] = useState<AmazonLeadershipPrinciple | 'all'>('all')
+  const [essentialOnly, setEssentialOnly] = useState(false)
+  const [sdeOnly, setSdeOnly] = useState(false)
   const [query, setQuery] = useState('')
   const [randomQ, setRandomQ] = useState<BehavioralQuestion | null>(null)
   const [previewId, setPreviewId] = useState<string | null>(null)
   const [uploadBusy, setUploadBusy] = useState(false)
+
+  const essentials = useMemo(() => getEssentialQuestions(), [])
 
   const filtered = useMemo(
     () =>
       filterBehavioralQuestions(BEHAVIORAL_QUESTIONS, {
         experience,
         category,
+        lp,
+        essentialOnly,
+        sdeOnly,
         query,
       }),
-    [experience, category, query],
+    [experience, category, lp, essentialOnly, sdeOnly, query],
   )
 
   async function onUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -99,6 +111,58 @@ export function BehavioralQuestionBank() {
                   ↓
                 </a>
               </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+        <h2 className="text-sm font-semibold text-zinc-200">
+          Amazon behavioral prep
+        </h2>
+        <p className="mt-1 text-xs text-zinc-400">
+          Key tips from ex-Amazon Bar Raisers — use with the question bank below.
+        </p>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {BEHAVIORAL_PREP_TIPS.map((tip) => (
+            <li
+              key={tip.title}
+              className="rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2"
+            >
+              <div className="text-xs font-semibold text-lime-200/90">
+                {tip.title}
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+                {tip.body}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="rounded border border-lime-700/30 bg-lime-500/5 p-4">
+        <h2 className="text-sm font-semibold text-lime-200">
+          Top questions to prep first
+        </h2>
+        <p className="mt-1 text-xs text-zinc-400">
+          Most common across Amazon roles — start here if you are short on time.
+        </p>
+        <ul className="mt-3 space-y-2">
+          {essentials.map((q, i) => (
+            <li
+              key={q.id}
+              className="rounded border border-[#3d4150] bg-[#0A0A0B]/80 px-3 py-2 text-sm text-zinc-200"
+            >
+              <span className="mr-2 font-mono text-[10px] text-lime-400/80">
+                {i + 1}.
+              </span>
+              {q.text}
+              {q.lp ? (
+                <span className="mt-1.5 block font-mono text-[10px] text-zinc-500">
+                  {q.lp}
+                  {q.sde ? ' · SDE priority' : ''}
+                </span>
+              ) : null}
             </li>
           ))}
         </ul>
@@ -194,8 +258,8 @@ export function BehavioralQuestionBank() {
               Practice questions
             </h2>
             <p className="mt-1 text-xs text-zinc-400">
-              Pulled from the study guides · filter by experience level · answer
-              with STAR (Situation, Task, Action, Result).
+              100+ questions from your study guides and Amazon interview bank ·
+              filter by Leadership Principle, SDE focus, or experience level.
             </p>
           </div>
           <button
@@ -231,7 +295,51 @@ export function BehavioralQuestionBank() {
           ))}
         </div>
 
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setEssentialOnly((v) => !v)}
+            className={cn(
+              'rounded border px-2.5 py-1 font-mono text-xs transition-colors',
+              essentialOnly
+                ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
+                : 'border-[#3d4150] text-zinc-400 hover:text-zinc-200',
+            )}
+          >
+            Top essentials only
+          </button>
+          <button
+            type="button"
+            onClick={() => setSdeOnly((v) => !v)}
+            className={cn(
+              'rounded border px-2.5 py-1 font-mono text-xs transition-colors',
+              sdeOnly
+                ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
+                : 'border-[#3d4150] text-zinc-400 hover:text-zinc-200',
+            )}
+          >
+            SDE focus
+          </button>
+        </div>
+
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-400">Leadership Principle</span>
+            <select
+              className="field font-mono text-xs"
+              value={lp}
+              onChange={(e) =>
+                setLp(e.target.value as AmazonLeadershipPrinciple | 'all')
+              }
+            >
+              <option value="all">All principles</option>
+              {AMAZON_LEADERSHIP_PRINCIPLES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="block space-y-1">
             <span className="text-xs text-zinc-400">Category</span>
             <select
@@ -249,7 +357,7 @@ export function BehavioralQuestionBank() {
               ))}
             </select>
           </label>
-          <label className="block space-y-1">
+          <label className="block space-y-1 sm:col-span-2 lg:col-span-1">
             <span className="text-xs text-zinc-400">Search</span>
             <input
               className="field font-mono text-xs"
@@ -271,6 +379,9 @@ export function BehavioralQuestionBank() {
             <p className="mt-2 font-mono text-xs text-zinc-400">
               {randomQ.category} ·{' '}
               {BEHAVIORAL_EXPERIENCE_LABELS[randomQ.experience]}
+              {randomQ.lp ? ` · ${randomQ.lp}` : ''}
+              {randomQ.essential ? ' · essential' : ''}
+              {randomQ.sde ? ' · SDE' : ''}
             </p>
           </div>
         ) : null}
@@ -285,8 +396,25 @@ export function BehavioralQuestionBank() {
               className="rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2 text-sm text-zinc-200"
             >
               <p>{q.text}</p>
-              <p className="mt-1.5 font-mono text-[10px] text-zinc-500">
-                {q.category} · {BEHAVIORAL_EXPERIENCE_LABELS[q.experience]}
+              <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] text-zinc-500">
+                <span>
+                  {q.category} · {BEHAVIORAL_EXPERIENCE_LABELS[q.experience]}
+                </span>
+                {q.lp ? (
+                  <span className="rounded border border-[#3d4150] px-1.5 py-0.5 text-zinc-400">
+                    {q.lp}
+                  </span>
+                ) : null}
+                {q.essential ? (
+                  <span className="rounded border border-lime-700/40 px-1.5 py-0.5 text-lime-400/90">
+                    essential
+                  </span>
+                ) : null}
+                {q.sde ? (
+                  <span className="rounded border border-sky-700/40 px-1.5 py-0.5 text-sky-400/90">
+                    SDE
+                  </span>
+                ) : null}
               </p>
             </li>
           ))}
