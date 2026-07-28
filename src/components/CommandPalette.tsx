@@ -37,8 +37,8 @@ function PaletteBody() {
       {
         id: 'nav-dashboard',
         group: 'Navigate',
-        label: 'Dashboard',
-        shortcut: 'g h',
+        label: 'Today',
+        shortcut: 'g t',
         run: () => navigate('/'),
       },
       {

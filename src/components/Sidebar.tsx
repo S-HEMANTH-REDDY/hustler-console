@@ -3,7 +3,7 @@ import { useUiStore } from '../store/uiStore'
 import { cn } from '../lib/utils'
 
 const mainLinks = [
-  { to: '/', label: 'Dashboard', hint: 'g h', icon: HomeIcon },
+  { to: '/', label: 'Today', hint: 'g t', icon: HomeIcon },
   { to: '/focus', label: 'Focus', hint: 'g f', icon: TimerIcon },
   { to: '/tasks', label: 'Tasks', hint: 'g k', icon: CheckIcon },
   { to: '/calendar', label: 'Calendar', hint: 'g c', icon: CalendarIcon },

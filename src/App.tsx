@@ -6,8 +6,8 @@ import { useAuthStore } from './store/authStore'
 
 // Route-level code splitting: each page ships as its own chunk and is fetched
 // on navigation, keeping the initial download (and first paint) small.
-const DashboardPage = lazy(() =>
-  import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+const TodayPage = lazy(() =>
+  import('./pages/TodayPage').then((m) => ({ default: m.TodayPage })),
 )
 const FocusPage = lazy(() =>
   import('./pages/FocusPage').then((m) => ({ default: m.FocusPage })),
@@ -82,7 +82,7 @@ export default function App() {
               </RequireAuth>
             }
           >
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/" element={<TodayPage />} />
             <Route path="/focus" element={<FocusPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/calendar" element={<CalendarPage />} />

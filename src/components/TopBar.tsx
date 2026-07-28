@@ -9,7 +9,7 @@ import { useUiStore } from '../store/uiStore'
 import { MiniTimer } from './MiniTimer'
 
 const PAGE_TITLES: Record<string, string> = {
-  '/': 'Dashboard',
+  '/': 'Today',
   '/focus': 'Focus',
   '/tasks': 'Tasks',
   '/calendar': 'Calendar',
