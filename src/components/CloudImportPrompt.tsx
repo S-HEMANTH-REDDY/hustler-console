@@ -2,41 +2,53 @@ import { useEffect, useState } from 'react'
 import { useCloudDataMode } from '../cloud/active'
 import { importLocalDexieIntoSupabase } from '../cloud/importLocalDexie'
 import { countApplicationsForUser } from '../cloud/repository'
+import { bumpCloudSync } from '../cloud/syncBus'
 import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
 import { db } from '../db/database'
 
-function localStorageImportKey(userId: string): string {
-  return `hustler.cloudImportDismissed.${userId}`
+function sessionSkipKey(userId: string): string {
+  return `hustler.importPromptSessionSkip.${userId}`
 }
 
-async function localHasImportableRows(): Promise<boolean> {
-  const apps = await db.applications.count()
-  const ideas = await db.passionIdeas.count()
-  const dsa = await db.dsaProblems.count()
-  return apps + ideas + dsa > 0
+export async function countLocalImportable(): Promise<{
+  apps: number
+  ideas: number
+  dsa: number
+  total: number
+}> {
+  const [apps, ideas, dsa] = await Promise.all([
+    db.applications.count(),
+    db.passionIdeas.count(),
+    db.dsaProblems.count(),
+  ])
+  return { apps, ideas, dsa, total: apps + ideas + dsa }
 }
 
+/** Shared import used by the modal, banner, and Settings. */
+export async function importBrowserDataToCloud(): Promise<void> {
+  await importLocalDexieIntoSupabase()
+  bumpCloudSync()
+}
+
+/**
+ * Modal when the signed-in account has no applications yet but this browser
+ * still has IndexedDB data. Skip is session-only so the banner can still offer
+ * import later (permanent dismiss was hiding the only path back to old data).
+ */
 export function CloudImportPrompt() {
   const cloud = useCloudDataMode()
   const user = useAuthStore((s) => s.user)
   const pushToast = useUiStore((s) => s.pushToast)
   const [visible, setVisible] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [localApps, setLocalApps] = useState(0)
   const userId = user?.id
 
   useEffect(() => {
     if (!cloud || !userId) return
 
-    const dismissed = (() => {
-      try {
-        return localStorage.getItem(localStorageImportKey(userId)) === '1'
-      } catch {
-        return false
-      }
-    })()
-
-    if (dismissed || sessionStorage.getItem('hustler.importPromptSessionSkip') === '1') {
+    if (sessionStorage.getItem(sessionSkipKey(userId)) === '1') {
       setVisible(false)
       return
     }
@@ -45,9 +57,15 @@ export function CloudImportPrompt() {
     async function run() {
       try {
         const remoteCount = await countApplicationsForUser()
-        if (cancelled || remoteCount > 0) return
-        const local = await localHasImportableRows()
-        if (!cancelled && local) setVisible(true)
+        if (cancelled || remoteCount > 0) {
+          if (!cancelled) setVisible(false)
+          return
+        }
+        const local = await countLocalImportable()
+        if (!cancelled && local.total > 0) {
+          setLocalApps(local.apps)
+          setVisible(true)
+        }
       } catch {
         /* ignore */
       }
@@ -64,12 +82,7 @@ export function CloudImportPrompt() {
   async function onImport() {
     setBusy(true)
     try {
-      await importLocalDexieIntoSupabase()
-      try {
-        localStorage.setItem(localStorageImportKey(accountId), '1')
-      } catch {
-        /* ignore */
-      }
+      await importBrowserDataToCloud()
       pushToast('import', 'Browser data copied to your account')
       setVisible(false)
       window.location.reload()
@@ -85,12 +98,7 @@ export function CloudImportPrompt() {
 
   function onSkip() {
     try {
-      sessionStorage.setItem('hustler.importPromptSessionSkip', '1')
-    } catch {
-      /* ignore */
-    }
-    try {
-      localStorage.setItem(localStorageImportKey(accountId), '1')
+      sessionStorage.setItem(sessionSkipKey(accountId), '1')
     } catch {
       /* ignore */
     }
@@ -99,38 +107,114 @@ export function CloudImportPrompt() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-      <div className="max-w-md rounded-lg border border-edge bg-base p-5 shadow-xl">
-        <h2 className="text-base font-semibold text-zinc-100">
-          Import local data?
+      <div className="card max-w-md p-5 shadow-xl sm:p-6">
+        <h2 className="text-lg font-semibold text-zinc-100">
+          Your applications are still on this device
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-          This browser still has data in{' '}
-          <span className="font-mono text-zinc-300">IndexedDB</span>. Your cloud
-          workspace is empty — copy everything from this device into your account
-          now (resumes, applications, DSA, Passion, etc.).{' '}
-          <span className="text-zinc-500">
-            Skip if you intend to start fresh online.
+          You're signed in, so Hustler shows your <em>cloud</em> account — which
+          is empty. This browser still has{' '}
+          <span className="font-semibold text-zinc-200">
+            {localApps > 0 ? `${localApps} application${localApps === 1 ? '' : 's'}` : 'local data'}
           </span>
+          . Import it into your account to see it again.
         </p>
-        <div className="mt-4 flex flex-wrap justify-end gap-2">
+        <div className="mt-5 flex flex-wrap justify-end gap-2">
           <button
             type="button"
-            className="rounded border border-edge px-3 py-1.5 text-xs text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+            className="btn-quiet px-3 py-2 text-sm"
             disabled={busy}
             onClick={() => onSkip()}
           >
-            Skip
+            Not now
           </button>
           <button
             type="button"
             disabled={busy}
-            className="rounded bg-lime-500 px-4 py-1.5 text-xs font-semibold text-zinc-950 hover:bg-lime-400 disabled:opacity-60"
+            className="btn-primary rounded-xl px-4 py-2 text-sm"
             onClick={() => void onImport()}
           >
-            {busy ? 'Importing…' : 'Import from this browser'}
+            {busy ? 'Importing…' : 'Import applications'}
           </button>
         </div>
       </div>
+    </div>
+  )
+}
+
+/** Persistent banner when cloud is empty but local IndexedDB still has apps. */
+export function LocalDataImportBanner() {
+  const cloud = useCloudDataMode()
+  const user = useAuthStore((s) => s.user)
+  const pushToast = useUiStore((s) => s.pushToast)
+  const [localApps, setLocalApps] = useState(0)
+  const [show, setShow] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    if (!cloud || !user?.id) {
+      setShow(false)
+      return
+    }
+    let cancelled = false
+    async function run() {
+      try {
+        const remoteCount = await countApplicationsForUser()
+        if (cancelled) return
+        if (remoteCount > 0) {
+          setShow(false)
+          return
+        }
+        const local = await countLocalImportable()
+        if (!cancelled && local.apps > 0) {
+          setLocalApps(local.apps)
+          setShow(true)
+        } else if (!cancelled) {
+          setShow(false)
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [cloud, user?.id])
+
+  if (!show) return null
+
+  async function onImport() {
+    setBusy(true)
+    try {
+      await importBrowserDataToCloud()
+      pushToast('import', 'Applications imported')
+      setShow(false)
+      window.location.reload()
+    } catch (e) {
+      pushToast(
+        'info',
+        e instanceof Error ? e.message : 'Import failed — try again',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-amber-400/40 bg-amber-500/10 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-amber-100">
+        <span className="font-semibold">{localApps} application{localApps === 1 ? '' : 's'}</span>{' '}
+        from this browser aren’t in your cloud account yet.
+      </p>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => void onImport()}
+        className="btn-primary shrink-0 rounded-xl px-4 py-2 text-sm"
+      >
+        {busy ? 'Importing…' : 'Import now'}
+      </button>
     </div>
   )
 }

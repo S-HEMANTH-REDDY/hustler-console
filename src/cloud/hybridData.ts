@@ -89,9 +89,14 @@ export function useApplicationsHybrid(
       return
     }
     let cancelled = false
-    void fetchApplications().then((rows) => {
-      if (!cancelled) setRemote(rows)
-    })
+    void fetchApplications()
+      .then((rows) => {
+        if (!cancelled) setRemote(rows)
+      })
+      .catch(() => {
+        // Keep empty on error — LocalDataImportBanner / toast cover recovery.
+        if (!cancelled) setRemote([])
+      })
     return () => {
       cancelled = true
     }

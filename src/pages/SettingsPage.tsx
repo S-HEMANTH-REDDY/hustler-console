@@ -1,4 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useCloudDataMode } from '../cloud/active'
+import {
+  countLocalImportable,
+  importBrowserDataToCloud,
+} from '../components/CloudImportPrompt'
 import { useSettingsRowHybrid } from '../cloud/hybridData'
 import { persistSettings, resetAllDataEverywhere } from '../cloud/mutations'
 import { exportBackup, importBackup } from '../db/backup'
@@ -202,7 +207,18 @@ function AccountSection() {
   const status = useAuthStore((s) => s.status)
   const user = useAuthStore((s) => s.user)
   const signOut = useAuthStore((s) => s.signOut)
+  const cloud = useCloudDataMode()
   const pushToast = useUiStore((s) => s.pushToast)
+  const [localApps, setLocalApps] = useState(0)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    if (!cloud) {
+      setLocalApps(0)
+      return
+    }
+    void countLocalImportable().then((c) => setLocalApps(c.apps))
+  }, [cloud])
 
   if (status !== 'authed' || !user) return null
 
@@ -225,6 +241,36 @@ function AccountSection() {
           Sign out
         </button>
       </div>
+      {localApps > 0 ? (
+        <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 p-3">
+          <p className="text-sm text-amber-100">
+            This browser still has {localApps} application
+            {localApps === 1 ? '' : 's'} that may not be in your cloud account.
+          </p>
+          <button
+            type="button"
+            disabled={busy}
+            className="btn-primary mt-2 rounded-xl px-3 py-2 text-sm"
+            onClick={async () => {
+              setBusy(true)
+              try {
+                await importBrowserDataToCloud()
+                pushToast('import', 'Browser data imported')
+                window.location.reload()
+              } catch (e) {
+                pushToast(
+                  'info',
+                  e instanceof Error ? e.message : 'Import failed',
+                )
+              } finally {
+                setBusy(false)
+              }
+            }}
+          >
+            {busy ? 'Importing…' : 'Import browser data to account'}
+          </button>
+        </div>
+      ) : null}
     </section>
   )
 }

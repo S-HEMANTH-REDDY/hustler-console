@@ -7,6 +7,7 @@ import {
   useApplicationsHybrid,
   useResumeFilesHybrid,
 } from '../cloud/hybridData'
+import { LocalDataImportBanner } from '../components/CloudImportPrompt'
 import { QuickApplicationForm } from '../components/QuickApplicationForm'
 import type {
   Application,
@@ -132,6 +133,7 @@ export function ApplicationsPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
+      <LocalDataImportBanner />
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <h1
