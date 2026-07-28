@@ -59,7 +59,7 @@ export function PaceBar(props: {
 
   return (
     <div className="space-y-2">
-      <div className="relative h-12 w-full overflow-hidden rounded border border-edge bg-pit">
+      <div className="relative h-14 w-full overflow-hidden rounded-xl border border-edge bg-pit">
         {/* ideal band */}
         <div
           className="absolute inset-y-0 bg-lime-500/15"
@@ -125,22 +125,22 @@ export function PaceBar(props: {
           {pace.todayCount}
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-zinc-400">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500">
         <span>
           Scale 0–{scaleMax} · Band{' '}
-          <span className="text-lime-400/90">
+          <span className="font-medium text-lime-400/90">
             {dailyMin}–{dailyMax}
           </span>{' '}
           · Sweet spot{' '}
-          <span className="text-lime-300">
+          <span className="font-medium text-lime-300">
             {sweet.min}–{sweet.max}
           </span>
         </span>
         <span>
           Expected{' '}
-          <span className="text-zinc-300">{pace.expectedNow.toFixed(1)}</span>{' '}
-          · Actual <span className={colors.text}>{pace.todayCount}</span> · Δ{' '}
-          <span className={colors.text}>
+          <span className="font-medium text-zinc-300">{pace.expectedNow.toFixed(1)}</span>{' '}
+          · Actual <span className={cn('font-medium', colors.text)}>{pace.todayCount}</span> · Δ{' '}
+          <span className={cn('font-medium', colors.text)}>
             {pace.delta >= 0 ? '+' : ''}
             {pace.delta}
           </span>
@@ -154,11 +154,11 @@ export function PaceHeroNumber(props: { count: number; state: PaceState }) {
   const colors = stateColors(props.state)
   return (
     <div
-      className="font-mono text-7xl font-semibold tabular-nums tracking-tight sm:text-8xl"
+      className="font-mono text-8xl font-semibold tabular-nums tracking-tighter sm:text-9xl"
       style={{
         fontFamily: 'var(--font-mono)',
         color: colors.fill,
-        textShadow: '0 0 40px rgba(0,0,0,0.4)',
+        textShadow: `0 0 60px ${colors.fill}33`,
       }}
     >
       {props.count}

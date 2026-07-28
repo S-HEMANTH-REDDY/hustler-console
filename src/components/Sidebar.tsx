@@ -28,21 +28,28 @@ export function Sidebar() {
       <aside
         aria-label="Main navigation"
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-56 flex-col border-r border-edge bg-base transition-transform max-lg:w-[min(280px,85vw)]',
+          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-edge bg-pit/80 transition-transform max-lg:w-[min(300px,88vw)]',
           sidebarOpen ? 'translate-x-0' : 'max-lg:-translate-x-full',
           'lg:translate-x-0',
         )}
       >
-        <div className="flex h-14 items-center border-b border-edge px-4">
+        <div className="flex h-16 items-center gap-2.5 border-b border-edge px-5">
           <span
-            className="text-lg font-semibold tracking-tight text-zinc-50"
+            aria-hidden
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-lime-500/15 text-sm font-bold text-lime-300 ring-1 ring-lime-500/30"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            H
+          </span>
+          <span
+            className="text-xl font-semibold tracking-tight text-zinc-50"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Hustler
           </span>
         </div>
-        <nav className="flex-1 overflow-y-auto p-2">
-          <div className="flex flex-col gap-0.5">
+        <nav className="flex-1 overflow-y-auto p-3">
+          <div className="flex flex-col gap-1">
             {mainLinks.map((l) => (
               <SideLink
                 key={l.to}
@@ -55,10 +62,10 @@ export function Sidebar() {
             ))}
           </div>
 
-          <div className="mt-5 px-3 pb-1.5 text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+          <div className="mt-6 px-3 pb-2 text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
             Career
           </div>
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col gap-1">
             {careerLinks.map((l) => (
               <SideLink
                 key={l.to}
@@ -70,7 +77,7 @@ export function Sidebar() {
             ))}
           </div>
         </nav>
-        <div className="border-t border-edge p-2">
+        <div className="border-t border-edge p-3">
           <SideLink
             to="/settings"
             label="Settings"
@@ -81,10 +88,10 @@ export function Sidebar() {
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="mt-1 flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm text-zinc-400 hover:bg-surface hover:text-zinc-200"
+            className="mt-1.5 flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left text-[0.9375rem] text-zinc-400 transition-colors hover:bg-surface hover:text-zinc-100"
           >
-            <span>Search & commands</span>
-            <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-xs text-zinc-400">
+            <span>Search</span>
+            <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.7rem] text-zinc-500">
               ⌘K
             </kbd>
           </button>
@@ -116,15 +123,15 @@ function SideLink(props: {
       onClick={props.onNavigate}
       className={({ isActive }) =>
         cn(
-          'group relative flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+          'group relative flex min-h-11 items-center gap-2.5 rounded-xl px-3 py-2.5 text-[0.9375rem] font-medium transition-colors',
           isActive
-            ? 'bg-lime-500/12 text-lime-300'
+            ? 'bg-lime-500/12 text-lime-300 shadow-[inset_3px_0_0_0_rgba(163,230,53,0.85)]'
             : 'text-zinc-300 hover:bg-surface hover:text-zinc-50',
         )
       }
     >
       {props.icon ? (
-        <span className="text-current opacity-80" aria-hidden>
+        <span className="text-current opacity-85" aria-hidden>
           {props.icon}
         </span>
       ) : (
@@ -132,7 +139,7 @@ function SideLink(props: {
       )}
       <span className="flex-1">{props.label}</span>
       {props.hint ? (
-        <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100">
+        <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.65rem] text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100">
           {props.hint}
         </kbd>
       ) : null}
@@ -140,14 +147,13 @@ function SideLink(props: {
   )
 }
 
-/** Mobile bottom navigation — primary destinations plus a menu for the rest. */
 export function BottomNav() {
   const setSidebarOpen = useUiStore((s) => s.setSidebarOpen)
   const items = [
-    { to: '/', label: 'Home', icon: HomeIcon },
+    { to: '/', label: 'Today', icon: HomeIcon },
     { to: '/focus', label: 'Focus', icon: TimerIcon },
     { to: '/tasks', label: 'Tasks', icon: CheckIcon },
-    { to: '/calendar', label: 'Calendar', icon: CalendarIcon },
+    { to: '/calendar', label: 'Cal', icon: CalendarIcon },
   ] as const
   return (
     <nav
@@ -163,7 +169,7 @@ export function BottomNav() {
             end={it.to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium',
+                'flex min-h-15 flex-col items-center justify-center gap-1 text-[0.7rem] font-semibold',
                 isActive ? 'text-lime-300' : 'text-zinc-400',
               )
             }
@@ -175,7 +181,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
-          className="flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium text-zinc-400"
+          className="flex min-h-15 flex-col items-center justify-center gap-1 text-[0.7rem] font-semibold text-zinc-400"
         >
           <MenuIcon />
           More
@@ -185,16 +191,14 @@ export function BottomNav() {
   )
 }
 
-/* ── Icons (16px stroke) ── */
-
 function iconProps(): React.SVGProps<SVGSVGElement> {
   return {
-    width: 17,
-    height: 17,
+    width: 18,
+    height: 18,
     viewBox: '0 0 24 24',
     fill: 'none',
     stroke: 'currentColor',
-    strokeWidth: 1.8,
+    strokeWidth: 1.85,
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
     'aria-hidden': true,

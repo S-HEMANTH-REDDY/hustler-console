@@ -202,31 +202,28 @@ export function TodayPage() {
           : 'border-red-500/60 text-red-300'
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <section
-        className="surface-glossy relative overflow-hidden rounded-xl p-5 md:p-7"
-      >
-        <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-lime-500/5 blur-3xl" />
+    <div className="mx-auto max-w-6xl space-y-5 sm:space-y-6">
+      <section className="surface-glossy relative overflow-hidden p-5 sm:p-7 md:p-8">
+        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-lime-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-sky-400/5 blur-3xl" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
-            <p
-              className="text-xs font-medium uppercase tracking-wider text-zinc-400"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Applications today · goal {dailyMin}–{dailyMax} · sweet spot {sweet.min}–{sweet.max}
+            <p className="section-label">
+              Applications today · goal {dailyMin}–{dailyMax} · sweet spot{' '}
+              {sweet.min}–{sweet.max}
             </p>
-            <div className="mt-1 flex flex-wrap items-baseline gap-3">
+            <div className="mt-2 flex flex-wrap items-baseline gap-3">
               <PaceHeroNumber count={pace.todayCount} state={pace.state} />
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <span
-                  className="font-mono text-2xl font-semibold tabular-nums text-zinc-400"
+                  className="font-mono text-3xl font-semibold tabular-nums text-zinc-400"
                   title="Today's minimum quota"
                 >
                   / {dailyMin}
                 </span>
                 <span
                   className={cn(
-                    'rounded border px-2 py-0.5 text-center text-xs font-mono uppercase tracking-wider',
+                    'rounded-lg border px-2.5 py-1 text-center font-mono text-xs font-semibold uppercase tracking-wider',
                     stateBadge,
                   )}
                 >
@@ -234,48 +231,42 @@ export function TodayPage() {
                 </span>
               </div>
             </div>
-            <p
-              className="mt-3 max-w-xl text-sm text-zinc-300"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
+            <p className="mt-4 max-w-xl text-base text-zinc-300">
               {pace.statusLine}
             </p>
-            <p className="mt-2 max-w-xl text-xs text-zinc-400">
-              <span className="font-mono">Applications you log.</span> Your day
-              runs <span className="text-zinc-200 font-mono">12:00 AM → 11:59 PM</span>.
-              Goal: log <span className="text-lime-300 font-mono">{dailyMin}–{dailyMax} applications</span>{' '}
-              before midnight ·{' '}
-              <span className="text-lime-300 font-mono">{sweet.min}–{sweet.max}</span> is the
-              sweet spot.
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500">
+              Log <span className="font-medium text-lime-300">{dailyMin}–{dailyMax}</span>{' '}
+              applications today · sweet spot{' '}
+              <span className="font-medium text-lime-300">
+                {sweet.min}–{sweet.max}
+              </span>
+              .
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-stretch gap-3 md:items-end">
-            <div className="flex flex-col items-end gap-0.5 rounded-lg border border-edge bg-well/60 px-4 py-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)] md:min-w-[14rem]">
-              <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">
-                Local time
-              </span>
+            <div className="flex flex-col items-end gap-0.5 rounded-2xl border border-edge bg-well/70 px-5 py-3 md:min-w-[15rem]">
+              <span className="section-label">Local time</span>
               <span
-                className="font-mono text-2xl font-semibold tabular-nums text-zinc-50"
-                style={{ fontFamily: 'var(--font-mono)' }}
+                className="mt-1 font-mono text-3xl font-semibold tabular-nums tracking-tight text-zinc-50"
                 aria-live="off"
               >
                 {format(secondTick, 'HH:mm:ss')}
               </span>
-              <span className="font-mono text-xs text-zinc-400">
+              <span className="font-mono text-sm text-zinc-500">
                 {format(secondTick, 'EEE, MMM d')} · W
                 {isoWeekNumber(secondTick)}
               </span>
             </div>
             <Link
               to="/applications#quick-log"
-              className="btn-primary rounded-md px-5 py-3 text-center text-sm font-semibold"
+              className="btn-primary rounded-xl px-6 py-3.5 text-center text-base"
             >
               + Log application
-              <span className="ml-2 rounded border border-lime-800/50 bg-lime-100/20 px-1 py-0.5 font-mono text-xs text-lime-950">
+              <span className="ml-2 rounded-md border border-lime-900/30 bg-black/10 px-1.5 py-0.5 font-mono text-xs text-lime-950">
                 A
               </span>
             </Link>
-            <p className="font-mono text-xs text-zinc-400 md:text-right">
+            <p className="text-sm text-zinc-500 md:text-right">
               {wr.beforeWindow
                 ? `Day opens ${winStart}`
                 : wr.afterWindow
@@ -285,16 +276,14 @@ export function TodayPage() {
           </div>
         </div>
 
-        <div className="relative mt-7">
+        <div className="relative mt-8">
           <PaceBar pace={pace} dailyMin={dailyMin} dailyMax={dailyMax} />
         </div>
 
         {tput ? (
           <>
-            <p className="mt-5 font-mono text-xs uppercase tracking-wider text-zinc-400">
-              How you're tracking right now
-            </p>
-            <div className="relative mt-2 grid gap-px overflow-hidden rounded border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
+            <p className="section-label mt-6">How you're tracking</p>
+            <div className="relative mt-3 grid gap-px overflow-hidden rounded-2xl border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
               <ThroughputTile
                 label="Logged today"
                 value={`${pace.todayCount} applications`}
@@ -360,7 +349,7 @@ export function TodayPage() {
         ) : null}
       </section>
 
-      <section className="surface-glossy rounded-xl p-4">
+      <section className="surface-glossy p-4 sm:p-5">
         <DayRibbon
           applications={applications}
           dsaProblems={dsaProblems}
@@ -439,17 +428,15 @@ export function TodayPage() {
         />
       </section>
 
-      <section className="rounded-lg border border-edge bg-surface p-4">
+      <section className="card p-5">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2
-              className="text-xs font-medium uppercase tracking-wider text-zinc-400"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
+            <h2 className="section-label">
               Last 30 days · application volume
             </h2>
-            <p className="mt-0.5 text-xs text-zinc-400">
-              Each square is one day (12 AM–11:59 PM) · color = how close to the {dailyMin}–{dailyMax} goal · today on the right
+            <p className="mt-1 text-sm text-zinc-500">
+              Each square is one day · color = how close to the {dailyMin}–
+              {dailyMax} goal
             </p>
           </div>
           <HeatLegend dailyMin={dailyMin} dailyMax={dailyMax} />
@@ -643,19 +630,12 @@ function Card(props: {
   return (
     <div
       className={cn(
-        'rounded-lg border p-4',
-        props.muted
-          ? 'border-edge/80 bg-surface/60'
-          : 'border-edge bg-surface',
+        'card p-5',
+        props.muted && 'opacity-90',
       )}
     >
-      <div className="mb-3 flex items-end justify-between gap-2">
-        <h2
-          className="text-xs font-medium uppercase tracking-wider text-zinc-400"
-          style={{ fontFamily: 'var(--font-mono)' }}
-        >
-          {props.title}
-        </h2>
+      <div className="mb-3.5 flex items-end justify-between gap-2">
+        <h2 className="section-label">{props.title}</h2>
         {props.right}
       </div>
       {props.children}
@@ -674,20 +654,17 @@ function ThroughputTile(props: {
   valueClass?: string
 }) {
   return (
-    <div className="bg-surface p-3">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
-        {props.label}
-      </div>
+    <div className="bg-surface p-4">
+      <div className="section-label">{props.label}</div>
       <div
         className={cn(
-          'mt-0.5 font-mono text-xl font-semibold tabular-nums',
+          'mt-1.5 font-mono text-2xl font-semibold tabular-nums tracking-tight',
           props.valueClass ?? 'text-zinc-100',
         )}
-        style={{ fontFamily: 'var(--font-mono)' }}
       >
         {props.value}
       </div>
-      <div className="font-mono text-xs text-zinc-400">{props.hint}</div>
+      <div className="mt-1 text-sm leading-snug text-zinc-500">{props.hint}</div>
     </div>
   )
 }
@@ -700,25 +677,20 @@ function Kpi(props: {
   chart?: React.ReactNode
 }) {
   return (
-    <div className="rounded-lg border border-edge bg-surface p-4">
+    <div className="card p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
-        <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
-          {props.label}
-        </div>
+        <div className="section-label">{props.label}</div>
         {props.chart}
       </div>
       <div
         className={cn(
-          'mt-1 font-mono text-2xl font-semibold tabular-nums',
+          'mt-2 font-mono text-3xl font-semibold tabular-nums tracking-tight',
           props.primaryClass ?? 'text-zinc-100',
         )}
-        style={{ fontFamily: 'var(--font-mono)' }}
       >
         {props.primary}
       </div>
-      <div className="font-mono text-xs text-zinc-400">
-        {props.secondary}
-      </div>
+      <div className="mt-1 text-sm text-zinc-500">{props.secondary}</div>
     </div>
   )
 }
@@ -739,20 +711,18 @@ function Delta(props: {
     : 'text-zinc-100'
   const sign = props.colored ? (v > 0 ? '+' : '') : ''
   return (
-    <div className="rounded border border-edge/70 bg-well px-3 py-2">
-      <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">
-        {props.label}
-      </div>
+    <div className="rounded-xl border border-edge bg-well px-3.5 py-3">
+      <div className="section-label">{props.label}</div>
       <div
         className={cn(
-          'mt-0.5 font-mono text-lg font-semibold tabular-nums',
+          'mt-1 font-mono text-xl font-semibold tabular-nums',
           cls,
         )}
       >
         {sign}
         {v}
       </div>
-      <div className="font-mono text-xs text-zinc-400">{props.muted}</div>
+      <div className="mt-0.5 text-sm text-zinc-500">{props.muted}</div>
     </div>
   )
 }

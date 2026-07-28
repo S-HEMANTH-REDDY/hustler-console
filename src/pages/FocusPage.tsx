@@ -79,7 +79,7 @@ export function FocusPage() {
       <div className="mt-2 flex items-center gap-2">
         <span
           className={cn(
-            'rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider',
+            'rounded-full border px-3.5 py-1.5 text-sm font-semibold uppercase tracking-wider',
             isFocus
               ? 'border-lime-400/40 bg-lime-500/10 text-lime-300'
               : 'border-cyan-400/40 bg-cyan-500/10 text-cyan-300',
@@ -100,7 +100,7 @@ export function FocusPage() {
       <p
         className={cn(
           'mt-4 font-mono font-semibold tabular-nums leading-none text-zinc-50',
-          zenMode ? 'text-[7rem] sm:text-[9rem]' : 'text-[5.5rem] sm:text-[7rem]',
+          zenMode ? 'text-[7.5rem] sm:text-[10rem]' : 'text-[6rem] sm:text-[7.5rem]',
         )}
         style={{ fontFamily: 'var(--font-mono)' }}
       >

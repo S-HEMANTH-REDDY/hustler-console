@@ -33,26 +33,29 @@ export function TopBar() {
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-edge">
-      <div className="flex min-h-14 items-center gap-3 px-3 sm:px-4 lg:px-6">
+      <div className="flex min-h-16 items-center gap-3 px-4 sm:px-5 lg:px-8">
         <div className="min-w-0">
-          <h1 className="truncate text-base font-semibold text-zinc-50">
+          <h1
+            className="truncate text-lg font-semibold tracking-tight text-zinc-50 sm:text-xl"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
             {title}
           </h1>
-          <p className="hidden text-xs text-zinc-500 sm:block">
+          <p className="hidden text-sm text-zinc-500 sm:block">
             {format(tick, 'EEEE, MMM d')}
           </p>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2.5">
           <MiniTimer />
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="btn-quiet hidden items-center gap-2 px-2.5 py-1.5 text-xs md:flex"
+            className="btn-quiet hidden items-center gap-2 px-3 py-2 text-sm md:flex"
             aria-label="Open search and commands"
           >
             <span>Search</span>
-            <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">
+            <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.7rem] text-zinc-500">
               ⌘K
             </kbd>
           </button>
@@ -62,11 +65,11 @@ export function TopBar() {
         </div>
       </div>
       {backupStale && (
-        <div className="flex items-center justify-between gap-3 border-t border-edge bg-amber-500/10 px-4 py-1.5 text-xs text-amber-200">
+        <div className="flex items-center justify-between gap-3 border-t border-edge bg-amber-500/10 px-4 py-2 text-sm text-amber-200 sm:px-5 lg:px-8">
           <span>Your last backup is {bAge} days old.</span>
           <Link
             to="/settings"
-            className="rounded border border-amber-300/40 px-2 py-0.5 font-medium text-amber-100 hover:bg-amber-500/10"
+            className="rounded-lg border border-amber-300/40 px-2.5 py-1 font-medium text-amber-100 hover:bg-amber-500/10"
           >
             Back up now
           </Link>
