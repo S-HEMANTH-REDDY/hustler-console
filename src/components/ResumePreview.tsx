@@ -45,7 +45,7 @@ export function ResumePreviewToolbar(props: {
           'inline-flex items-center gap-1 rounded border px-2 py-1 font-mono text-xs transition-colors',
           expanded
             ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-            : 'border-[#3d4150] bg-[#20232c] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
+            : 'border-edge bg-well text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
         )}
         title={expanded ? 'Hide preview' : 'Preview inline'}
       >
@@ -58,7 +58,7 @@ export function ResumePreviewToolbar(props: {
         onClick={() =>
           void handle('download', () => downloadResume(attachment.id))
         }
-        className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
+        className="inline-flex items-center gap-1 rounded border border-edge bg-well px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
         title="Download file"
       >
         <DownloadIcon />
@@ -71,7 +71,7 @@ export function ResumePreviewToolbar(props: {
           onClick={() =>
             void handle('open', () => openResumeInNewTab(attachment.id))
           }
-          className="inline-flex items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
+          className="inline-flex items-center gap-1 rounded border border-edge bg-well px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300 disabled:opacity-60"
           title="Open in new tab"
         >
           <ExternalIcon />
@@ -178,8 +178,8 @@ export function ResumeInlinePreview(props: {
             : attachment.fileType.split('/').pop()?.toUpperCase() || 'FILE'
 
   return (
-    <div className="mt-2 overflow-hidden rounded-md border border-[#3d4150] bg-gradient-to-b from-[#1c1f27] to-[#20232c] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
-      <div className="flex items-center justify-between gap-2 border-b border-[#3d4150] bg-[#20232c]/80 px-3 py-1.5 font-mono text-xs text-zinc-400">
+    <div className="mt-2 overflow-hidden rounded-md border border-edge bg-gradient-to-b from-base to-well shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)]">
+      <div className="flex items-center justify-between gap-2 border-b border-edge bg-well/80 px-3 py-1.5 font-mono text-xs text-zinc-400">
         <span className="truncate">
           {attachment.fileName} · {humanBytes(attachment.fileSize)}
         </span>
@@ -304,7 +304,7 @@ function renderBody(args: {
         src={url}
         title={attachment.fileName}
         style={{ height }}
-        className="block w-full bg-[#1c1f27]"
+        className="block w-full bg-base"
       />
     )
   }

@@ -35,11 +35,39 @@ function PaletteBody() {
   const items: CmdItem[] = useMemo(
     () => [
       {
-        id: 'nav-today',
+        id: 'nav-dashboard',
         group: 'Navigate',
-        label: 'Today',
-        shortcut: 'g t',
+        label: 'Dashboard',
+        shortcut: 'g h',
         run: () => navigate('/'),
+      },
+      {
+        id: 'nav-focus',
+        group: 'Navigate',
+        label: 'Focus',
+        shortcut: 'g f',
+        run: () => navigate('/focus'),
+      },
+      {
+        id: 'nav-tasks',
+        group: 'Navigate',
+        label: 'Tasks',
+        shortcut: 'g k',
+        run: () => navigate('/tasks'),
+      },
+      {
+        id: 'nav-calendar',
+        group: 'Navigate',
+        label: 'Calendar',
+        shortcut: 'g c',
+        run: () => navigate('/calendar'),
+      },
+      {
+        id: 'nav-analytics',
+        group: 'Navigate',
+        label: 'Analytics',
+        shortcut: 'g n',
+        run: () => navigate('/analytics'),
       },
       {
         id: 'nav-apps',
@@ -47,6 +75,13 @@ function PaletteBody() {
         label: 'Applications',
         shortcut: 'g a',
         run: () => navigate('/applications'),
+      },
+      {
+        id: 'nav-beh',
+        group: 'Navigate',
+        label: 'Behavioral',
+        shortcut: 'g b',
+        run: () => navigate('/behavioral'),
       },
       {
         id: 'nav-dsa',
@@ -63,25 +98,11 @@ function PaletteBody() {
         run: () => navigate('/system-design'),
       },
       {
-        id: 'nav-beh',
+        id: 'nav-passion',
         group: 'Navigate',
-        label: 'Behavioral',
-        shortcut: 'g b',
-        run: () => navigate('/behavioral'),
-      },
-      {
-        id: 'nav-tasks',
-        group: 'Navigate',
-        label: 'Tasks',
-        shortcut: 'g k',
-        run: () => navigate('/tasks'),
-      },
-      {
-        id: 'nav-timer',
-        group: 'Navigate',
-        label: 'Passion (Research · Think · Stopwatch · Pomodoro)',
+        label: 'Passion projects',
         shortcut: 'g m',
-        run: () => navigate('/timer'),
+        run: () => navigate('/passion'),
       },
       {
         id: 'nav-settings',
@@ -137,9 +158,15 @@ function PaletteBody() {
         },
       },
       {
+        id: 'act-start-focus',
+        group: 'Actions',
+        label: 'Start focus session',
+        run: () => navigate('/focus'),
+      },
+      {
         id: 'help-shortcuts',
         group: 'Help',
-        label: 'Keyboard shortcuts: g+t/a/d/y/b/k/m/s · ⌘K · ?',
+        label: 'Keyboard shortcuts: g+h/f/k/c/n/a/b/d/y/m/s · ⌘K · ?',
         run: () => {},
       },
     ],
@@ -207,7 +234,7 @@ function PaletteBody() {
       <div
         role="dialog"
         aria-label="Command palette"
-        className="w-full max-w-lg overflow-hidden rounded-lg border border-[#4a4e5b] bg-[#20232c] shadow-2xl"
+        className="w-full max-w-lg overflow-hidden rounded-lg border border-edge-strong bg-well shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -217,7 +244,7 @@ function PaletteBody() {
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="Type a command or search…"
-          className="w-full border-b border-[#3d4150] bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-400"
+          className="w-full border-b border-edge bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-400"
         />
         <div className="max-h-[60vh] overflow-y-auto py-1">
           {grouped.map((group) => (
@@ -236,13 +263,13 @@ function PaletteBody() {
                     className={cn(
                       'flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm',
                       active
-                        ? 'bg-[#2f3340] text-zinc-100'
-                        : 'text-zinc-400 hover:bg-[#262934]',
+                        ? 'bg-edge-soft text-zinc-100'
+                        : 'text-zinc-400 hover:bg-surface',
                     )}
                   >
                     <span className="truncate">{item.label}</span>
                     {item.shortcut ? (
-                      <kbd className="rounded border border-[#3d4150] bg-[#1c1f27] px-1.5 py-0.5 font-mono text-xs text-zinc-400">
+                      <kbd className="rounded border border-edge bg-base px-1.5 py-0.5 font-mono text-xs text-zinc-400">
                         {item.shortcut}
                       </kbd>
                     ) : null}
@@ -257,7 +284,7 @@ function PaletteBody() {
             </div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-[#3d4150] bg-[#20232c] px-3 py-2 font-mono text-xs text-zinc-400">
+        <div className="flex items-center justify-between border-t border-edge bg-well px-3 py-2 font-mono text-xs text-zinc-400">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>

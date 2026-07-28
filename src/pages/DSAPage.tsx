@@ -92,7 +92,7 @@ export function DSAPage() {
         </p>
       </div>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+      <section className="rounded border border-edge bg-surface p-4">
         <div className="mb-3 text-xs font-mono uppercase text-zinc-400">
           13×7 heat · problems / day
         </div>
@@ -108,16 +108,16 @@ export function DSAPage() {
             return (
               <div
                 key={c.date}
-                className="group relative h-4 rounded-sm border border-[#3d4150]"
+                className="group relative h-4 rounded-sm border border-edge"
                 style={{
                   backgroundColor:
                     c.count === 0
-                      ? '#262934'
+                      ? 'var(--color-surface-3)'
                       : `rgba(132, 204, 22, ${intensity.toFixed(2)})`,
                 }}
                 title={`${c.date}: ${c.count}`}
               >
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#3d4150] bg-[#0A0A0B] px-2 py-1 text-xs text-zinc-200 group-hover:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-edge bg-pit px-2 py-1 text-xs text-zinc-200 group-hover:block">
                   {c.date} · {c.count} problems
                 </div>
               </div>
@@ -136,14 +136,14 @@ export function DSAPage() {
           { k: 'medium', v: totals.m },
           { k: 'hard', v: totals.h },
         ].map((x) => (
-          <div key={x.k} className="rounded border border-[#3d4150] bg-[#262934] p-3">
+          <div key={x.k} className="rounded border border-edge bg-surface p-3">
             <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div className="font-mono text-2xl text-zinc-100">{x.v}</div>
           </div>
         ))}
       </section>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">Log problem</h2>
         <form
           className="grid gap-3 md:grid-cols-3 lg:grid-cols-6"
@@ -200,10 +200,10 @@ export function DSAPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-[#3d4150]">
+      <div className="overflow-x-auto rounded border border-edge">
         <table className="min-w-[900px] w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#3d4150] bg-[#262934] text-xs uppercase text-zinc-400">
+            <tr className="border-b border-edge bg-surface text-xs uppercase text-zinc-400">
               <th className="px-2 py-2">Date</th>
               <th className="px-2 py-2">Title</th>
               <th className="px-2 py-2">Topic</th>
@@ -218,7 +218,7 @@ export function DSAPage() {
               .slice()
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((p) => (
-                <tr key={p.id} className="border-b border-[#3d4150]/70 hover:bg-[#323540]">
+                <tr key={p.id} className="border-b border-edge/70 hover:bg-surface-3">
                   <td className="px-1 py-1 align-middle">
                     <input
                       type="date"

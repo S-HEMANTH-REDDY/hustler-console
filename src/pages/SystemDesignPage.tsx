@@ -155,7 +155,7 @@ export function SystemDesignPage() {
         <KindFilterTabs value={filter} onChange={setFilter} />
       </div>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+      <section className="rounded border border-edge bg-surface p-4">
         <div className="mb-3 flex items-center justify-between text-xs font-mono uppercase text-zinc-400">
           <span>
             13×7 heat ·{' '}
@@ -179,16 +179,16 @@ export function SystemDesignPage() {
             return (
               <div
                 key={c.date}
-                className="group relative h-4 rounded-sm border border-[#3d4150]"
+                className="group relative h-4 rounded-sm border border-edge"
                 style={{
                   backgroundColor:
                     c.count === 0
-                      ? '#262934'
+                      ? 'var(--color-surface-3)'
                       : `rgba(132, 204, 22, ${intensity.toFixed(2)})`,
                 }}
                 title={`${c.date}: ${c.count}`}
               >
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-[#3d4150] bg-[#1c1f27] px-2 py-1 text-xs text-zinc-200 group-hover:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-edge bg-base px-2 py-1 text-xs text-zinc-200 group-hover:block">
                   {c.date} · {c.count} problems
                 </div>
               </div>
@@ -211,7 +211,7 @@ export function SystemDesignPage() {
         ].map((x) => (
           <div
             key={x.k}
-            className="rounded border border-[#3d4150] bg-[#262934] p-3"
+            className="rounded border border-edge bg-surface p-3"
           >
             <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div
@@ -240,7 +240,7 @@ export function SystemDesignPage() {
         coverage={lldCoverage}
       />
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">
           Log system-design problem
         </h2>
@@ -335,10 +335,10 @@ export function SystemDesignPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-[#3d4150]">
+      <div className="overflow-x-auto rounded border border-edge">
         <table className="min-w-[960px] w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#3d4150] bg-[#262934] text-xs uppercase text-zinc-400">
+            <tr className="border-b border-edge bg-surface text-xs uppercase text-zinc-400">
               <th className="px-2 py-2">Date</th>
               <th className="px-2 py-2">Kind</th>
               <th className="px-2 py-2">Title</th>
@@ -360,7 +360,7 @@ export function SystemDesignPage() {
                 return (
                   <tr
                     key={p.id}
-                    className="border-b border-[#3d4150]/70 hover:bg-[#323540]"
+                    className="border-b border-edge/70 hover:bg-surface-3"
                   >
                     <td className="px-1 py-1 align-middle">
                       <input
@@ -525,7 +525,7 @@ function KindFilterTabs(props: {
     <div
       role="tablist"
       aria-label="Filter by kind"
-      className="inline-flex overflow-hidden rounded-md border border-[#3d4150] bg-[#1c1f27] p-0.5"
+      className="inline-flex overflow-hidden rounded-md border border-edge bg-base p-0.5"
     >
       {opts.map((o) => {
         const active = props.value === o.id
@@ -539,7 +539,7 @@ function KindFilterTabs(props: {
             className={cn(
               'rounded px-3 py-1.5 text-xs font-medium font-mono uppercase tracking-wider transition-colors',
               active
-                ? 'bg-[#3d4150] text-zinc-50'
+                ? 'bg-edge text-zinc-50'
                 : 'text-zinc-400 hover:text-zinc-200',
             )}
           >
@@ -558,7 +558,7 @@ function CoverageSection(props: {
   coverage: { topic: string; count: number }[]
 }) {
   return (
-    <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+    <section className="rounded border border-edge bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-xs font-mono uppercase tracking-wider text-zinc-400">
           {props.title}
@@ -579,7 +579,7 @@ function CoverageSection(props: {
             className={
               t.count === 0
                 ? 'rounded border border-amber-700/40 bg-amber-950/20 px-3 py-2'
-                : 'rounded border border-[#3d4150] bg-[#1c1f27] px-3 py-2'
+                : 'rounded border border-edge bg-base px-3 py-2'
             }
           >
             <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">

@@ -17,7 +17,7 @@ export function RequireAuth(props: { children: ReactNode }) {
     return (
       <div
         role="status"
-        className="flex min-h-screen items-center justify-center bg-[#1c1f27] text-sm text-zinc-400"
+        className="flex min-h-screen items-center justify-center bg-base text-sm text-zinc-400"
       >
         Loading session…
       </div>

@@ -6,8 +6,17 @@ import { useAuthStore } from './store/authStore'
 
 // Route-level code splitting: each page ships as its own chunk and is fetched
 // on navigation, keeping the initial download (and first paint) small.
-const TodayPage = lazy(() =>
-  import('./pages/TodayPage').then((m) => ({ default: m.TodayPage })),
+const DashboardPage = lazy(() =>
+  import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+)
+const FocusPage = lazy(() =>
+  import('./pages/FocusPage').then((m) => ({ default: m.FocusPage })),
+)
+const CalendarPage = lazy(() =>
+  import('./pages/CalendarPage').then((m) => ({ default: m.CalendarPage })),
+)
+const AnalyticsPage = lazy(() =>
+  import('./pages/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage })),
 )
 const ApplicationsPage = lazy(() =>
   import('./pages/ApplicationsPage').then((m) => ({
@@ -34,14 +43,18 @@ const SystemDesignPage = lazy(() =>
 const TasksPage = lazy(() =>
   import('./pages/TasksPage').then((m) => ({ default: m.TasksPage })),
 )
-const TimerPage = lazy(() =>
-  import('./pages/TimerPage').then((m) => ({ default: m.TimerPage })),
+const PassionPage = lazy(() =>
+  import('./pages/PassionPage').then((m) => ({ default: m.PassionPage })),
 )
 
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-500">
+      <div
+        className="flex items-center gap-2 text-xs text-zinc-500"
+        role="status"
+        aria-label="Loading page"
+      >
         <span className="h-2 w-2 animate-pulse rounded-full bg-lime-400" />
         Loading…
       </div>
@@ -51,7 +64,7 @@ function RouteFallback() {
 
 export default function App() {
   // Kick off the auth bootstrap exactly once. Safe to call when Supabase
-  // isn't configured \u2014 the store flips to 'disabled' synchronously.
+  // isn't configured — the store flips to 'disabled' synchronously.
   const init = useAuthStore((s) => s.init)
   useEffect(() => {
     void init()
@@ -69,13 +82,18 @@ export default function App() {
               </RequireAuth>
             }
           >
-            <Route path="/" element={<TodayPage />} />
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/focus" element={<FocusPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/applications" element={<ApplicationsPage />} />
             <Route path="/dsa" element={<DSAPage />} />
             <Route path="/system-design" element={<SystemDesignPage />} />
             <Route path="/behavioral" element={<BehavioralPage />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/timer" element={<TimerPage />} />
+            <Route path="/passion" element={<PassionPage />} />
+            {/* Legacy paths */}
+            <Route path="/timer" element={<Navigate to="/focus" replace />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

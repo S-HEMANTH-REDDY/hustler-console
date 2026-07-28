@@ -78,7 +78,7 @@ export function BehavioralQuestionBank() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="text-sm font-semibold text-zinc-200">Study guides</h2>
         <p className="mt-1 text-xs text-zinc-400">
           Built-in PDFs from your AZ prep folder — open in a new tab or download.
@@ -88,7 +88,7 @@ export function BehavioralQuestionBank() {
           {BUILTIN_BEHAVIORAL_GUIDES.map((g) => (
             <li
               key={g.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-2 rounded border border-edge bg-pit px-3 py-2"
             >
               <div className="min-w-0">
                 <div className="text-sm font-medium text-zinc-100">{g.title}</div>
@@ -99,14 +99,14 @@ export function BehavioralQuestionBank() {
                   href={behavioralGuideUrl(g.fileName)}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded border border-[#3d4150] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+                  className="rounded border border-edge px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
                 >
                   Open
                 </a>
                 <a
                   href={behavioralGuideUrl(g.fileName)}
                   download={g.fileName}
-                  className="rounded border border-[#3d4150] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+                  className="rounded border border-edge px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
                 >
                   ↓
                 </a>
@@ -116,7 +116,7 @@ export function BehavioralQuestionBank() {
         </ul>
       </section>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="text-sm font-semibold text-zinc-200">
           Amazon behavioral prep
         </h2>
@@ -127,7 +127,7 @@ export function BehavioralQuestionBank() {
           {BEHAVIORAL_PREP_TIPS.map((tip) => (
             <li
               key={tip.title}
-              className="rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2"
+              className="rounded border border-edge bg-pit px-3 py-2"
             >
               <div className="text-xs font-semibold text-lime-200/90">
                 {tip.title}
@@ -151,7 +151,7 @@ export function BehavioralQuestionBank() {
           {essentials.map((q, i) => (
             <li
               key={q.id}
-              className="rounded border border-[#3d4150] bg-[#0A0A0B]/80 px-3 py-2 text-sm text-zinc-200"
+              className="rounded border border-edge bg-pit/80 px-3 py-2 text-sm text-zinc-200"
             >
               <span className="mr-2 font-mono text-[10px] text-lime-400/80">
                 {i + 1}.
@@ -168,12 +168,12 @@ export function BehavioralQuestionBank() {
         </ul>
       </section>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="text-sm font-semibold text-zinc-200">Your guides</h2>
         <p className="mt-1 text-xs text-zinc-400">
           Attach your own PDF or Word docs — private to your account in cloud mode.
         </p>
-        <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded border border-[#3d4150] bg-[#20232c] px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
+        <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded border border-edge bg-well px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
           <span>{uploadBusy ? 'Uploading…' : 'Attach PDF / DOC'}</span>
           <input
             type="file"
@@ -190,7 +190,7 @@ export function BehavioralQuestionBank() {
             {uploads.map((f) => (
               <li
                 key={f.id}
-                className="rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2"
+                className="rounded border border-edge bg-pit px-3 py-2"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <button
@@ -202,7 +202,7 @@ export function BehavioralQuestionBank() {
                       'rounded border px-2 py-0.5 font-mono text-xs',
                       previewId === f.id
                         ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-                        : 'border-[#3d4150] text-zinc-300 hover:text-lime-300',
+                        : 'border-edge text-zinc-300 hover:text-lime-300',
                     )}
                   >
                     {previewId === f.id ? 'Hide' : 'Preview'}
@@ -216,7 +216,7 @@ export function BehavioralQuestionBank() {
                   <button
                     type="button"
                     onClick={() => void downloadBehavioralFile(f.id)}
-                    className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:text-lime-300"
+                    className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:text-lime-300"
                     title="Download"
                   >
                     ↓
@@ -224,7 +224,7 @@ export function BehavioralQuestionBank() {
                   <button
                     type="button"
                     onClick={() => void openBehavioralFileInNewTab(f.id)}
-                    className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:text-lime-300"
+                    className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:text-lime-300"
                     title="Open"
                   >
                     ↗
@@ -237,7 +237,7 @@ export function BehavioralQuestionBank() {
                       if (previewId === f.id) setPreviewId(null)
                       pushToast('delete', 'File removed')
                     }}
-                    className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:text-red-300"
+                    className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:text-red-300"
                   >
                     ×
                   </button>
@@ -251,7 +251,7 @@ export function BehavioralQuestionBank() {
         )}
       </section>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold text-zinc-200">
@@ -287,7 +287,7 @@ export function BehavioralQuestionBank() {
                 'rounded border px-2.5 py-1 font-mono text-xs transition-colors',
                 experience === level
                   ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-                  : 'border-[#3d4150] text-zinc-400 hover:text-zinc-200',
+                  : 'border-edge text-zinc-400 hover:text-zinc-200',
               )}
             >
               {BEHAVIORAL_EXPERIENCE_LABELS[level]}
@@ -303,7 +303,7 @@ export function BehavioralQuestionBank() {
               'rounded border px-2.5 py-1 font-mono text-xs transition-colors',
               essentialOnly
                 ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-                : 'border-[#3d4150] text-zinc-400 hover:text-zinc-200',
+                : 'border-edge text-zinc-400 hover:text-zinc-200',
             )}
           >
             Top essentials only
@@ -315,7 +315,7 @@ export function BehavioralQuestionBank() {
               'rounded border px-2.5 py-1 font-mono text-xs transition-colors',
               sdeOnly
                 ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-                : 'border-[#3d4150] text-zinc-400 hover:text-zinc-200',
+                : 'border-edge text-zinc-400 hover:text-zinc-200',
             )}
           >
             SDE focus
@@ -393,7 +393,7 @@ export function BehavioralQuestionBank() {
           {filtered.map((q) => (
             <li
               key={q.id}
-              className="rounded border border-[#3d4150] bg-[#0A0A0B] px-3 py-2 text-sm text-zinc-200"
+              className="rounded border border-edge bg-pit px-3 py-2 text-sm text-zinc-200"
             >
               <p>{q.text}</p>
               <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] text-zinc-500">
@@ -401,7 +401,7 @@ export function BehavioralQuestionBank() {
                   {q.category} · {BEHAVIORAL_EXPERIENCE_LABELS[q.experience]}
                 </span>
                 {q.lp ? (
-                  <span className="rounded border border-[#3d4150] px-1.5 py-0.5 text-zinc-400">
+                  <span className="rounded border border-edge px-1.5 py-0.5 text-zinc-400">
                     {q.lp}
                   </span>
                 ) : null}

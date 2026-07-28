@@ -75,7 +75,7 @@ export function BehavioralPage() {
 
       <BehavioralQuestionBank />
 
-      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+      <section className="rounded border border-edge bg-surface p-4">
         <h2 className="mb-3 text-xs font-mono uppercase text-zinc-400">
           Coverage
         </h2>
@@ -87,7 +87,7 @@ export function BehavioralPage() {
                 'rounded border p-3',
                 c.count === 0
                   ? 'border-amber-600/60 bg-amber-950/20'
-                  : 'border-[#3d4150] bg-[#0A0A0B]',
+                  : 'border-edge bg-pit',
               )}
             >
               <div className="text-sm font-medium text-zinc-200">{c.cat}</div>
@@ -104,7 +104,7 @@ export function BehavioralPage() {
         </div>
       </section>
 
-      <section className="rounded border border-[#3d4150] bg-[#262934]/80 p-4">
+      <section className="rounded border border-edge bg-surface/80 p-4">
         <h2 className="mb-3 text-sm font-semibold text-zinc-200">New story</h2>
         <form
           className="grid gap-3 md:grid-cols-4"
@@ -166,7 +166,7 @@ export function BehavioralPage() {
             return (
               <div
                 key={s.id}
-                className="rounded border border-[#3d4150] bg-[#262934] p-3 text-sm"
+                className="rounded border border-edge bg-surface p-3 text-sm"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <button

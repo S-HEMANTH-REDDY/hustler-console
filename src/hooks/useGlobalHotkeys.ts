@@ -66,8 +66,21 @@ export function useGlobalHotkeys() {
       const k = e.key.toLowerCase()
       clearPending()
       switch (k) {
+        case 'h':
         case 't':
           navigate('/')
+          break
+        case 'f':
+          navigate('/focus')
+          break
+        case 'k':
+          navigate('/tasks')
+          break
+        case 'c':
+          navigate('/calendar')
+          break
+        case 'n':
+          navigate('/analytics')
           break
         case 'a':
           navigate('/applications')
@@ -81,11 +94,8 @@ export function useGlobalHotkeys() {
         case 'b':
           navigate('/behavioral')
           break
-        case 'k':
-          navigate('/tasks')
-          break
         case 'm':
-          navigate('/timer')
+          navigate('/passion')
           break
         case 's':
           navigate('/settings')

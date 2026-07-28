@@ -1,28 +1,54 @@
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { CommandPalette } from './CommandPalette'
 import { CloudImportPrompt } from './CloudImportPrompt'
-import { Sidebar } from './Sidebar'
+import { Onboarding } from './Onboarding'
+import { PomodoroEngine } from './PomodoroEngine'
+import { BottomNav, Sidebar } from './Sidebar'
 import { ToastHost } from './ToastHost'
 import { TopBar } from './TopBar'
 import { useGlobalHotkeys } from '../hooks/useGlobalHotkeys'
+import { applyTheme, watchSystemTheme } from '../lib/theme'
+import { useUiStore } from '../store/uiStore'
 
 export function AppLayout() {
   useGlobalHotkeys()
+  const zenMode = useUiStore((s) => s.zenMode)
+
+  useEffect(() => {
+    applyTheme(useUiStore.getState().theme)
+    return watchSystemTheme(() => useUiStore.getState().theme)
+  }, [])
+
   return (
     <div className="flex min-h-full">
-      <Sidebar />
-      {/* min-w-0 is essential so wide tables / textareas trigger horizontal
-          scroll inside this column instead of pushing the whole layout wider
-          than the viewport (which was making split-screen views overflow). */}
-      <div className="flex min-h-full min-w-0 flex-1 flex-col lg:pl-56">
-        <TopBar />
-        <main className="min-h-0 min-w-0 flex-1 p-3 sm:p-4 lg:p-6">
+      {!zenMode && <Sidebar />}
+      {/* min-w-0 keeps wide tables scrolling inside this column instead of
+          pushing the layout wider than the viewport. */}
+      <div
+        className={
+          zenMode
+            ? 'flex min-h-full min-w-0 flex-1 flex-col'
+            : 'flex min-h-full min-w-0 flex-1 flex-col lg:pl-56'
+        }
+      >
+        {!zenMode && <TopBar />}
+        <main
+          className={
+            zenMode
+              ? 'min-h-0 min-w-0 flex-1'
+              : 'min-h-0 min-w-0 flex-1 p-3 pb-20 sm:p-4 lg:p-6 lg:pb-6'
+          }
+        >
           <Outlet />
         </main>
       </div>
+      {!zenMode && <BottomNav />}
+      <PomodoroEngine />
       <ToastHost />
       <CommandPalette />
       <CloudImportPrompt />
+      <Onboarding />
     </div>
   )
 }

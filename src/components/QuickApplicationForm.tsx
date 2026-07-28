@@ -132,7 +132,7 @@ export function QuickApplicationForm() {
     <section
       id="quick-log"
       ref={sectionRef}
-      className="scroll-mt-20 rounded-lg border border-[#3d4150] bg-[#262934]/80 p-5"
+      className="scroll-mt-20 rounded-lg border border-edge bg-surface/80 p-5"
     >
       <div className="mb-4 flex items-end justify-between gap-3">
         <div>
@@ -250,7 +250,7 @@ export function QuickApplicationForm() {
               Resume file (optional)
             </span>
             <div className="flex flex-wrap items-center gap-2">
-              <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-[#3d4150] bg-[#20232c] px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded border border-edge bg-well px-3 py-1.5 text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
                 <Paperclip />
                 <span>{pickedFile ? 'Replace file' : 'Attach PDF / DOC'}</span>
                 <input
@@ -324,7 +324,7 @@ export function QuickApplicationForm() {
             <button
               type="button"
               onClick={() => setLastLogged(null)}
-              className="rounded border border-[#3d4150] px-2 py-0.5 font-mono text-xs text-zinc-400 hover:text-zinc-200"
+              className="rounded border border-edge px-2 py-0.5 font-mono text-xs text-zinc-400 hover:text-zinc-200"
             >
               Dismiss
             </button>

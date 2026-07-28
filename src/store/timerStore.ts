@@ -22,7 +22,7 @@ interface StopwatchPersist {
 
 export type PomodoroPhase = 'focus' | 'shortBreak' | 'longBreak'
 
-interface PomodoroPersist {
+export interface PomodoroPersist {
   running: boolean
   phase: PomodoroPhase
   /** ms remaining at the time the run started/paused. */
@@ -38,6 +38,71 @@ interface PomodoroPersist {
   longEvery: number
   autoStartBreak: boolean
   autoStartFocus: boolean
+  /** Task the user is focusing on (LifeTask id), if any. */
+  taskId: string | null
+  /** Phase that just finished, until the next start/reset. Drives the
+      "Focus Complete!" tab title and in-app banner. */
+  justCompleted: PomodoroPhase | null
+  /** True once the user has ever interacted with this phase's countdown —
+      distinguishes a fresh phase from a paused one for labels. */
+  everStarted: boolean
+}
+
+export interface TimerPreset {
+  id: string
+  label: string
+  hint: string
+  focusMin: number
+  shortBreakMin: number
+  longBreakMin: number
+  longEvery: number
+}
+
+export const TIMER_PRESETS: TimerPreset[] = [
+  {
+    id: 'pomodoro',
+    label: 'Pomodoro',
+    hint: '25 / 5',
+    focusMin: 25,
+    shortBreakMin: 5,
+    longBreakMin: 15,
+    longEvery: 4,
+  },
+  {
+    id: 'deep',
+    label: 'Deep Work',
+    hint: '50 / 10',
+    focusMin: 50,
+    shortBreakMin: 10,
+    longBreakMin: 20,
+    longEvery: 3,
+  },
+  {
+    id: 'sprint',
+    label: 'Quick Sprint',
+    hint: '15 / 5',
+    focusMin: 15,
+    shortBreakMin: 5,
+    longBreakMin: 15,
+    longEvery: 4,
+  },
+]
+
+/** Which preset matches the current settings, or 'custom'. */
+export function matchPreset(p: {
+  focusMin: number
+  shortBreakMin: number
+  longBreakMin: number
+  longEvery: number
+}): string {
+  const hit = TIMER_PRESETS.find(
+    (t) =>
+      t.focusMin === p.focusMin &&
+      t.shortBreakMin === p.shortBreakMin &&
+      t.longBreakMin === p.longBreakMin &&
+      t.longEvery === p.longEvery,
+  )
+  return hit?.id ?? 'custom'
 }
 
 /**
@@ -85,6 +150,10 @@ interface TimerState {
     autoStartBreak: boolean
     autoStartFocus: boolean
   }) => void
+  pomoApplyPreset: (presetId: string) => void
+  pomoSetTask: (taskId: string | null) => void
+  /** Called by the engine when a phase hits zero. */
+  pomoAdvance: () => void
 
   thinkStart: () => void
   thinkPause: () => void
@@ -146,6 +215,9 @@ function defaultPomodoro(): PomodoroPersist {
     longEvery: 4,
     autoStartBreak: false,
     autoStartFocus: false,
+    taskId: null,
+    justCompleted: null,
+    everStarted: false,
   }
 }
 
@@ -255,6 +327,8 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       ...p,
       running: true,
       runStartedAt: Date.now(),
+      justCompleted: null,
+      everStarted: true,
     }
     persistPomodoro(next)
     set({ pomodoro: next })
@@ -285,15 +359,56 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       running: false,
       runStartedAt: null,
       remainingMs: phaseMin * 60_000,
+      justCompleted: null,
+      everStarted: false,
     }
     persistPomodoro(next)
     set({ pomodoro: next })
   },
   pomoSkip: () => {
     const p = get().pomodoro
-    const advanced = advancePhase(p)
+    const advanced = { ...advancePhase(p), justCompleted: null }
     persistPomodoro(advanced)
     set({ pomodoro: advanced })
+  },
+  pomoAdvance: () => {
+    const p = get().pomodoro
+    const advanced: PomodoroPersist = {
+      ...advancePhase(p),
+      justCompleted: p.phase,
+    }
+    persistPomodoro(advanced)
+    set({ pomodoro: advanced })
+  },
+  pomoApplyPreset: (presetId) => {
+    const preset = TIMER_PRESETS.find((t) => t.id === presetId)
+    if (!preset) return
+    const p = get().pomodoro
+    const next: PomodoroPersist = {
+      ...p,
+      focusMin: preset.focusMin,
+      shortBreakMin: preset.shortBreakMin,
+      longBreakMin: preset.longBreakMin,
+      longEvery: preset.longEvery,
+      // Re-arm the current phase when idle so the change is visible.
+      remainingMs: p.running
+        ? p.remainingMs
+        : (p.phase === 'focus'
+            ? preset.focusMin
+            : p.phase === 'shortBreak'
+              ? preset.shortBreakMin
+              : preset.longBreakMin) * 60_000,
+      everStarted: p.running ? p.everStarted : false,
+    }
+    persistPomodoro(next)
+    set({ pomodoro: next })
+  },
+  pomoSetTask: (taskId) => {
+    const p = get().pomodoro
+    if (p.taskId === taskId) return
+    const next: PomodoroPersist = { ...p, taskId }
+    persistPomodoro(next)
+    set({ pomodoro: next })
   },
   pomoSetSettings: (s) => {
     const p = get().pomodoro
@@ -417,6 +532,7 @@ export function advancePhase(p: PomodoroPersist): PomodoroPersist {
       remainingMs: nextMin * 60_000,
       running: p.autoStartBreak,
       runStartedAt: p.autoStartBreak ? Date.now() : null,
+      everStarted: p.autoStartBreak,
     }
   }
   return {
@@ -425,6 +541,7 @@ export function advancePhase(p: PomodoroPersist): PomodoroPersist {
     remainingMs: p.focusMin * 60_000,
     running: p.autoStartFocus,
     runStartedAt: p.autoStartFocus ? Date.now() : null,
+    everStarted: p.autoStartFocus,
   }
 }
 

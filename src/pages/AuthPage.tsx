@@ -127,7 +127,7 @@ export function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1c1f27] px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-base px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <h1
@@ -238,7 +238,7 @@ export function AuthPage() {
                 type="button"
                 onClick={() => void onGoogle()}
                 disabled={pending}
-                className="flex w-full items-center justify-center gap-2 rounded-md border border-[#3d4150] bg-[#262934] px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:border-[#4a4e5b] hover:bg-[#2c2f3a] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-md border border-edge bg-surface px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:border-edge-strong hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <GoogleIcon />
                 Continue with Google
@@ -272,7 +272,7 @@ export function AuthPage() {
 
 function AuthDisabledNotice() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1c1f27] px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-base px-4 py-12">
       <div className="w-full max-w-lg">
         <div className="mb-6 text-center">
           <h1
@@ -308,11 +308,11 @@ function AuthDisabledNotice() {
             </li>
             <li>
               Create repository secrets{' '}
-              <code className="rounded bg-[#262934] px-1.5 py-0.5 font-mono text-xs text-lime-200">
+              <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-lime-200">
                 VITE_SUPABASE_URL
               </code>{' '}
               and{' '}
-              <code className="rounded bg-[#262934] px-1.5 py-0.5 font-mono text-xs text-lime-200">
+              <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-xs text-lime-200">
                 VITE_SUPABASE_ANON_KEY
               </code>{' '}
               (Project Settings → API in the Supabase dashboard).
@@ -336,7 +336,7 @@ function AuthDisabledNotice() {
           <div className="mt-6 flex flex-wrap gap-2">
             <Link
               to="/"
-              className="inline-flex rounded-md border border-[#3d4150] bg-[#262934] px-4 py-2 text-sm text-zinc-200 hover:border-zinc-600"
+              className="inline-flex rounded-md border border-edge bg-surface px-4 py-2 text-sm text-zinc-200 hover:border-zinc-600"
             >
               ← Back to app
             </Link>
@@ -368,7 +368,7 @@ function submitLabel(mode: Mode): string {
 
 function ModeTabs(props: { mode: Mode; onChange: (m: Mode) => void }) {
   return (
-    <div className="flex rounded-md border border-[#3d4150] bg-[#20232c] p-1">
+    <div className="flex rounded-md border border-edge bg-well p-1">
       {(['signin', 'signup'] as const).map((m) => (
         <button
           key={m}
@@ -377,7 +377,7 @@ function ModeTabs(props: { mode: Mode; onChange: (m: Mode) => void }) {
           className={cn(
             'flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors',
             props.mode === m
-              ? 'bg-[#2c2f3a] text-zinc-50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]'
+              ? 'bg-surface-2 text-zinc-50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]'
               : 'text-zinc-400 hover:text-zinc-200',
           )}
         >
@@ -409,9 +409,9 @@ function Field(props: {
 function Divider() {
   return (
     <div className="my-5 flex items-center gap-3 font-mono text-xs text-zinc-400">
-      <span className="h-px flex-1 bg-[#3d4150]" />
+      <span className="h-px flex-1 bg-edge" />
       or
-      <span className="h-px flex-1 bg-[#3d4150]" />
+      <span className="h-px flex-1 bg-edge" />
     </div>
   )
 }

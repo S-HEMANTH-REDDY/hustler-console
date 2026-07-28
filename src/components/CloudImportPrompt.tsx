@@ -99,7 +99,7 @@ export function CloudImportPrompt() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-      <div className="max-w-md rounded-lg border border-[#3d4150] bg-[#1c1f27] p-5 shadow-xl">
+      <div className="max-w-md rounded-lg border border-edge bg-base p-5 shadow-xl">
         <h2 className="text-base font-semibold text-zinc-100">
           Import local data?
         </h2>
@@ -115,7 +115,7 @@ export function CloudImportPrompt() {
         <div className="mt-4 flex flex-wrap justify-end gap-2">
           <button
             type="button"
-            className="rounded border border-[#3d4150] px-3 py-1.5 text-xs text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+            className="rounded border border-edge px-3 py-1.5 text-xs text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
             disabled={busy}
             onClick={() => onSkip()}
           >

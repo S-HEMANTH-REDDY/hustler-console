@@ -29,7 +29,7 @@ export function PassionScheduleSection() {
 
   if (!schedule) {
     return (
-      <div className="relative mt-6 rounded-lg border border-[#3d4150] bg-[#20232c]/40 px-4 py-6 text-sm text-zinc-400">
+      <div className="relative mt-6 rounded-lg border border-edge bg-well/40 px-4 py-6 text-sm text-zinc-400">
         Loading schedule…
       </div>
     )
@@ -37,7 +37,7 @@ export function PassionScheduleSection() {
 
   if (!draft) {
     return (
-      <div className="relative mt-6 rounded-lg border border-[#3d4150] bg-[#20232c]/40 px-4 py-6 text-sm text-zinc-400">
+      <div className="relative mt-6 rounded-lg border border-edge bg-well/40 px-4 py-6 text-sm text-zinc-400">
         Preparing editor…
       </div>
     )
@@ -79,15 +79,15 @@ export function PassionScheduleSection() {
                     },
               )
             }
-            className="rounded border border-[#3d4150] bg-[#262934] px-2 py-1 font-mono text-[11px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-200"
+            className="rounded border border-edge bg-surface px-2 py-1 font-mono text-[11px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-200"
           >
             + Row
           </button>
         </div>
-        <div className="overflow-x-auto rounded-lg border border-[#3d4150]">
+        <div className="overflow-x-auto rounded-lg border border-edge">
           <table className="w-full min-w-[520px] border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-[#3d4150] bg-[#1c1f27] font-mono uppercase tracking-wider text-zinc-500">
+              <tr className="border-b border-edge bg-base font-mono uppercase tracking-wider text-zinc-500">
                 <th className="px-2 py-2">Time</th>
                 <th className="px-2 py-2">Activity</th>
                 <th className="px-2 py-2">Duration</th>
@@ -96,7 +96,7 @@ export function PassionScheduleSection() {
             </thead>
             <tbody>
               {draft.dailyRows.map((row) => (
-                <tr key={row.id} className="border-b border-[#3d4150]/60">
+                <tr key={row.id} className="border-b border-edge/60">
                   <td className="p-1 align-top">
                     <input
                       value={row.timeRange}
@@ -182,8 +182,8 @@ export function PassionScheduleSection() {
                       className={cn(
                         'rounded border px-1.5 py-0.5 font-mono text-[10px]',
                         draft.dailyRows.length <= 1
-                          ? 'cursor-not-allowed border-[#3d4150] text-zinc-600'
-                          : 'border-[#3d4150] text-zinc-400 hover:border-red-900/60 hover:text-red-300',
+                          ? 'cursor-not-allowed border-edge text-zinc-600'
+                          : 'border-edge text-zinc-400 hover:border-red-900/60 hover:text-red-300',
                       )}
                       aria-label="Remove row"
                     >
@@ -225,15 +225,15 @@ export function PassionScheduleSection() {
                     },
               )
             }
-            className="rounded border border-[#3d4150] bg-[#262934] px-2 py-1 font-mono text-[11px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-200"
+            className="rounded border border-edge bg-surface px-2 py-1 font-mono text-[11px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-200"
           >
             + Row
           </button>
         </div>
-        <div className="overflow-x-auto rounded-lg border border-[#3d4150]">
+        <div className="overflow-x-auto rounded-lg border border-edge">
           <table className="w-full min-w-[420px] border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-[#3d4150] bg-[#1c1f27] font-mono uppercase tracking-wider text-zinc-500">
+              <tr className="border-b border-edge bg-base font-mono uppercase tracking-wider text-zinc-500">
                 <th className="px-2 py-2">Day</th>
                 <th className="px-2 py-2">Session</th>
                 <th className="px-2 py-2">Duration</th>
@@ -242,7 +242,7 @@ export function PassionScheduleSection() {
             </thead>
             <tbody>
               {draft.weekendRows.map((row) => (
-                <tr key={row.id} className="border-b border-[#3d4150]/60">
+                <tr key={row.id} className="border-b border-edge/60">
                   <td className="p-1 align-top">
                     <input
                       value={row.day}
@@ -326,8 +326,8 @@ export function PassionScheduleSection() {
                       className={cn(
                         'rounded border px-1.5 py-0.5 font-mono text-[10px]',
                         draft.weekendRows.length <= 1
-                          ? 'cursor-not-allowed border-[#3d4150] text-zinc-600'
-                          : 'border-[#3d4150] text-zinc-400 hover:border-red-900/60 hover:text-red-300',
+                          ? 'cursor-not-allowed border-edge text-zinc-600'
+                          : 'border-edge text-zinc-400 hover:border-red-900/60 hover:text-red-300',
                       )}
                       aria-label="Remove row"
                     >

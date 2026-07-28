@@ -1,234 +1,221 @@
-import { addDays } from 'date-fns'
-import { useMemo, type FormEvent } from 'react'
+import { format } from 'date-fns'
+import { useMemo, useState, type FormEvent } from 'react'
 import {
   addTask as createTaskRecord,
   deleteTaskById,
   patchTaskFields,
 } from '../cloud/mutations'
 import { useTasksHybrid } from '../cloud/hybridData'
-import { useSecondsTick } from '../hooks/useIntervalTick'
-import type { LifeTask, TaskRecurrence } from '../db/types'
+import { useIntervalTick } from '../hooks/useIntervalTick'
+import type { LifeTask, TaskPriority, TaskRecurrence } from '../db/types'
 import { dayKey, isRecurrenceComplete } from '../lib/dates'
 import {
   countdownTo,
   effectiveDueAt,
-  effectiveDueDate,
   formatDueTime,
 } from '../lib/taskSchedule'
 import { cn, newId } from '../lib/utils'
 import { useUiStore } from '../store/uiStore'
 
-type Bucket = 'overdue' | 'yesterday' | 'today' | 'tomorrow' | 'later' | 'done'
+type Filter = 'today' | 'upcoming' | 'done'
 
-function bucketFor(
-  due: string,
-  done: boolean,
-  now: Date,
-): Bucket {
-  if (done) return 'done'
-  const y = dayKey(addDays(now, -1))
-  const t = dayKey(now)
-  const tm = dayKey(addDays(now, 1))
-  if (due < y) return 'overdue'
-  if (due === y) return 'yesterday'
-  if (due === t) return 'today'
-  if (due === tm) return 'tomorrow'
-  return 'later'
+const PRIORITY_LABEL: Record<TaskPriority, string> = {
+  high: 'High',
+  mid: 'Medium',
+  low: 'Low',
 }
-
-const BUCKET_LABEL: Record<Bucket, string> = {
-  overdue: 'Overdue',
-  yesterday: 'Yesterday',
-  today: 'Today',
-  tomorrow: 'Tomorrow',
-  later: 'Later',
-  done: 'Done',
-}
-
-const BUCKET_ORDER: Bucket[] = [
-  'overdue',
-  'today',
-  'tomorrow',
-  'yesterday',
-  'later',
-  'done',
-]
 
 export function TasksPage() {
   const tasks = useTasksHybrid()
   const pushToast = useUiStore((s) => s.pushToast)
-  const now = useSecondsTick()
+  const now = useIntervalTick(30_000)
   const todayStr = dayKey(now)
+  const [filter, setFilter] = useState<Filter>('today')
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
-  const grouped = useMemo(() => {
-    const enriched = tasks.map((t) => {
+  const enriched = useMemo(() => {
+    const rows = tasks.map((t) => {
       const done = isRecurrenceComplete(t.lastCompletedAt, t.recurrence, now)
-      const due = effectiveDueDate(t, now)
-      return { t, done, due, bucket: bucketFor(due, done, now) }
+      const dueAt = effectiveDueAt(t, now)
+      return { t, done, dueAt, dueDay: dayKey(dueAt) }
     })
-    enriched.sort((a, b) => {
-      const da = effectiveDueAt(a.t, now).getTime()
-      const db = effectiveDueAt(b.t, now).getTime()
-      return da - db
-    })
-    const byBucket = new Map<Bucket, typeof enriched>()
-    for (const row of enriched) {
-      const arr = byBucket.get(row.bucket) ?? []
-      arr.push(row)
-      byBucket.set(row.bucket, arr)
-    }
-    return byBucket
+    rows.sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime())
+    return rows
   }, [tasks, now])
+
+  const buckets = useMemo(() => {
+    return {
+      today: enriched.filter((r) => !r.done && r.dueDay <= todayStr),
+      upcoming: enriched.filter((r) => !r.done && r.dueDay > todayStr),
+      done: enriched.filter((r) => r.done),
+    }
+  }, [enriched, todayStr])
+
+  const visible = buckets[filter]
 
   async function addTask(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const fd = new FormData(e.currentTarget)
+    const formEl = e.currentTarget
+    const fd = new FormData(formEl)
     const title = String(fd.get('title') ?? '').trim()
     if (!title) {
-      pushToast('info', 'Title required')
+      pushToast('info', 'Give the task a name first')
       return
     }
     const rawDate = String(fd.get('dueDate') ?? '').trim()
     const rawTime = String(fd.get('dueTime') ?? '').trim()
-    const dueDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : todayStr
-    const dueTime = /^\d{2}:\d{2}$/.test(rawTime) ? rawTime : null
-    const recurrence =
-      (fd.get('recurrence') as TaskRecurrence) || 'oneoff'
+    const priority = (fd.get('priority') as TaskPriority) || 'mid'
+    const recurrence = (fd.get('recurrence') as TaskRecurrence) || 'oneoff'
     const t: LifeTask = {
       id: newId(),
       title,
-      priority: 'mid',
+      priority,
       recurrence,
       lastCompletedAt: null,
-      dueDate,
-      dueTime,
+      dueDate: /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : todayStr,
+      dueTime: /^\d{2}:\d{2}$/.test(rawTime) ? rawTime : null,
       createdAt: Date.now(),
     }
     await createTaskRecord(t)
     pushToast('save', 'Task added')
-    e.currentTarget.reset()
+    formEl.reset()
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <header>
-        <h1
-          className="text-lg font-semibold text-zinc-100"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
-          Tasks
-        </h1>
-        <p className="text-xs text-zinc-400">
-          Set a due date and time · the Today card shows a live countdown.
-        </p>
-      </header>
-
-      <form
-        onSubmit={addTask}
-        className="grid grid-cols-1 gap-2 rounded-lg border border-[#3d4150]/80 bg-[#262934]/60 p-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_8.5rem_6.5rem_7rem_auto] lg:items-end"
-      >
-        <label className="block space-y-1 sm:col-span-2 lg:col-span-1">
-          <span className="text-xs text-zinc-400">Title</span>
+    <div className="mx-auto max-w-3xl space-y-4">
+      {/* Quick add */}
+      <form onSubmit={addTask} className="card p-3 sm:p-4">
+        <div className="flex gap-2">
           <input
             name="title"
-            placeholder="What needs to be done?"
-            className="field w-full border-zinc-800 bg-[#1c1f27]"
+            placeholder="Add a task…"
+            className="field flex-1"
+            aria-label="New task title"
           />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-xs text-zinc-400">Due date</span>
-          <input
-            type="date"
-            name="dueDate"
-            defaultValue={todayStr}
-            className="field w-full border-zinc-800 bg-[#1c1f27] font-mono text-xs"
-          />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-xs text-zinc-400">Due time</span>
-          <input
-            type="time"
-            name="dueTime"
-            className="field w-full border-zinc-800 bg-[#1c1f27] font-mono text-xs"
-          />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-xs text-zinc-400">Repeat</span>
-          <select
-            name="recurrence"
-            defaultValue="oneoff"
-            className="field w-full border-zinc-800 bg-[#1c1f27] text-xs"
+          <button
+            type="submit"
+            className="btn-primary shrink-0 rounded-lg px-4 py-2 text-sm"
           >
-            <option value="oneoff">once</option>
-            <option value="daily">daily</option>
-            <option value="weekly">weekly</option>
-            <option value="monthly">monthly</option>
-          </select>
-        </label>
+            Add
+          </button>
+        </div>
         <button
-          type="submit"
-          className="btn-primary w-full rounded-md px-3 py-2 text-xs font-semibold sm:col-span-2 lg:col-span-1 lg:w-auto"
+          type="button"
+          onClick={() => setDetailsOpen((v) => !v)}
+          className="mt-2 text-xs text-zinc-500 hover:text-zinc-300"
+          aria-expanded={detailsOpen}
         >
-          + Add task
+          {detailsOpen ? 'Hide details' : 'Due date, priority, repeat…'}
         </button>
+        <div
+          className={cn(
+            'grid gap-2 sm:grid-cols-4',
+            detailsOpen ? 'mt-2' : 'hidden',
+          )}
+        >
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Due date</span>
+            <input
+              type="date"
+              name="dueDate"
+              defaultValue={todayStr}
+              className="field font-mono text-xs"
+            />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Time</span>
+            <input type="time" name="dueTime" className="field font-mono text-xs" />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Priority</span>
+            <select name="priority" defaultValue="mid" className="field text-xs">
+              <option value="high">High</option>
+              <option value="mid">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs text-zinc-500">Repeat</span>
+            <select name="recurrence" defaultValue="oneoff" className="field text-xs">
+              <option value="oneoff">Never</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+        </div>
       </form>
 
-      <div className="space-y-5">
-        {BUCKET_ORDER.filter((b) => (grouped.get(b)?.length ?? 0) > 0).map(
-          (bucket) => {
-            const rows = grouped.get(bucket)!
-            return (
-              <section key={bucket}>
-                <h2 className="mb-2 flex items-baseline gap-2 font-mono text-xs uppercase tracking-wider text-zinc-400">
-                  <span
-                    className={cn(
-                      bucket === 'overdue' && 'text-red-300',
-                      bucket === 'today' && 'text-lime-300',
-                      bucket === 'tomorrow' && 'text-cyan-300',
-                    )}
-                  >
-                    {BUCKET_LABEL[bucket]}
-                  </span>
-                  <span className="text-[10px] text-zinc-500">
-                    {rows.length}
-                  </span>
-                </h2>
-                <ul className="divide-y divide-[#3d4150]/60 rounded-lg border border-[#3d4150]/70 bg-[#20232c]/40">
-                  {rows.map(({ t, done }) => (
-                    <TaskRow
-                      key={t.id}
-                      task={t}
-                      done={done}
-                      now={now}
-                      onToggle={(checked) => {
-                        void patchTaskFields(t.id, {
-                          lastCompletedAt: checked ? dayKey(now) : null,
-                        })
-                        pushToast('save', checked ? 'Task done' : 'Reopened')
-                      }}
-                      onPatch={(partial) => {
-                        void patchTaskFields(t.id, partial)
-                        pushToast('save', 'Saved')
-                      }}
-                      onDelete={() => {
-                        if (!window.confirm('Delete task?')) return
-                        void deleteTaskById(t.id)
-                        pushToast('delete', 'Deleted')
-                      }}
-                    />
-                  ))}
-                </ul>
-              </section>
-            )
-          },
-        )}
-        {tasks.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-[#3d4150] bg-[#20232c]/40 p-8 text-center text-sm text-zinc-400">
-            No tasks yet. Add one above — pick a date and time and the Today
-            card will show a live countdown.
-          </p>
-        ) : null}
+      {/* Filters */}
+      <div
+        role="tablist"
+        aria-label="Task filters"
+        className="flex gap-1 rounded-lg border border-edge bg-surface p-1"
+      >
+        {(
+          [
+            ['today', `Today${buckets.today.length ? ` · ${buckets.today.length}` : ''}`],
+            ['upcoming', `Upcoming${buckets.upcoming.length ? ` · ${buckets.upcoming.length}` : ''}`],
+            ['done', 'Completed'],
+          ] as [Filter, string][]
+        ).map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={filter === key}
+            onClick={() => setFilter(key)}
+            className={cn(
+              'min-h-9 flex-1 rounded-md px-3 text-sm font-medium transition-colors',
+              filter === key
+                ? 'bg-lime-500/15 text-lime-300'
+                : 'text-zinc-400 hover:text-zinc-200',
+            )}
+          >
+            {label}
+          </button>
+        ))}
       </div>
+
+      {/* List */}
+      {visible.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-edge px-4 py-10 text-center text-sm text-zinc-500">
+          {filter === 'today'
+            ? 'Nothing due today. Add a task above or check Upcoming.'
+            : filter === 'upcoming'
+              ? 'No upcoming tasks.'
+              : 'Nothing completed yet.'}
+        </p>
+      ) : (
+        <ul className="card divide-y divide-edge-soft">
+          {visible.map(({ t, done, dueAt, dueDay }) => (
+            <TaskRow
+              key={t.id}
+              task={t}
+              done={done}
+              dueAt={dueAt}
+              dueDay={dueDay}
+              todayStr={todayStr}
+              now={now}
+              onToggle={(checked) => {
+                void patchTaskFields(t.id, {
+                  lastCompletedAt: checked ? todayStr : null,
+                })
+                pushToast('save', checked ? 'Task done' : 'Reopened')
+              }}
+              onPatch={(partial) => {
+                void patchTaskFields(t.id, partial)
+                pushToast('save', 'Saved')
+              }}
+              onDelete={() => {
+                if (!window.confirm('Delete this task?')) return
+                void deleteTaskById(t.id)
+                pushToast('delete', 'Deleted')
+              }}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
@@ -236,99 +223,143 @@ export function TasksPage() {
 function TaskRow(props: {
   task: LifeTask
   done: boolean
+  dueAt: Date
+  dueDay: string
+  todayStr: string
   now: Date
   onToggle: (checked: boolean) => void
   onPatch: (partial: Partial<LifeTask>) => void
   onDelete: () => void
 }) {
-  const { task, done, now } = props
-  const due = effectiveDueAt(task, now)
-  const cd = countdownTo(due, now)
-  const due12 = formatDueTime(task.dueTime)
-  const showCountdown = !done
+  const { task, done, dueAt, dueDay, todayStr, now } = props
+  const [editing, setEditing] = useState(false)
+  const cd = countdownTo(dueAt, now)
+  const time12 = formatDueTime(task.dueTime)
+
+  const dueLabel = done
+    ? null
+    : dueDay < todayStr
+      ? 'Overdue'
+      : dueDay === todayStr
+        ? (time12 ?? 'Today')
+        : format(dueAt, 'EEE, MMM d')
 
   return (
-    <li className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-3 py-2 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:gap-x-2">
-      <input
-        type="checkbox"
-        className="h-4 w-4 shrink-0 accent-lime-500"
-        checked={done}
-        onChange={(e) => props.onToggle(e.target.checked)}
-        aria-label={`Done: ${task.title}`}
-      />
-      <input
-        defaultValue={task.title}
-        onBlur={(e) => {
-          const v = e.target.value.trim()
-          if (v && v !== task.title) props.onPatch({ title: v })
-        }}
-        className={cn(
-          'field min-w-0 border-transparent bg-transparent text-sm',
-          done && 'text-zinc-500 line-through',
-        )}
-      />
-      {/* Countdown / due time on the right — always visible. */}
-      <div className="flex shrink-0 flex-col items-end justify-self-end font-mono text-[11px] leading-tight tabular-nums">
-        {due12 ? (
-          <span className="text-zinc-400">{due12}</span>
-        ) : (
-          <span className="text-zinc-600">end of day</span>
-        )}
-        {showCountdown ? (
+    <li className="px-3 py-2.5 sm:px-4">
+      <div className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          className="h-4.5 w-4.5 shrink-0 accent-lime-500"
+          checked={done}
+          onChange={(e) => props.onToggle(e.target.checked)}
+          aria-label={`Done: ${task.title}`}
+        />
+        <div className="min-w-0 flex-1">
+          <input
+            defaultValue={task.title}
+            onBlur={(e) => {
+              const v = e.target.value.trim()
+              if (v && v !== task.title) props.onPatch({ title: v })
+            }}
+            className={cn(
+              'w-full min-w-0 border-none bg-transparent text-sm outline-none',
+              done ? 'text-zinc-500 line-through' : 'text-zinc-100',
+            )}
+            aria-label={`Task title: ${task.title}`}
+          />
+          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
+            {task.priority !== 'mid' ? (
+              <span
+                className={cn(
+                  'rounded-full border px-1.5 py-px font-medium',
+                  task.priority === 'high'
+                    ? 'border-red-400/40 text-red-400'
+                    : 'border-edge text-zinc-500',
+                )}
+              >
+                {PRIORITY_LABEL[task.priority]}
+              </span>
+            ) : null}
+            {task.recurrence !== 'oneoff' ? (
+              <span className="rounded-full border border-edge px-1.5 py-px">
+                {task.recurrence}
+              </span>
+            ) : null}
+            {!done && cd.tone !== 'idle' && dueDay <= todayStr ? (
+              <span
+                className={cn(
+                  'font-mono tabular-nums',
+                  cd.tone === 'overdue' ? 'text-red-400' : 'text-amber-300',
+                )}
+              >
+                {cd.tone === 'overdue' ? 'past due' : `${cd.label} left`}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        {dueLabel ? (
           <span
             className={cn(
-              'mt-0.5 rounded border px-1.5 py-0.5 text-[10px] font-semibold',
-              cd.tone === 'overdue'
-                ? 'border-red-500/60 bg-red-500/15 text-red-300'
-                : cd.tone === 'soon'
-                  ? 'border-amber-500/60 bg-amber-500/10 text-amber-200'
-                  : 'border-[#3d4150] bg-[#1c1f27] text-zinc-300',
+              'shrink-0 font-mono text-xs tabular-nums',
+              dueLabel === 'Overdue' ? 'text-red-400' : 'text-zinc-500',
             )}
           >
-            {cd.label}
+            {dueLabel}
           </span>
         ) : null}
-      </div>
-      {/* Delete only inline on sm+ screens; on mobile it moves below. */}
-      <button
-        type="button"
-        onClick={props.onDelete}
-        className="hidden shrink-0 justify-self-end rounded border border-[#3d4150] px-2 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300 sm:inline-flex"
-        aria-label="Delete task"
-      >
-        Delete
-      </button>
-      {/* Editors flow to a second row · keeps narrow widths from horizontal scroll. */}
-      <div className="col-span-3 flex flex-wrap items-center gap-2 sm:col-span-4">
-        <input
-          type="date"
-          defaultValue={task.dueDate ?? ''}
-          onChange={(e) => {
-            const v = e.target.value
-            props.onPatch({ dueDate: v.length === 10 ? v : null })
-          }}
-          className="field min-w-0 flex-1 border-zinc-800 bg-[#1c1f27] font-mono text-[11px] sm:flex-none sm:w-[8.5rem]"
-          title="Due date"
-        />
-        <input
-          type="time"
-          defaultValue={task.dueTime ?? ''}
-          onChange={(e) => {
-            const v = e.target.value
-            props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null })
-          }}
-          className="field min-w-0 flex-1 border-zinc-800 bg-[#1c1f27] font-mono text-[11px] sm:flex-none sm:w-[6.5rem]"
-          title="Due time"
-        />
         <button
           type="button"
-          onClick={props.onDelete}
-          className="ml-auto rounded border border-[#3d4150] px-2 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300 sm:hidden"
-          aria-label="Delete task"
+          onClick={() => setEditing((v) => !v)}
+          className="btn-quiet h-8 w-8 shrink-0 text-xs"
+          aria-label={`Edit ${task.title}`}
+          aria-expanded={editing}
         >
-          Delete
+          ✎
         </button>
       </div>
+      {editing ? (
+        <div className="mt-2 flex flex-wrap items-center gap-2 pl-7">
+          <input
+            type="date"
+            defaultValue={task.dueDate ?? ''}
+            onChange={(e) => {
+              const v = e.target.value
+              props.onPatch({ dueDate: v.length === 10 ? v : null })
+            }}
+            className="field w-36 font-mono text-xs"
+            aria-label="Due date"
+          />
+          <input
+            type="time"
+            defaultValue={task.dueTime ?? ''}
+            onChange={(e) => {
+              const v = e.target.value
+              props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null })
+            }}
+            className="field w-28 font-mono text-xs"
+            aria-label="Due time"
+          />
+          <select
+            defaultValue={task.priority}
+            onChange={(e) =>
+              props.onPatch({ priority: e.target.value as TaskPriority })
+            }
+            className="field w-28 text-xs"
+            aria-label="Priority"
+          >
+            <option value="high">High</option>
+            <option value="mid">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <button
+            type="button"
+            onClick={props.onDelete}
+            className="ml-auto rounded-lg border border-red-400/30 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+          >
+            Delete
+          </button>
+        </div>
+      ) : null}
     </li>
   )
 }

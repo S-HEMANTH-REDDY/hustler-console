@@ -270,7 +270,7 @@ function IdeaTabs(props: {
               'group inline-flex max-w-[18rem] items-center gap-2 truncate rounded-full border px-3 py-1.5 font-mono text-xs transition-colors',
               active
                 ? 'border-lime-500/60 bg-lime-500/10 text-lime-100'
-                : 'border-[#3d4150] bg-[#262934] text-zinc-300 hover:border-zinc-700 hover:text-zinc-100',
+                : 'border-edge bg-surface text-zinc-300 hover:border-zinc-700 hover:text-zinc-100',
             )}
             title={`${idea.title} · ${idea.tag}`}
           >
@@ -289,7 +289,7 @@ function IdeaTabs(props: {
       <button
         type="button"
         onClick={props.onCreate}
-        className="inline-flex items-center gap-1 rounded-full border border-dashed border-[#3d4150] px-3 py-1.5 font-mono text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="inline-flex items-center gap-1 rounded-full border border-dashed border-edge px-3 py-1.5 font-mono text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
       >
         + idea
       </button>
@@ -369,7 +369,7 @@ function ThinkTimerPanel(props: {
               ? 'border-violet-400/70 bg-violet-500/15 text-violet-200'
               : remaining < totalMs
                 ? 'border-amber-500/40 text-amber-200'
-                : 'border-[#3d4150] text-zinc-400',
+                : 'border-edge text-zinc-400',
           )}
         >
           {t.running ? 'Thinking' : remaining < totalMs ? 'Paused' : 'Idle'}
@@ -388,7 +388,7 @@ function ThinkTimerPanel(props: {
         </span>
       </div>
 
-      <div className="mt-3 h-2 overflow-hidden rounded-full border border-[#3d4150] bg-[#2f3340]">
+      <div className="mt-3 h-2 overflow-hidden rounded-full border border-edge bg-edge-soft">
         <div
           className="h-full bg-violet-400 transition-[width] duration-300"
           style={{ width: `${Math.min(100, Math.max(0, pct * 100))}%` }}
@@ -422,7 +422,7 @@ function ThinkTimerPanel(props: {
           type="button"
           onClick={reset}
           disabled={t.running || (remaining === totalMs && !t.running)}
-          className="rounded-md border border-[#3d4150] bg-[#262934] px-4 py-2 text-sm text-zinc-200 transition-colors hover:bg-[#2c2f3a] disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-md border border-edge bg-surface px-4 py-2 text-sm text-zinc-200 transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Reset
         </button>
@@ -436,7 +436,7 @@ function ThinkTimerPanel(props: {
                 'rounded border px-2 py-1 font-mono text-xs transition-colors',
                 t.durationMin === m
                   ? 'border-violet-400/70 bg-violet-500/15 text-violet-100'
-                  : 'border-[#3d4150] bg-[#20232c] text-zinc-400 hover:border-violet-400/40 hover:text-violet-200',
+                  : 'border-edge bg-well text-zinc-400 hover:border-violet-400/40 hover:text-violet-200',
               )}
             >
               {m}m
@@ -454,7 +454,7 @@ function ThinkTimerPanel(props: {
         </div>
       </div>
 
-      <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-[#3d4150]/70 pt-3 font-mono text-xs text-zinc-400">
+      <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-edge/70 pt-3 font-mono text-xs text-zinc-400">
         <Stat
           label="Sessions"
           value={String(props.idea.sessionsCompleted)}
@@ -548,7 +548,7 @@ function IdeaEditor(props: {
   )
 
   return (
-    <div className="space-y-5 rounded-xl border border-[#3d4150] bg-[#20232c]/60 p-5">
+    <div className="space-y-5 rounded-xl border border-edge bg-well/60 p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <label className="block">
@@ -626,7 +626,7 @@ function IdeaEditor(props: {
           <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-400">
             Attachments · PDFs, docs, screenshots
           </p>
-          <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-[#3d4150] bg-[#262934] px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
+          <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-edge bg-surface px-2 py-1 font-mono text-xs text-zinc-300 hover:border-lime-500/40 hover:text-lime-300">
             <Paperclip />
             <span>Attach file</span>
             <input
@@ -746,7 +746,7 @@ function YoutubeCard(props: { link: PassionLink; onRemove: () => void }) {
   const id = props.link.youtubeId
   if (!id) return null
   return (
-    <li className="overflow-hidden rounded-md border border-[#3d4150] bg-[#262934]">
+    <li className="overflow-hidden rounded-md border border-edge bg-surface">
       {embed ? (
         <div className="relative aspect-video w-full bg-black">
           <iframe
@@ -778,7 +778,7 @@ function YoutubeCard(props: { link: PassionLink; onRemove: () => void }) {
           </span>
         </button>
       )}
-      <div className="flex items-center justify-between gap-2 border-t border-[#3d4150] px-3 py-2">
+      <div className="flex items-center justify-between gap-2 border-t border-edge px-3 py-2">
         <div className="min-w-0">
           <a
             href={props.link.url}
@@ -796,7 +796,7 @@ function YoutubeCard(props: { link: PassionLink; onRemove: () => void }) {
         <button
           type="button"
           onClick={props.onRemove}
-          className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+          className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
           aria-label="Remove link"
         >
           ×
@@ -808,7 +808,7 @@ function YoutubeCard(props: { link: PassionLink; onRemove: () => void }) {
 
 function LinkRow(props: { link: PassionLink; onRemove: () => void }) {
   return (
-    <li className="flex items-center justify-between gap-2 rounded-md border border-[#3d4150] bg-[#262934] px-3 py-2">
+    <li className="flex items-center justify-between gap-2 rounded-md border border-edge bg-surface px-3 py-2">
       <div className="min-w-0">
         <a
           href={props.link.url}
@@ -826,7 +826,7 @@ function LinkRow(props: { link: PassionLink; onRemove: () => void }) {
       <button
         type="button"
         onClick={props.onRemove}
-        className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+        className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
         aria-label="Remove link"
       >
         ×
@@ -900,7 +900,7 @@ function AttachmentRow(props: {
   }, [props.expanded, attachment.id, attachment.data, isDocx])
 
   return (
-    <li className="rounded-md border border-[#3d4150] bg-[#262934]">
+    <li className="rounded-md border border-edge bg-surface">
       <div className="flex flex-wrap items-center gap-2 px-3 py-2">
         <button
           type="button"
@@ -910,7 +910,7 @@ function AttachmentRow(props: {
             'inline-flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-xs transition-colors',
             props.expanded
               ? 'border-lime-500/60 bg-lime-500/10 text-lime-200'
-              : 'border-[#3d4150] bg-[#20232c] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
+              : 'border-edge bg-well text-zinc-300 hover:border-lime-500/40 hover:text-lime-300',
           )}
         >
           {props.expanded ? 'Hide' : 'Preview'}
@@ -924,7 +924,7 @@ function AttachmentRow(props: {
         <button
           type="button"
           onClick={() => void downloadPassionFile(attachment.id)}
-          className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
           title="Download"
         >
           ↓
@@ -932,7 +932,7 @@ function AttachmentRow(props: {
         <button
           type="button"
           onClick={() => void openPassionFileInNewTab(attachment.id)}
-          className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
           title="Open in new tab"
         >
           ↗
@@ -940,7 +940,7 @@ function AttachmentRow(props: {
         <button
           type="button"
           onClick={props.onRemove}
-          className="rounded border border-[#3d4150] px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+          className="rounded border border-edge px-1.5 py-0.5 font-mono text-[10px] text-zinc-400 hover:border-red-900/60 hover:text-red-300"
           title="Detach"
         >
           ×
@@ -949,22 +949,22 @@ function AttachmentRow(props: {
       {props.expanded
         ? isDocx
           ? docxError ? (
-              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-amber-200">
+              <div className="border-t border-edge px-3 py-4 text-xs text-amber-200">
                 Could not render Word document: {docxError}
               </div>
             ) : docxHtml === null ? (
-              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+              <div className="border-t border-edge px-3 py-4 text-xs text-zinc-400">
                 Rendering Word document…
               </div>
             ) : (
               <div
-                className="docx-preview block w-full overflow-auto border-t border-[#3d4150] bg-[#f8f7f3] px-6 py-5 text-sm text-zinc-900"
+                className="docx-preview block w-full overflow-auto border-t border-edge bg-[#f8f7f3] px-6 py-5 text-sm text-zinc-900"
                 style={{ maxHeight: 420 }}
                 dangerouslySetInnerHTML={{ __html: docxHtml }}
               />
             )
           : isLegacyDoc ? (
-            <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+            <div className="border-t border-edge px-3 py-4 text-xs text-zinc-400">
               Legacy <span className="text-zinc-200">.doc</span> files can&apos;t
               be previewed inline. Re-save as{' '}
               <span className="text-lime-300">.docx</span> or use Download /
@@ -975,17 +975,17 @@ function AttachmentRow(props: {
               <iframe
                 src={url}
                 title={attachment.fileName}
-                className="block w-full border-t border-[#3d4150] bg-[#1c1f27]"
+                className="block w-full border-t border-edge bg-base"
                 style={{ height: 360 }}
               />
             ) : isImage ? (
               <img
                 src={url}
                 alt={attachment.fileName}
-                className="block max-h-[420px] w-full border-t border-[#3d4150] bg-black object-contain"
+                className="block max-h-[420px] w-full border-t border-edge bg-black object-contain"
               />
             ) : (
-              <div className="border-t border-[#3d4150] px-3 py-4 text-xs text-zinc-400">
+              <div className="border-t border-edge px-3 py-4 text-xs text-zinc-400">
                 Inline preview not supported for this type. Use Download / Open.
               </div>
             )
@@ -999,7 +999,7 @@ function AttachmentRow(props: {
 
 function EmptyState(props: { onCreate: () => void }) {
   return (
-    <div className="relative mt-5 rounded-xl border border-dashed border-[#3d4150] bg-[#20232c]/40 p-8 text-center">
+    <div className="relative mt-5 rounded-xl border border-dashed border-edge bg-well/40 p-8 text-center">
       <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
         No ideas yet
       </p>

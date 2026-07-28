@@ -183,7 +183,7 @@ export function ApplicationsPage() {
 
       <QuickApplicationForm />
 
-      <section className="rounded border border-[#3d4150] bg-[#262934] p-4">
+      <section className="rounded border border-edge bg-surface p-4">
         <h2 className="mb-3 text-xs font-mono uppercase tracking-wide text-zinc-400">
           Funnel · Applied → Offer
         </h2>
@@ -210,7 +210,7 @@ export function ApplicationsPage() {
         </div>
         <div className="mt-4 grid gap-2 font-mono text-xs text-zinc-400 sm:grid-cols-2 lg:grid-cols-4">
           {funnel.pairs.map((p) => (
-            <div key={p.from + p.to} className="rounded border border-[#3d4150] p-2">
+            <div key={p.from + p.to} className="rounded border border-edge p-2">
               {p.from}→{p.to}: <span className="text-lime-300">{p.rate}</span>
             </div>
           ))}
@@ -225,10 +225,10 @@ export function ApplicationsPage() {
         </div>
       </section>
 
-      <div className="overflow-x-auto rounded border border-[#3d4150]">
+      <div className="overflow-x-auto rounded border border-edge">
         <table className="min-w-[960px] w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="border-b border-[#3d4150] bg-[#262934] text-xs uppercase text-zinc-400">
+            <tr className="border-b border-edge bg-surface text-xs uppercase text-zinc-400">
               <th className="px-2 py-2">Date</th>
               <th className="px-2 py-2">Company</th>
               <th className="px-2 py-2">Role</th>
@@ -248,7 +248,7 @@ export function ApplicationsPage() {
               const isPreview = previewRow === r.id
               return (
               <Fragment key={r.id}>
-              <tr className="border-b border-[#3d4150]/80 hover:bg-[#323540]">
+              <tr className="border-b border-edge/80 hover:bg-surface-3">
                 <td className="px-1 py-1 align-middle">
                   <input
                     type="date"
@@ -349,7 +349,7 @@ export function ApplicationsPage() {
                 </td>
               </tr>
               {att && isPreview ? (
-                <tr className="border-b border-[#3d4150]/80 bg-[#20232c]">
+                <tr className="border-b border-edge/80 bg-well">
                   <td colSpan={9} className="px-3 py-3">
                     <ResumeInlinePreview attachment={att} height={420} />
                   </td>
@@ -378,7 +378,7 @@ function ResumeFileCell(props: {
   const inputRef = useRef<HTMLInputElement>(null)
   if (!props.file) {
     return (
-      <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-[#3d4150] bg-[#20232c] px-2 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
+      <label className="inline-flex cursor-pointer items-center gap-1 rounded border border-edge bg-well px-2 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
         <PaperclipIcon />
         <span>Attach…</span>
         <input
@@ -416,7 +416,7 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void downloadResume(f.id)}
-        className="rounded border border-[#3d4150] px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Download"
       >
         ↓
@@ -424,13 +424,13 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void openResumeInNewTab(f.id)}
-        className="rounded border border-[#3d4150] px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Open in new tab"
       >
         ↗
       </button>
       <label
-        className="cursor-pointer rounded border border-[#3d4150] px-1.5 py-1 text-xs text-zinc-400 hover:text-lime-300"
+        className="cursor-pointer rounded border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:text-lime-300"
         title="Replace file"
       >
         ↺
@@ -448,7 +448,7 @@ function ResumeFileCell(props: {
       </label>
       <button
         type="button"
-        className="rounded border border-[#3d4150] px-1.5 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+        className="rounded border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300"
         title="Detach file"
         onClick={() => props.onDetach()}
       >

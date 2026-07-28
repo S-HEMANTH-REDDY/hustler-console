@@ -126,7 +126,7 @@ export const BEHAVIORAL_CATEGORIES: BehavioralCategory[] = [
 export function statusPillClass(status: ApplicationStatus): string {
   switch (status) {
     case 'Applied':
-      return 'bg-[#3d4150] text-zinc-300 border-zinc-600'
+      return 'bg-edge text-zinc-300 border-zinc-600'
     case 'OA':
       return 'bg-cyan-950/50 text-cyan-300 border-cyan-700'
     case 'Phone':
@@ -141,6 +141,6 @@ export function statusPillClass(status: ApplicationStatus): string {
     case 'Ghosted':
       return 'border-dashed bg-transparent text-zinc-400 border-zinc-600'
     default:
-      return 'bg-[#3d4150] text-zinc-300'
+      return 'bg-edge text-zinc-300'
   }
 }
