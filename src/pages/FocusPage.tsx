@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTasksHybrid } from '../cloud/hybridData'
 import { CycleDots } from '../components/CycleDots'
-import { formatClock, phaseLabel } from '../components/PomodoroEngine'
+import { formatClock, phaseLabel } from '../lib/timerFormat'
 import { useIntervalTick } from '../hooks/useIntervalTick'
 import { isRecurrenceComplete } from '../lib/dates'
 import { cn } from '../lib/utils'

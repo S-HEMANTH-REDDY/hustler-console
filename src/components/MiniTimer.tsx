@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useIntervalTick } from '../hooks/useIntervalTick'
+import { formatClock, phaseLabel } from '../lib/timerFormat'
 import { cn } from '../lib/utils'
 import { pomodoroRemainingMs, useTimerStore } from '../store/timerStore'
-import { formatClock, phaseLabel } from './PomodoroEngine'
 
 /**
  * Compact timer chip for the header. Visible whenever a session is running

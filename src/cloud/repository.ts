@@ -102,12 +102,13 @@ async function requireUser(): Promise<string> {
 /** Settings — map cloud row to SettingsRow (id always 'default' for UI). */
 export async function fetchSettingsRow(): Promise<SettingsRow> {
   const userId = await requireUser()
-  let { data, error } = await sb()
+  const res = await sb()
     .from('settings')
     .select('*')
     .eq('user_id', userId)
     .maybeSingle()
-  if (error) throw error
+  if (res.error) throw res.error
+  let data = res.data
   if (!data) {
     await sb().from('settings').insert({
       user_id: userId,

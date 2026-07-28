@@ -1,30 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { recordFocusSession } from '../lib/focusLog'
-import {
-  pomodoroRemainingMs,
-  useTimerStore,
-  type PomodoroPhase,
-} from '../store/timerStore'
+import { formatClock, phaseLabel } from '../lib/timerFormat'
+import { pomodoroRemainingMs, useTimerStore } from '../store/timerStore'
 import { useUiStore } from '../store/uiStore'
-
-export function phaseLabel(p: PomodoroPhase): string {
-  switch (p) {
-    case 'focus':
-      return 'Focus'
-    case 'shortBreak':
-      return 'Short Break'
-    case 'longBreak':
-      return 'Long Break'
-  }
-}
-
-export function formatClock(ms: number): string {
-  const total = Math.max(0, Math.ceil(ms / 1000))
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  const pad = (n: number) => (n < 10 ? `0${n}` : String(n))
-  return `${pad(m)}:${pad(s)}`
-}
 
 /**
  * Runs the Pomodoro globally: advances phases on completion (even while the
@@ -36,7 +14,13 @@ export function PomodoroEngine() {
   const p = useTimerStore((s) => s.pomodoro)
   const pomoAdvance = useTimerStore((s) => s.pomoAdvance)
   const pushToast = useUiStore((s) => s.pushToast)
-  const [announcement, setAnnouncement] = useState('')
+
+  // The aria-live region is updated imperatively (it's an external system for
+  // assistive tech); keeping it out of React state avoids extra renders.
+  const announcerRef = useRef<HTMLDivElement>(null)
+  function announce(message: string) {
+    if (announcerRef.current) announcerRef.current.textContent = message
+  }
 
   // Refs to detect transitions without re-running effects every second.
   const prevRunning = useRef(p.running)
@@ -75,8 +59,7 @@ export function PomodoroEngine() {
         Notification.permission === 'granted'
       ) {
         new Notification(label, {
-          body:
-            finished === 'focus' ? 'Time for a break.' : 'Ready to focus?',
+          body: finished === 'focus' ? 'Time for a break.' : 'Ready to focus?',
           silent: false,
         })
       }
@@ -84,23 +67,23 @@ export function PomodoroEngine() {
       // best effort
     }
     if (finished === 'focus') recordFocusSession(p.focusMin)
-    setAnnouncement(
+    announce(
       finished === 'focus'
         ? 'Focus session complete. Time for a break.'
         : 'Break complete. Ready for the next focus session.',
     )
     minuteAnnounced.current = false
     pomoAdvance()
-  })
+  }, [p, remaining, pushToast, pomoAdvance])
 
   // Start / pause announcements.
   useEffect(() => {
     if (p.running !== prevRunning.current || p.phase !== prevPhase.current) {
       if (p.running && !prevRunning.current) {
-        setAnnouncement(`${phaseLabel(p.phase)} session started.`)
+        announce(`${phaseLabel(p.phase)} session started.`)
         minuteAnnounced.current = false
       } else if (!p.running && prevRunning.current && !p.justCompleted) {
-        setAnnouncement('Timer paused.')
+        announce('Timer paused.')
       }
       prevRunning.current = p.running
       prevPhase.current = p.phase
@@ -112,9 +95,9 @@ export function PomodoroEngine() {
     if (!p.running) return
     if (remaining <= 60_000 && remaining > 0 && !minuteAnnounced.current) {
       minuteAnnounced.current = true
-      setAnnouncement('One minute remaining.')
+      announce('One minute remaining.')
     }
-  })
+  }, [p.running, remaining])
 
   // Browser tab title.
   useEffect(() => {
@@ -130,7 +113,7 @@ export function PomodoroEngine() {
       title = 'Paused • Hustler'
     }
     document.title = title
-  })
+  }, [p.running, p.phase, p.justCompleted, p.everStarted, remaining])
 
   // Restore the default title if the app unmounts with a modified title.
   useEffect(() => {
@@ -140,9 +123,7 @@ export function PomodoroEngine() {
   }, [])
 
   return (
-    <div aria-live="polite" role="status" className="sr-only">
-      {announcement}
-    </div>
+    <div ref={announcerRef} aria-live="polite" role="status" className="sr-only" />
   )
 }
 
