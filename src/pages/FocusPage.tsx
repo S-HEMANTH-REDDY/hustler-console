@@ -57,7 +57,6 @@ export function FocusPage() {
   const activePreset = matchPreset(p)
 
   const isFocus = p.phase === 'focus'
-  const accentColor = isFocus ? 'lime' : 'cyan'
 
   function requestNotifyPermissionIfNeeded() {
     if (typeof Notification === 'undefined') return

@@ -1,7 +1,5 @@
-import { format } from 'date-fns'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useIntervalTick } from '../hooks/useIntervalTick'
 import { backupAgeDays } from '../lib/insights'
 import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
@@ -22,7 +20,6 @@ const PAGE_TITLES: Record<string, string> = {
 }
 
 export function TopBar() {
-  const tick = useIntervalTick(60_000)
   const location = useLocation()
   const setSidebarOpen = useUiStore((s) => s.setSidebarOpen)
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen)
