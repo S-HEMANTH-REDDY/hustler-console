@@ -141,22 +141,11 @@ export function SystemDesignPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1
-            className="text-xl font-semibold text-zinc-50"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            System Design
-          </h1>
-          <p className="text-sm text-zinc-400">
-            HLD + LLD volume · 91-day matrix · topic coverage per kind
-          </p>
-        </div>
         <KindFilterTabs value={filter} onChange={setFilter} />
       </div>
 
-      <section className="rounded border border-edge bg-surface p-4">
-        <div className="mb-3 flex items-center justify-between text-xs font-mono uppercase text-zinc-400">
+      <section className="card p-4">
+        <div className="section-label mb-3 flex items-center justify-between">
           <span>
             13×7 heat ·{' '}
             {filter === 'all'
@@ -211,9 +200,9 @@ export function SystemDesignPage() {
         ].map((x) => (
           <div
             key={x.k}
-            className="rounded border border-edge bg-surface p-3"
+            className="card p-3"
           >
-            <div className="text-xs uppercase text-zinc-400">{x.k}</div>
+            <div className="section-label">{x.k}</div>
             <div
               className={cn(
                 'font-mono text-2xl text-zinc-100',
@@ -240,8 +229,8 @@ export function SystemDesignPage() {
         coverage={lldCoverage}
       />
 
-      <section className="rounded border border-edge bg-surface/80 p-4">
-        <h2 className="mb-3 text-sm font-semibold text-zinc-200">
+      <section className="card p-4">
+        <h2 className="section-label mb-3">
           Log system-design problem
         </h2>
         <form
@@ -327,7 +316,7 @@ export function SystemDesignPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="rounded bg-lime-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+              className="btn-primary rounded-lg px-4 py-2 text-sm"
             >
               Add {formKind === 'lld' ? 'LLD' : 'HLD'} problem
             </button>
@@ -335,7 +324,7 @@ export function SystemDesignPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-edge">
+      <div className="overflow-x-auto card">
         <table className="min-w-[960px] w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-edge bg-surface text-xs uppercase text-zinc-400">
@@ -558,9 +547,9 @@ function CoverageSection(props: {
   coverage: { topic: string; count: number }[]
 }) {
   return (
-    <section className="rounded border border-edge bg-surface p-4">
+    <section className="card p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+        <h2 className="section-label">
           {props.title}
         </h2>
         <span
@@ -578,8 +567,8 @@ function CoverageSection(props: {
             key={t.topic}
             className={
               t.count === 0
-                ? 'rounded border border-amber-700/40 bg-amber-950/20 px-3 py-2'
-                : 'rounded border border-edge bg-base px-3 py-2'
+                ? 'rounded-lg border border-amber-700/40 bg-amber-950/20 px-3 py-2'
+                : 'rounded-lg border border-edge bg-base px-3 py-2'
             }
           >
             <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">

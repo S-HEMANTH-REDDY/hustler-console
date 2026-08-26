@@ -34,111 +34,21 @@ function PaletteBody() {
 
   const items: CmdItem[] = useMemo(
     () => [
-      {
-        id: 'nav-dashboard',
-        group: 'Navigate',
-        label: 'Today',
-        shortcut: 'g t',
-        run: () => navigate('/'),
-      },
-      {
-        id: 'nav-focus',
-        group: 'Navigate',
-        label: 'Focus',
-        shortcut: 'g f',
-        run: () => navigate('/focus'),
-      },
-      {
-        id: 'nav-tasks',
-        group: 'Navigate',
-        label: 'Tasks',
-        shortcut: 'g k',
-        run: () => navigate('/tasks'),
-      },
-      {
-        id: 'nav-calendar',
-        group: 'Navigate',
-        label: 'Calendar',
-        shortcut: 'g c',
-        run: () => navigate('/calendar'),
-      },
-      {
-        id: 'nav-analytics',
-        group: 'Navigate',
-        label: 'Analytics',
-        shortcut: 'g n',
-        run: () => navigate('/analytics'),
-      },
-      {
-        id: 'nav-apps',
-        group: 'Navigate',
-        label: 'Applications',
-        shortcut: 'g a',
-        run: () => navigate('/applications'),
-      },
-      {
-        id: 'nav-beh',
-        group: 'Navigate',
-        label: 'Behavioral',
-        shortcut: 'g b',
-        run: () => navigate('/behavioral'),
-      },
-      {
-        id: 'nav-dsa',
-        group: 'Navigate',
-        label: 'DSA',
-        shortcut: 'g d',
-        run: () => navigate('/dsa'),
-      },
-      {
-        id: 'nav-sd',
-        group: 'Navigate',
-        label: 'System Design',
-        shortcut: 'g y',
-        run: () => navigate('/system-design'),
-      },
-      {
-        id: 'nav-passion',
-        group: 'Navigate',
-        label: 'Passion projects',
-        shortcut: 'g m',
-        run: () => navigate('/passion'),
-      },
-      {
-        id: 'nav-settings',
-        group: 'Navigate',
-        label: 'Settings',
-        shortcut: 'g s',
-        run: () => navigate('/settings'),
-      },
-      {
-        id: 'act-log-app',
-        group: 'Actions',
-        label: 'Log application',
-        shortcut: 'A',
-        run: () => navigate('/applications#quick-log'),
-      },
-      {
-        id: 'act-log-dsa',
-        group: 'Actions',
-        label: 'Log DSA problem',
-        shortcut: 'D',
-        run: () => navigate('/dsa'),
-      },
-      {
-        id: 'act-log-sd',
-        group: 'Actions',
-        label: 'Log System Design problem',
-        shortcut: 'Y',
-        run: () => navigate('/system-design'),
-      },
-      {
-        id: 'act-add-task',
-        group: 'Actions',
-        label: 'Add task',
-        shortcut: 'K',
-        run: () => navigate('/tasks'),
-      },
+      { id: 'nav-dashboard', group: 'Navigate', label: 'Today', shortcut: 'g t', run: () => navigate('/') },
+      { id: 'nav-focus', group: 'Navigate', label: 'Focus', shortcut: 'g f', run: () => navigate('/focus') },
+      { id: 'nav-tasks', group: 'Navigate', label: 'Tasks', shortcut: 'g k', run: () => navigate('/tasks') },
+      { id: 'nav-calendar', group: 'Navigate', label: 'Calendar', shortcut: 'g c', run: () => navigate('/calendar') },
+      { id: 'nav-analytics', group: 'Navigate', label: 'Analytics', shortcut: 'g n', run: () => navigate('/analytics') },
+      { id: 'nav-apps', group: 'Navigate', label: 'Applications', shortcut: 'g a', run: () => navigate('/applications') },
+      { id: 'nav-beh', group: 'Navigate', label: 'Behavioral', shortcut: 'g b', run: () => navigate('/behavioral') },
+      { id: 'nav-dsa', group: 'Navigate', label: 'DSA', shortcut: 'g d', run: () => navigate('/dsa') },
+      { id: 'nav-sd', group: 'Navigate', label: 'System Design', shortcut: 'g y', run: () => navigate('/system-design') },
+      { id: 'nav-passion', group: 'Navigate', label: 'Passion projects', shortcut: 'g m', run: () => navigate('/passion') },
+      { id: 'nav-settings', group: 'Navigate', label: 'Settings', shortcut: 'g s', run: () => navigate('/settings') },
+      { id: 'act-log-app', group: 'Actions', label: 'Log application', shortcut: 'A', run: () => navigate('/applications#quick-log') },
+      { id: 'act-log-dsa', group: 'Actions', label: 'Log DSA problem', shortcut: 'D', run: () => navigate('/dsa') },
+      { id: 'act-log-sd', group: 'Actions', label: 'Log System Design problem', shortcut: 'Y', run: () => navigate('/system-design') },
+      { id: 'act-add-task', group: 'Actions', label: 'Add task', shortcut: 'K', run: () => navigate('/tasks') },
       {
         id: 'act-export',
         group: 'Actions',
@@ -147,9 +57,7 @@ function PaletteBody() {
           const data = await exportBackup()
           const json = JSON.stringify(data, null, 2)
           const a = document.createElement('a')
-          a.href = URL.createObjectURL(
-            new Blob([json], { type: 'application/json' }),
-          )
+          a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }))
           a.download = `execution-backup-${new Date().toISOString().slice(0, 10)}.json`
           a.click()
           URL.revokeObjectURL(a.href)
@@ -157,18 +65,8 @@ function PaletteBody() {
           pushToast('save', 'Backup exported')
         },
       },
-      {
-        id: 'act-start-focus',
-        group: 'Actions',
-        label: 'Start focus session',
-        run: () => navigate('/focus'),
-      },
-      {
-        id: 'help-shortcuts',
-        group: 'Help',
-        label: 'Keyboard shortcuts: g+h/f/k/c/n/a/b/d/y/m/s · ⌘K · ?',
-        run: () => {},
-      },
+      { id: 'act-start-focus', group: 'Actions', label: 'Start focus session', run: () => navigate('/focus') },
+      { id: 'help-shortcuts', group: 'Help', label: 'Keyboard shortcuts: g+h/f/k/c/n/a/b/d/y/m/s · ⌘K · ?', run: () => {} },
     ],
     [navigate, pushToast],
   )
@@ -199,42 +97,28 @@ function PaletteBody() {
   }
 
   function onKeyDown(e: KeyboardEvent) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setCursor((c) => Math.min(filtered.length - 1, c + 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setCursor((c) => Math.max(0, c - 1))
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      const it = filtered[safeCursor]
-      if (it) run(it)
-    } else if (e.key === 'Escape') {
-      e.preventDefault()
-      setOpen(false)
-    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setCursor((c) => Math.min(filtered.length - 1, c + 1)) }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setCursor((c) => Math.max(0, c - 1)) }
+    else if (e.key === 'Enter') { e.preventDefault(); const it = filtered[safeCursor]; if (it) run(it) }
+    else if (e.key === 'Escape') { e.preventDefault(); setOpen(false) }
   }
 
-  const grouped: { name: string; items: { item: CmdItem; idx: number }[] }[] =
-    []
+  const grouped: { name: string; items: { item: CmdItem; idx: number }[] }[] = []
   filtered.forEach((it, idx) => {
     let g = grouped.find((g) => g.name === it.group)
-    if (!g) {
-      g = { name: it.group, items: [] }
-      grouped.push(g)
-    }
+    if (!g) { g = { name: it.group, items: [] }; grouped.push(g) }
     g.items.push({ item: it, idx })
   })
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/60 px-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/50 px-4 pt-[12vh] backdrop-blur-sm"
       onClick={() => setOpen(false)}
     >
       <div
         role="dialog"
         aria-label="Command palette"
-        className="w-full max-w-lg overflow-hidden rounded-lg border border-edge-strong bg-well shadow-2xl"
+        className="animate-slide-up w-full max-w-lg overflow-hidden rounded-xl border border-edge bg-surface shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -244,12 +128,12 @@ function PaletteBody() {
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="Type a command or search…"
-          className="w-full border-b border-edge bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-400"
+          className="w-full border-b border-edge bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
         />
         <div className="max-h-[60vh] overflow-y-auto py-1">
           {grouped.map((group) => (
-            <div key={group.name} className="py-1">
-              <div className="px-4 pb-1 pt-2 font-mono text-xs uppercase tracking-wider text-zinc-400">
+            <div key={group.name} className="py-0.5">
+              <div className="px-4 pb-1 pt-2 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-zinc-600">
                 {group.name}
               </div>
               {group.items.map(({ item, idx }) => {
@@ -261,15 +145,15 @@ function PaletteBody() {
                     onMouseEnter={() => setCursor(idx)}
                     onClick={() => run(item)}
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm',
+                      'flex w-full items-center justify-between gap-3 px-4 py-1.5 text-left text-sm',
                       active
-                        ? 'bg-edge-soft text-zinc-100'
-                        : 'text-zinc-400 hover:bg-surface',
+                        ? 'bg-zinc-50/[0.05] text-zinc-100'
+                        : 'text-zinc-400 hover:bg-zinc-50/[0.03]',
                     )}
                   >
                     <span className="truncate">{item.label}</span>
                     {item.shortcut ? (
-                      <kbd className="rounded border border-edge bg-base px-1.5 py-0.5 font-mono text-xs text-zinc-400">
+                      <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-500">
                         {item.shortcut}
                       </kbd>
                     ) : null}
@@ -279,12 +163,10 @@ function PaletteBody() {
             </div>
           ))}
           {filtered.length === 0 ? (
-            <div className="px-4 py-6 text-center text-xs text-zinc-400">
-              No results
-            </div>
+            <div className="px-4 py-6 text-center text-xs text-zinc-500">No results</div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-edge bg-well px-3 py-2 font-mono text-xs text-zinc-400">
+        <div className="flex items-center justify-between border-t border-edge px-3 py-1.5 font-mono text-[0.5625rem] text-zinc-600">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>

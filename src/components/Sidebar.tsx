@@ -28,28 +28,31 @@ export function Sidebar() {
       <aside
         aria-label="Main navigation"
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-edge bg-pit/80 transition-transform max-lg:w-[min(300px,88vw)]',
+          'fixed inset-y-0 left-0 z-40 flex w-56 flex-col border-r border-edge bg-base/95 backdrop-blur-sm transition-transform max-lg:w-[min(280px,85vw)]',
           sidebarOpen ? 'translate-x-0' : 'max-lg:-translate-x-full',
           'lg:translate-x-0',
         )}
       >
-        <div className="flex h-16 items-center gap-2.5 border-b border-edge px-5">
+        {/* Brand */}
+        <div className="flex h-14 items-center gap-2 px-4">
           <span
             aria-hidden
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-lime-500/15 text-sm font-bold text-lime-300 ring-1 ring-lime-500/30"
+            className="flex h-7 w-7 items-center justify-center rounded-lg bg-lime-500/15 text-xs font-bold text-lime-400 ring-1 ring-lime-500/25"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             H
           </span>
           <span
-            className="text-xl font-semibold tracking-tight text-zinc-50"
+            className="text-base font-semibold tracking-tight text-zinc-100"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Hustler
           </span>
         </div>
-        <nav className="flex-1 overflow-y-auto p-3">
-          <div className="flex flex-col gap-1">
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-2 py-2">
+          <div className="flex flex-col gap-0.5">
             {mainLinks.map((l) => (
               <SideLink
                 key={l.to}
@@ -62,10 +65,10 @@ export function Sidebar() {
             ))}
           </div>
 
-          <div className="mt-6 px-3 pb-2 text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+          <div className="mt-5 mb-1.5 px-3 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-zinc-600">
             Career
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-0.5">
             {careerLinks.map((l) => (
               <SideLink
                 key={l.to}
@@ -77,7 +80,9 @@ export function Sidebar() {
             ))}
           </div>
         </nav>
-        <div className="border-t border-edge p-3">
+
+        {/* Bottom */}
+        <div className="border-t border-edge px-2 py-2">
           <SideLink
             to="/settings"
             label="Settings"
@@ -88,10 +93,13 @@ export function Sidebar() {
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="mt-1.5 flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left text-[0.9375rem] text-zinc-400 transition-colors hover:bg-surface hover:text-zinc-100"
+            className="mt-0.5 flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-[0.8125rem] text-zinc-500 transition-colors hover:bg-surface hover:text-zinc-300"
           >
-            <span>Search</span>
-            <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.7rem] text-zinc-500">
+            <span className="flex items-center gap-2">
+              <SearchIcon />
+              Search
+            </span>
+            <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.625rem] text-zinc-600">
               ⌘K
             </kbd>
           </button>
@@ -101,7 +109,7 @@ export function Sidebar() {
         <button
           type="button"
           aria-label="Close menu"
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       ) : null}
@@ -123,26 +131,33 @@ function SideLink(props: {
       onClick={props.onNavigate}
       className={({ isActive }) =>
         cn(
-          'group relative flex min-h-11 items-center gap-2.5 rounded-xl px-3 py-2.5 text-[0.9375rem] font-medium transition-colors',
+          'group relative flex items-center gap-2 rounded-lg px-3 py-2 text-[0.8125rem] font-medium transition-colors',
           isActive
-            ? 'bg-lime-500/12 text-lime-300 shadow-[inset_3px_0_0_0_rgba(163,230,53,0.85)]'
-            : 'text-zinc-300 hover:bg-surface hover:text-zinc-50',
+            ? 'bg-zinc-50/[0.07] text-zinc-50'
+            : 'text-zinc-400 hover:bg-zinc-50/[0.04] hover:text-zinc-200',
         )
       }
     >
-      {props.icon ? (
-        <span className="text-current opacity-85" aria-hidden>
-          {props.icon}
-        </span>
-      ) : (
-        <span className="w-4" aria-hidden />
+      {({ isActive }) => (
+        <>
+          {isActive && (
+            <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-lime-400" />
+          )}
+          {props.icon ? (
+            <span className={cn('shrink-0', isActive ? 'text-lime-400' : 'text-zinc-500')} aria-hidden>
+              {props.icon}
+            </span>
+          ) : (
+            <span className="w-[18px] shrink-0" aria-hidden />
+          )}
+          <span className="flex-1">{props.label}</span>
+          {props.hint ? (
+            <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
+              {props.hint}
+            </kbd>
+          ) : null}
+        </>
       )}
-      <span className="flex-1">{props.label}</span>
-      {props.hint ? (
-        <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.65rem] text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100">
-          {props.hint}
-        </kbd>
-      ) : null}
     </NavLink>
   )
 }
@@ -169,8 +184,8 @@ export function BottomNav() {
             end={it.to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex min-h-15 flex-col items-center justify-center gap-1 text-[0.7rem] font-semibold',
-                isActive ? 'text-lime-300' : 'text-zinc-400',
+                'flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.625rem] font-medium',
+                isActive ? 'text-lime-400' : 'text-zinc-500',
               )
             }
           >
@@ -181,7 +196,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
-          className="flex min-h-15 flex-col items-center justify-center gap-1 text-[0.7rem] font-semibold text-zinc-400"
+          className="flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.625rem] font-medium text-zinc-500"
         >
           <MenuIcon />
           More
@@ -193,12 +208,12 @@ export function BottomNav() {
 
 function iconProps(): React.SVGProps<SVGSVGElement> {
   return {
-    width: 18,
-    height: 18,
+    width: 17,
+    height: 17,
     viewBox: '0 0 24 24',
     fill: 'none',
     stroke: 'currentColor',
-    strokeWidth: 1.85,
+    strokeWidth: 1.75,
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
     'aria-hidden': true,
@@ -213,7 +228,6 @@ function HomeIcon() {
     </svg>
   )
 }
-
 function TimerIcon() {
   return (
     <svg {...iconProps()}>
@@ -223,7 +237,6 @@ function TimerIcon() {
     </svg>
   )
 }
-
 function CheckIcon() {
   return (
     <svg {...iconProps()}>
@@ -232,7 +245,6 @@ function CheckIcon() {
     </svg>
   )
 }
-
 function CalendarIcon() {
   return (
     <svg {...iconProps()}>
@@ -241,7 +253,6 @@ function CalendarIcon() {
     </svg>
   )
 }
-
 function ChartIcon() {
   return (
     <svg {...iconProps()}>
@@ -250,7 +261,6 @@ function ChartIcon() {
     </svg>
   )
 }
-
 function GearIcon() {
   return (
     <svg {...iconProps()}>
@@ -259,7 +269,14 @@ function GearIcon() {
     </svg>
   )
 }
-
+function SearchIcon() {
+  return (
+    <svg {...iconProps()} width={14} height={14}>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
 function MenuIcon() {
   return (
     <svg {...iconProps()}>

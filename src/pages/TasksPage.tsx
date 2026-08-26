@@ -82,9 +82,8 @@ export function TasksPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      {/* Quick add */}
-      <form onSubmit={addTask} className="card p-3 sm:p-4">
+    <div className="mx-auto max-w-3xl space-y-3">
+      <form onSubmit={addTask} className="card p-3">
         <div className="flex gap-2">
           <input
             name="title"
@@ -92,42 +91,29 @@ export function TasksPage() {
             className="field flex-1"
             aria-label="New task title"
           />
-          <button
-            type="submit"
-            className="btn-primary shrink-0 rounded-lg px-4 py-2 text-sm"
-          >
+          <button type="submit" className="btn-primary shrink-0 rounded-lg px-4 py-2 text-sm">
             Add
           </button>
         </div>
         <button
           type="button"
           onClick={() => setDetailsOpen((v) => !v)}
-          className="mt-2 text-xs text-zinc-500 hover:text-zinc-300"
+          className="mt-1.5 text-[0.6875rem] text-zinc-600 hover:text-zinc-400"
           aria-expanded={detailsOpen}
         >
           {detailsOpen ? 'Hide details' : 'Due date, priority, repeat…'}
         </button>
-        <div
-          className={cn(
-            'grid gap-2 sm:grid-cols-4',
-            detailsOpen ? 'mt-2' : 'hidden',
-          )}
-        >
+        <div className={cn('grid gap-2 sm:grid-cols-4', detailsOpen ? 'mt-2' : 'hidden')}>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Due date</span>
-            <input
-              type="date"
-              name="dueDate"
-              defaultValue={todayStr}
-              className="field font-mono text-xs"
-            />
+            <span className="text-[0.6875rem] text-zinc-500">Due date</span>
+            <input type="date" name="dueDate" defaultValue={todayStr} className="field font-mono text-xs" />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Time</span>
+            <span className="text-[0.6875rem] text-zinc-500">Time</span>
             <input type="time" name="dueTime" className="field font-mono text-xs" />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Priority</span>
+            <span className="text-[0.6875rem] text-zinc-500">Priority</span>
             <select name="priority" defaultValue="mid" className="field text-xs">
               <option value="high">High</option>
               <option value="mid">Medium</option>
@@ -135,7 +121,7 @@ export function TasksPage() {
             </select>
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-zinc-500">Repeat</span>
+            <span className="text-[0.6875rem] text-zinc-500">Repeat</span>
             <select name="recurrence" defaultValue="oneoff" className="field text-xs">
               <option value="oneoff">Never</option>
               <option value="daily">Daily</option>
@@ -146,11 +132,10 @@ export function TasksPage() {
         </div>
       </form>
 
-      {/* Filters */}
       <div
         role="tablist"
         aria-label="Task filters"
-        className="flex gap-1 rounded-lg border border-edge bg-surface p-1"
+        className="flex gap-0.5 rounded-lg border border-edge bg-surface p-0.5"
       >
         {(
           [
@@ -166,10 +151,10 @@ export function TasksPage() {
             aria-selected={filter === key}
             onClick={() => setFilter(key)}
             className={cn(
-              'min-h-9 flex-1 rounded-md px-3 text-sm font-medium transition-colors',
+              'min-h-8 flex-1 rounded-md px-3 text-xs font-medium transition-colors',
               filter === key
-                ? 'bg-lime-500/15 text-lime-300'
-                : 'text-zinc-400 hover:text-zinc-200',
+                ? 'bg-zinc-50/[0.07] text-zinc-50'
+                : 'text-zinc-500 hover:text-zinc-300',
             )}
           >
             {label}
@@ -177,15 +162,14 @@ export function TasksPage() {
         ))}
       </div>
 
-      {/* List */}
       {visible.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-edge px-4 py-10 text-center text-sm text-zinc-500">
+        <div className="rounded-xl border border-dashed border-edge px-4 py-10 text-center text-xs text-zinc-500">
           {filter === 'today'
             ? 'Nothing due today. Add a task above or check Upcoming.'
             : filter === 'upcoming'
               ? 'No upcoming tasks.'
               : 'Nothing completed yet.'}
-        </p>
+        </div>
       ) : (
         <ul className="card divide-y divide-edge-soft">
           {visible.map(({ t, done, dueAt, dueDay }) => (
@@ -198,9 +182,7 @@ export function TasksPage() {
               todayStr={todayStr}
               now={now}
               onToggle={(checked) => {
-                void patchTaskFields(t.id, {
-                  lastCompletedAt: checked ? todayStr : null,
-                })
+                void patchTaskFields(t.id, { lastCompletedAt: checked ? todayStr : null })
                 pushToast('save', checked ? 'Task done' : 'Reopened')
               }}
               onPatch={(partial) => {
@@ -245,11 +227,11 @@ function TaskRow(props: {
         : format(dueAt, 'EEE, MMM d')
 
   return (
-    <li className="px-3 py-2.5 sm:px-4">
-      <div className="flex items-center gap-3">
+    <li className="px-3 py-2">
+      <div className="flex items-center gap-2.5">
         <input
           type="checkbox"
-          className="h-4.5 w-4.5 shrink-0 accent-lime-500"
+          className="h-4 w-4 shrink-0 accent-lime-500"
           checked={done}
           onChange={(e) => props.onToggle(e.target.checked)}
           aria-label={`Done: ${task.title}`}
@@ -263,27 +245,25 @@ function TaskRow(props: {
             }}
             className={cn(
               'w-full min-w-0 border-none bg-transparent text-sm outline-none',
-              done ? 'text-zinc-500 line-through' : 'text-zinc-100',
+              done ? 'text-zinc-600 line-through' : 'text-zinc-200',
             )}
             aria-label={`Task title: ${task.title}`}
           />
-          <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[0.625rem] text-zinc-600">
             {task.priority !== 'mid' ? (
               <span
                 className={cn(
                   'rounded-full border px-1.5 py-px font-medium',
                   task.priority === 'high'
                     ? 'border-red-400/40 text-red-400'
-                    : 'border-edge text-zinc-500',
+                    : 'border-edge text-zinc-600',
                 )}
               >
                 {PRIORITY_LABEL[task.priority]}
               </span>
             ) : null}
             {task.recurrence !== 'oneoff' ? (
-              <span className="rounded-full border border-edge px-1.5 py-px">
-                {task.recurrence}
-              </span>
+              <span className="rounded-full border border-edge px-1.5 py-px">{task.recurrence}</span>
             ) : null}
             {!done && cd.tone !== 'idle' && dueDay <= todayStr ? (
               <span
@@ -298,19 +278,14 @@ function TaskRow(props: {
           </div>
         </div>
         {dueLabel ? (
-          <span
-            className={cn(
-              'shrink-0 font-mono text-xs tabular-nums',
-              dueLabel === 'Overdue' ? 'text-red-400' : 'text-zinc-500',
-            )}
-          >
+          <span className={cn('shrink-0 font-mono text-[0.6875rem] tabular-nums', dueLabel === 'Overdue' ? 'text-red-400' : 'text-zinc-500')}>
             {dueLabel}
           </span>
         ) : null}
         <button
           type="button"
           onClick={() => setEditing((v) => !v)}
-          className="btn-quiet h-8 w-8 shrink-0 text-xs"
+          className="btn-quiet h-7 w-7 shrink-0 text-[0.6875rem]"
           aria-label={`Edit ${task.title}`}
           aria-expanded={editing}
         >
@@ -318,44 +293,15 @@ function TaskRow(props: {
         </button>
       </div>
       {editing ? (
-        <div className="mt-2 flex flex-wrap items-center gap-2 pl-7">
-          <input
-            type="date"
-            defaultValue={task.dueDate ?? ''}
-            onChange={(e) => {
-              const v = e.target.value
-              props.onPatch({ dueDate: v.length === 10 ? v : null })
-            }}
-            className="field w-36 font-mono text-xs"
-            aria-label="Due date"
-          />
-          <input
-            type="time"
-            defaultValue={task.dueTime ?? ''}
-            onChange={(e) => {
-              const v = e.target.value
-              props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null })
-            }}
-            className="field w-28 font-mono text-xs"
-            aria-label="Due time"
-          />
-          <select
-            defaultValue={task.priority}
-            onChange={(e) =>
-              props.onPatch({ priority: e.target.value as TaskPriority })
-            }
-            className="field w-28 text-xs"
-            aria-label="Priority"
-          >
+        <div className="mt-2 flex flex-wrap items-center gap-2 pl-6">
+          <input type="date" defaultValue={task.dueDate ?? ''} onChange={(e) => { const v = e.target.value; props.onPatch({ dueDate: v.length === 10 ? v : null }) }} className="field w-36 font-mono text-xs" aria-label="Due date" />
+          <input type="time" defaultValue={task.dueTime ?? ''} onChange={(e) => { const v = e.target.value; props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null }) }} className="field w-28 font-mono text-xs" aria-label="Due time" />
+          <select defaultValue={task.priority} onChange={(e) => props.onPatch({ priority: e.target.value as TaskPriority })} className="field w-28 text-xs" aria-label="Priority">
             <option value="high">High</option>
             <option value="mid">Medium</option>
             <option value="low">Low</option>
           </select>
-          <button
-            type="button"
-            onClick={props.onDelete}
-            className="ml-auto rounded-lg border border-red-400/30 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
-          >
+          <button type="button" onClick={props.onDelete} className="ml-auto rounded-lg border border-red-400/30 px-2 py-1 text-[0.6875rem] text-red-400 hover:bg-red-500/10">
             Delete
           </button>
         </div>

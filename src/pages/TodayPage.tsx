@@ -18,6 +18,7 @@ import {
   MiniBars,
   Sparkline,
 } from '../components/charts'
+import { BirthdayCountdown } from '../components/BirthdayCountdown'
 import { DayRibbon } from '../components/DayRibbon'
 import { PaceBar, PaceHeroNumber } from '../components/PaceVisual'
 import {
@@ -140,7 +141,6 @@ export function TodayPage() {
     return out
   }, [sysdesignProblems, tick])
 
-  // Per-day computed values for the selected-day detail strip
   const selectedDetail = useMemo(() => {
     const apps = applications.filter((a) => a.date === selectedKey).length
     const dsa = dsaProblems.filter((p) => p.date === selectedKey).length
@@ -194,36 +194,33 @@ export function TodayPage() {
 
   const stateBadge =
     pace.state === 'idle'
-      ? 'border-zinc-600 text-zinc-400'
+      ? 'border-zinc-700 text-zinc-500'
       : pace.state === 'onPace'
-        ? 'border-lime-500/60 text-lime-300'
+        ? 'border-lime-500/50 text-lime-400'
         : pace.state === 'behind'
-          ? 'border-amber-500/60 text-amber-200'
-          : 'border-red-500/60 text-red-300'
+          ? 'border-amber-500/50 text-amber-300'
+          : 'border-red-500/50 text-red-400'
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 sm:space-y-6">
-      <section className="surface-glossy relative overflow-hidden p-5 sm:p-7 md:p-8">
-        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-lime-400/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-sky-400/5 blur-3xl" />
-        <div className="relative flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+    <div className="mx-auto max-w-6xl space-y-4">
+      {/* Hero: Application pace */}
+      <section className="surface-glossy relative overflow-hidden p-5 sm:p-6">
+        <div className="pointer-events-none absolute -top-20 -right-12 h-56 w-56 rounded-full bg-lime-400/[0.06] blur-3xl" />
+        <div className="relative flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0">
             <p className="section-label">
-              Applications today · goal {dailyMin}–{dailyMax} · sweet spot{' '}
+              Applications today · {dailyMin}–{dailyMax} goal · sweet spot{' '}
               {sweet.min}–{sweet.max}
             </p>
             <div className="mt-2 flex flex-wrap items-baseline gap-3">
               <PaceHeroNumber count={pace.todayCount} state={pace.state} />
-              <div className="flex flex-col gap-1.5">
-                <span
-                  className="font-mono text-3xl font-semibold tabular-nums text-zinc-400"
-                  title="Today's minimum quota"
-                >
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-2xl font-semibold tabular-nums text-zinc-500" title="Daily minimum">
                   / {dailyMin}
                 </span>
                 <span
                   className={cn(
-                    'rounded-lg border px-2.5 py-1 text-center font-mono text-xs font-semibold uppercase tracking-wider',
+                    'rounded-md border px-2 py-0.5 text-center font-mono text-[0.625rem] font-semibold uppercase tracking-wider',
                     stateBadge,
                   )}
                 >
@@ -231,42 +228,34 @@ export function TodayPage() {
                 </span>
               </div>
             </div>
-            <p className="mt-4 max-w-xl text-base text-zinc-300">
+            <p className="mt-3 max-w-xl text-sm text-zinc-300">
               {pace.statusLine}
             </p>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-500">
-              Log <span className="font-medium text-lime-300">{dailyMin}–{dailyMax}</span>{' '}
-              applications today · sweet spot{' '}
-              <span className="font-medium text-lime-300">
-                {sweet.min}–{sweet.max}
-              </span>
-              .
-            </p>
           </div>
-          <div className="flex shrink-0 flex-col items-stretch gap-3 md:items-end">
-            <div className="flex flex-col items-end gap-0.5 rounded-2xl border border-edge bg-well/70 px-5 py-3 md:min-w-[15rem]">
+          <div className="flex shrink-0 flex-col items-stretch gap-2 md:items-end">
+            <div className="flex flex-col items-end gap-0.5 rounded-xl border border-edge bg-well/60 px-4 py-2.5 md:min-w-[13rem]">
               <span className="section-label">Local time</span>
               <span
-                className="mt-1 font-mono text-3xl font-semibold tabular-nums tracking-tight text-zinc-50"
+                className="mt-0.5 font-mono text-2xl font-semibold tabular-nums tracking-tight text-zinc-50"
                 aria-live="off"
               >
                 {format(secondTick, 'HH:mm:ss')}
               </span>
-              <span className="font-mono text-sm text-zinc-500">
+              <span className="font-mono text-xs text-zinc-500">
                 {format(secondTick, 'EEE, MMM d')} · W
                 {isoWeekNumber(secondTick)}
               </span>
             </div>
             <Link
               to="/applications#quick-log"
-              className="btn-primary rounded-xl px-6 py-3.5 text-center text-base"
+              className="btn-primary rounded-lg px-5 py-2.5 text-center text-sm"
             >
               + Log application
-              <span className="ml-2 rounded-md border border-lime-900/30 bg-black/10 px-1.5 py-0.5 font-mono text-xs text-lime-950">
+              <span className="ml-2 rounded border border-lime-900/30 bg-black/10 px-1 py-0.5 font-mono text-[0.625rem] text-lime-950">
                 A
               </span>
             </Link>
-            <p className="text-sm text-zinc-500 md:text-right">
+            <p className="text-xs text-zinc-500 md:text-right">
               {wr.beforeWindow
                 ? `Day opens ${winStart}`
                 : wr.afterWindow
@@ -276,72 +265,70 @@ export function TodayPage() {
           </div>
         </div>
 
-        <div className="relative mt-8">
+        <div className="relative mt-6">
           <PaceBar pace={pace} dailyMin={dailyMin} dailyMax={dailyMax} />
         </div>
 
         {tput ? (
           <>
-            <p className="section-label mt-6">How you're tracking</p>
-            <div className="relative mt-3 grid gap-px overflow-hidden rounded-2xl border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
+            <p className="section-label mt-5">How you're tracking</p>
+            <div className="relative mt-2 grid gap-px overflow-hidden rounded-xl border border-edge bg-edge sm:grid-cols-2 lg:grid-cols-4">
               <ThroughputTile
                 label="Logged today"
-                value={`${pace.todayCount} applications`}
+                value={`${pace.todayCount} apps`}
                 hint={
                   tput.measuring && tput.activeSinceMs
-                    ? `${tput.rate.toFixed(1)}/hr since first application at ${formatHm(tput.activeSinceMs)}`
+                    ? `${tput.rate.toFixed(1)}/hr since ${formatHm(tput.activeSinceMs)}`
                     : pace.todayCount === 1 && tput.activeSinceMs
-                      ? `started ${formatHm(tput.activeSinceMs)} · log 1 more for a rate`
-                      : 'log your first application to start the clock'
+                      ? `started ${formatHm(tput.activeSinceMs)}`
+                      : 'log first to start the clock'
                 }
               />
               <ThroughputTile
-                label="Forecast by 11:59 PM"
-                value={tput.measuring ? `${tput.projected.toFixed(0)} applications` : '—'}
+                label="Forecast by EOD"
+                value={tput.measuring ? `${tput.projected.toFixed(0)} apps` : '—'}
                 hint={
                   tput.measuring
                     ? tput.projected >= dailyMin
-                      ? `On track for the ${dailyMin}–${dailyMax} band`
+                      ? `On track for ${dailyMin}–${dailyMax}`
                       : `Below ${dailyMin} at this pace`
-                    : pace.todayCount > 0
-                      ? 'Need 2+ applications to project a finish'
-                      : 'No pace yet · log one to start'
+                    : 'Need 2+ to project'
                 }
                 valueClass={
                   !tput.measuring
-                    ? 'text-zinc-300'
+                    ? 'text-zinc-400'
                     : tput.projected >= dailyMin
-                      ? 'text-lime-300'
+                      ? 'text-lime-400'
                       : 'text-amber-300'
                 }
               />
               <ThroughputTile
-                label={`To hit minimum (${dailyMin})`}
+                label={`To hit min (${dailyMin})`}
                 value={
                   tput.recoveryRate > 0
-                    ? `+${Math.max(0, dailyMin - pace.todayCount)} applications`
+                    ? `+${Math.max(0, dailyMin - pace.todayCount)} apps`
                     : 'Done'
                 }
                 hint={
                   tput.recoveryRate > 0
-                    ? `≈ ${tput.recoveryRate.toFixed(1)}/hr for ${tput.hoursRemaining.toFixed(1)}h left`
-                    : `Min reached · stretch toward ${dailyMax}`
+                    ? `≈ ${tput.recoveryRate.toFixed(1)}/hr for ${tput.hoursRemaining.toFixed(1)}h`
+                    : `Stretch toward ${dailyMax}`
                 }
                 valueClass={
-                  tput.recoveryRate > 0 ? 'text-amber-300' : 'text-lime-300'
+                  tput.recoveryRate > 0 ? 'text-amber-300' : 'text-lime-400'
                 }
               />
               <ThroughputTile
                 label={`To hit max (${dailyMax})`}
                 value={
                   tput.pushRate > 0
-                    ? `+${Math.max(0, dailyMax - pace.todayCount)} applications`
+                    ? `+${Math.max(0, dailyMax - pace.todayCount)} apps`
                     : 'Max hit'
                 }
                 hint={
                   tput.pushRate > 0
-                    ? `≈ ${tput.pushRate.toFixed(1)}/hr to top out today`
-                    : 'Already at max · quality > volume'
+                    ? `≈ ${tput.pushRate.toFixed(1)}/hr to top out`
+                    : 'Quality > volume'
                 }
               />
             </div>
@@ -349,7 +336,8 @@ export function TodayPage() {
         ) : null}
       </section>
 
-      <section className="surface-glossy p-4 sm:p-5">
+      {/* Day ribbon */}
+      <section className="card p-4">
         <DayRibbon
           applications={applications}
           dsaProblems={dsaProblems}
@@ -370,213 +358,134 @@ export function TodayPage() {
         />
       </section>
 
+      {/* KPIs */}
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Kpi
           label="Applications"
           primary={`${todayApps.length} / ${dailyMin}`}
-          secondary={`goal band ${dailyMin}–${dailyMax}`}
+          secondary={`band ${dailyMin}–${dailyMax}`}
         />
         <Kpi
           label="DSA today"
           primary={String(dsaToday)}
-          secondary={`14d ${dsaSpark.reduce((s, n) => s + n, 0)}`}
-          chart={
-            <Sparkline
-              values={dsaSpark}
-              width={88}
-              height={22}
-              color="#06b6d4"
-              fill="rgba(6,182,212,0.18)"
-            />
-          }
+          secondary={`14d: ${dsaSpark.reduce((s, n) => s + n, 0)}`}
+          chart={<Sparkline values={dsaSpark} width={80} height={20} color="#06b6d4" fill="rgba(6,182,212,0.15)" />}
         />
         <Kpi
           label="System Design"
           primary={String(sdToday)}
-          secondary={`14d ${sdSpark.reduce((s, n) => s + n, 0)}`}
-          chart={
-            <Sparkline
-              values={sdSpark}
-              width={88}
-              height={22}
-              color="#f59e0b"
-              fill="rgba(245,158,11,0.18)"
-            />
-          }
+          secondary={`14d: ${sdSpark.reduce((s, n) => s + n, 0)}`}
+          chart={<Sparkline values={sdSpark} width={80} height={20} color="#f59e0b" fill="rgba(245,158,11,0.15)" />}
         />
         <Kpi
           label="Behavioral"
           primary={`${behavioralCoverage}%`}
-          secondary={
-            behavioralGaps > 0
-              ? `${behavioralGaps} category gaps`
-              : 'all categories covered'
-          }
-          primaryClass={
-            behavioralGaps > 0 ? 'text-amber-300' : 'text-lime-300'
-          }
+          secondary={behavioralGaps > 0 ? `${behavioralGaps} gaps` : 'all covered'}
+          primaryClass={behavioralGaps > 0 ? 'text-amber-300' : 'text-lime-400'}
         />
         <Kpi
           label="Tasks"
           primary={`${tasksDone} / ${tasksTotal || 0}`}
-          secondary="life lane done / total"
-          primaryClass={
-            tasksTotal > 0 && tasksDone === tasksTotal
-              ? 'text-lime-300'
-              : 'text-zinc-100'
-          }
+          secondary="done / total"
+          primaryClass={tasksTotal > 0 && tasksDone === tasksTotal ? 'text-lime-400' : 'text-zinc-100'}
         />
       </section>
 
-      <section className="card p-5">
-        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="section-label">
-              Last 30 days · application volume
-            </h2>
-            <p className="mt-1 text-sm text-zinc-500">
-              Each square is one day · color = how close to the {dailyMin}–
-              {dailyMax} goal
-            </p>
+      {/* Heatmap + Birthday */}
+      <section className="grid gap-3 lg:grid-cols-3">
+        <div className="card p-4 lg:col-span-2">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <h2 className="section-label">30-day volume</h2>
+              <p className="mt-0.5 text-xs text-zinc-500">
+                Each square = 1 day · color = {dailyMin}–{dailyMax} goal
+              </p>
+            </div>
+            <HeatLegend dailyMin={dailyMin} dailyMax={dailyMax} />
           </div>
-          <HeatLegend dailyMin={dailyMin} dailyMax={dailyMax} />
+          <HeatStrip cells={cells30} dailyMin={dailyMin} dailyMax={dailyMax} />
+          <div className="mt-3 grid gap-2 sm:grid-cols-4">
+            <Delta label="Today" value={trends.today} muted="apps" />
+            <Delta label="vs yesterday" value={trends.deltaVsYesterday} muted={`y'day ${trends.yesterday}`} colored />
+            <Delta label="vs 7d avg" value={trends.deltaVs7d} muted={`avg ${trends.avg7}`} colored />
+            <Delta label="vs 30d avg" value={trends.deltaVs30d} muted={`avg ${trends.avg30}`} colored />
+          </div>
         </div>
-        <HeatStrip
-          cells={cells30}
-          dailyMin={dailyMin}
-          dailyMax={dailyMax}
-        />
-        <div className="mt-4 grid gap-2 sm:grid-cols-4">
-          <Delta label="Today" value={trends.today} muted="apps" />
-          <Delta
-            label="vs yesterday"
-            value={trends.deltaVsYesterday}
-            muted={`y'day ${trends.yesterday}`}
-            colored
-          />
-          <Delta
-            label="vs 7d avg"
-            value={trends.deltaVs7d}
-            muted={`avg ${trends.avg7}`}
-            colored
-          />
-          <Delta
-            label="vs 30d avg"
-            value={trends.deltaVs30d}
-            muted={`avg ${trends.avg30}`}
-            colored
-          />
-        </div>
+        <BirthdayCountdown />
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      {/* Tasks + Pipeline */}
+      <section className="grid gap-3 lg:grid-cols-2">
         <TodayTasksCard />
 
         <Card title="Pipeline">
           {applications.length === 0 ? (
-            <p className="text-sm text-zinc-400">No applications yet.</p>
+            <p className="text-xs text-zinc-500">No applications yet.</p>
           ) : (
             <>
               <FunnelMini stages={funnelStages} />
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-edge pt-3 font-mono text-xs">
-                <Aside
-                  label="Active screens"
-                  value={pipeline.OA + pipeline.Phone + pipeline.Onsite}
-                />
-                <Aside
-                  label="Offers"
-                  value={pipeline.Offer + pipeline.Accepted}
-                  className="text-lime-300"
-                />
-                <Aside
-                  label="Rejected"
-                  value={pipeline.Rejected}
-                  className="text-red-300"
-                />
-                <Aside
-                  label="Ghosted"
-                  value={pipeline.Ghosted}
-                  className="text-zinc-400"
-                />
+              <div className="mt-3 grid grid-cols-2 gap-2 border-t border-edge pt-3 font-mono text-xs">
+                <Aside label="Active screens" value={pipeline.OA + pipeline.Phone + pipeline.Onsite} />
+                <Aside label="Offers" value={pipeline.Offer + pipeline.Accepted} className="text-lime-400" />
+                <Aside label="Rejected" value={pipeline.Rejected} className="text-red-400" />
+                <Aside label="Ghosted" value={pipeline.Ghosted} className="text-zinc-500" />
               </div>
             </>
           )}
         </Card>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      {/* Source mix + Today's log */}
+      <section className="grid gap-3 lg:grid-cols-2">
         <Card title="Source mix · today">
-          <MiniBars
-            items={sourceMixToday}
-            emptyLabel="No applications logged today yet."
-          />
+          <MiniBars items={sourceMixToday} emptyLabel="No applications logged today yet." />
         </Card>
         <Card title="Today's log">
           {todayAppsSorted.length === 0 ? (
-            <p className="text-sm text-zinc-400">
+            <p className="text-xs text-zinc-500">
               Nothing yet ·{' '}
-              <Link
-                to="/applications#quick-log"
-                className="text-lime-400/90 hover:underline"
-              >
+              <Link to="/applications#quick-log" className="text-lime-400/80 hover:underline">
                 log your first application
               </Link>
             </p>
           ) : (
-            <ul className="-my-1 divide-y divide-edge/60">
+            <ul className="-my-1 divide-y divide-edge/50">
               {todayAppsSorted.slice(0, 8).map((a) => {
-                const att = a.resumeFileId
-                  ? resumeIndex.get(a.resumeFileId) ?? null
-                  : null
+                const att = a.resumeFileId ? resumeIndex.get(a.resumeFileId) ?? null : null
                 const expanded = previewedAppId === a.id
                 return (
                   <li key={a.id} className="py-2 first:pt-0">
-                    <div className="flex items-start gap-3">
-                      <span className="w-12 shrink-0 font-mono text-xs text-zinc-400">
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-10 shrink-0 font-mono text-[0.6875rem] text-zinc-500">
                         {format(new Date(a.createdAt), 'HH:mm')}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5 truncate text-sm text-zinc-100">
+                        <div className="flex items-center gap-1.5 truncate text-sm text-zinc-200">
                           <span className="truncate">{a.company}</span>
                           {att ? (
-                            <span
-                              className="inline-flex items-center gap-0.5 rounded border border-lime-700/40 bg-lime-500/5 px-1 py-0.5 font-mono text-[9px] uppercase tracking-wider text-lime-300"
-                              title={`${att.fileName} attached`}
-                            >
+                            <span className="inline-flex items-center gap-0.5 rounded border border-lime-700/30 bg-lime-500/5 px-1 py-0.5 font-mono text-[8px] uppercase tracking-wider text-lime-400" title={`${att.fileName} attached`}>
                               <PaperclipMini />
                               file
                             </span>
                           ) : null}
                         </div>
-                        <div className="truncate font-mono text-xs text-zinc-400">
+                        <div className="truncate font-mono text-[0.6875rem] text-zinc-500">
                           {a.role} · {a.source}
                           {a.resumeVersion ? ` · ${a.resumeVersion}` : null}
                         </div>
                       </div>
-                      <span
-                        className={cn(
-                          'shrink-0 rounded border px-1.5 py-0.5 font-mono text-xs',
-                          statusPillClass(a.status),
-                        )}
-                      >
+                      <span className={cn('shrink-0 rounded border px-1.5 py-0.5 font-mono text-[0.6875rem]', statusPillClass(a.status))}>
                         {a.status}
                       </span>
                     </div>
                     {att ? (
-                      <div className="mt-2 pl-[3.75rem]">
+                      <div className="mt-1.5 pl-[3.25rem]">
                         <ResumePreviewToolbar
                           attachment={att}
                           expanded={expanded}
-                          onToggle={() =>
-                            setPreviewedAppId((p) => (p === a.id ? null : a.id))
-                          }
+                          onToggle={() => setPreviewedAppId((p) => (p === a.id ? null : a.id))}
                         />
-                        {expanded ? (
-                          <ResumeInlinePreview
-                            attachment={att}
-                            height={320}
-                          />
-                        ) : null}
+                        {expanded ? <ResumeInlinePreview attachment={att} height={320} /> : null}
                       </div>
                     ) : null}
                   </li>
@@ -585,37 +494,24 @@ export function TodayPage() {
             </ul>
           )}
           {todayAppsSorted.length > 8 ? (
-            <p className="mt-3 text-xs text-zinc-400">
+            <p className="mt-2 text-[0.6875rem] text-zinc-500">
               +{todayAppsSorted.length - 8} more on{' '}
-              <Link
-                to="/applications"
-                className="text-zinc-400 hover:text-lime-300"
-              >
-                Applications
-              </Link>
+              <Link to="/applications" className="text-zinc-400 hover:text-lime-400">Applications</Link>
             </p>
           ) : null}
         </Card>
       </section>
 
-      <p className="text-center font-mono text-xs text-zinc-700">
-        Press{' '}
-        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-xs text-zinc-400">
-          ⌘K
-        </kbd>{' '}
-        for commands ·{' '}
-        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-xs text-zinc-400">
-          A
-        </kbd>{' '}
-        to log applications ·{' '}
-        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-xs text-zinc-400">
-          g
-        </kbd>{' '}
-        +{' '}
-        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-xs text-zinc-400">
-          t/a/d/b/k/s
-        </kbd>{' '}
-        to navigate
+      {/* Footer hints */}
+      <p className="text-center font-mono text-[0.625rem] text-zinc-700">
+        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-zinc-500">⌘K</kbd>
+        {' '}commands ·{' '}
+        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-zinc-500">A</kbd>
+        {' '}log apps ·{' '}
+        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-zinc-500">g</kbd>
+        {' '}+{' '}
+        <kbd className="rounded border border-edge bg-surface px-1 py-0.5 text-zinc-500">t/a/d/b/k/s</kbd>
+        {' '}navigate
       </p>
     </div>
   )
@@ -628,13 +524,8 @@ function Card(props: {
   children: React.ReactNode
 }) {
   return (
-    <div
-      className={cn(
-        'card p-5',
-        props.muted && 'opacity-90',
-      )}
-    >
-      <div className="mb-3.5 flex items-end justify-between gap-2">
+    <div className={cn('card p-4', props.muted && 'opacity-90')}>
+      <div className="mb-3 flex items-end justify-between gap-2">
         <h2 className="section-label">{props.title}</h2>
         {props.right}
       </div>
@@ -654,17 +545,12 @@ function ThroughputTile(props: {
   valueClass?: string
 }) {
   return (
-    <div className="bg-surface p-4">
+    <div className="bg-surface p-3">
       <div className="section-label">{props.label}</div>
-      <div
-        className={cn(
-          'mt-1.5 font-mono text-2xl font-semibold tabular-nums tracking-tight',
-          props.valueClass ?? 'text-zinc-100',
-        )}
-      >
+      <div className={cn('mt-1 font-mono text-xl font-semibold tabular-nums tracking-tight', props.valueClass ?? 'text-zinc-100')}>
         {props.value}
       </div>
-      <div className="mt-1 text-sm leading-snug text-zinc-500">{props.hint}</div>
+      <div className="mt-0.5 text-xs leading-snug text-zinc-500">{props.hint}</div>
     </div>
   )
 }
@@ -677,20 +563,15 @@ function Kpi(props: {
   chart?: React.ReactNode
 }) {
   return (
-    <div className="card p-4 sm:p-5">
+    <div className="card p-3.5">
       <div className="flex items-start justify-between gap-2">
         <div className="section-label">{props.label}</div>
         {props.chart}
       </div>
-      <div
-        className={cn(
-          'mt-2 font-mono text-3xl font-semibold tabular-nums tracking-tight',
-          props.primaryClass ?? 'text-zinc-100',
-        )}
-      >
+      <div className={cn('mt-1.5 font-mono text-2xl font-semibold tabular-nums tracking-tight', props.primaryClass ?? 'text-zinc-100')}>
         {props.primary}
       </div>
-      <div className="mt-1 text-sm text-zinc-500">{props.secondary}</div>
+      <div className="mt-0.5 text-xs text-zinc-500">{props.secondary}</div>
     </div>
   )
 }
@@ -703,58 +584,32 @@ function Delta(props: {
 }) {
   const v = props.value
   const cls = props.colored
-    ? v > 0
-      ? 'text-lime-300'
-      : v < 0
-        ? 'text-amber-300'
-        : 'text-zinc-300'
+    ? v > 0 ? 'text-lime-400' : v < 0 ? 'text-amber-300' : 'text-zinc-300'
     : 'text-zinc-100'
   const sign = props.colored ? (v > 0 ? '+' : '') : ''
   return (
-    <div className="rounded-xl border border-edge bg-well px-3.5 py-3">
+    <div className="rounded-lg border border-edge bg-well px-3 py-2.5">
       <div className="section-label">{props.label}</div>
-      <div
-        className={cn(
-          'mt-1 font-mono text-xl font-semibold tabular-nums',
-          cls,
-        )}
-      >
-        {sign}
-        {v}
+      <div className={cn('mt-0.5 font-mono text-lg font-semibold tabular-nums', cls)}>
+        {sign}{v}
       </div>
-      <div className="mt-0.5 text-sm text-zinc-500">{props.muted}</div>
+      <div className="mt-0.5 text-xs text-zinc-500">{props.muted}</div>
     </div>
   )
 }
 
-function Aside(props: {
-  label: string
-  value: number
-  className?: string
-}) {
+function Aside(props: { label: string; value: number; className?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-2 border-b border-edge/40 pb-1">
-      <span className="text-zinc-400">{props.label}</span>
-      <span className={cn('tabular-nums', props.className ?? 'text-zinc-200')}>
-        {props.value}
-      </span>
+      <span className="text-zinc-500">{props.label}</span>
+      <span className={cn('tabular-nums', props.className ?? 'text-zinc-300')}>{props.value}</span>
     </div>
   )
 }
 
 function PaperclipMini() {
   return (
-    <svg
-      width="9"
-      height="9"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.99 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.49" />
     </svg>
   )
@@ -771,64 +626,38 @@ function SelectedDayPanel(props: {
   const d = new Date(props.selectedKey + 'T12:00:00')
   const label = format(d, 'EEE MMM d')
   const apps = props.detail.apps
-  const appsClass =
-    apps >= props.dailyMin
-      ? 'text-lime-300'
-      : apps > 0
-        ? 'text-amber-300'
-        : 'text-zinc-400'
+  const appsClass = apps >= props.dailyMin ? 'text-lime-400' : apps > 0 ? 'text-amber-300' : 'text-zinc-500'
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-edge pt-3 font-mono text-xs">
-      <span className="text-zinc-400">
+    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-edge pt-3 font-mono text-[0.6875rem]">
+      <span className="text-zinc-500">
         Selected ·{' '}
-        <span className={isToday ? 'text-lime-300' : 'text-zinc-200'}>
+        <span className={isToday ? 'text-lime-400' : 'text-zinc-300'}>
           {isToday ? `${label} · TODAY` : label}
         </span>
       </span>
-      <span className="text-zinc-400">|</span>
+      <span className="text-zinc-600">|</span>
       <span>
-        <span className="text-zinc-400">Apps </span>
+        <span className="text-zinc-500">Apps </span>
         <span className={cn('tabular-nums', appsClass)}>{apps}</span>
-        <span className="text-zinc-400">/{props.dailyMin}</span>
+        <span className="text-zinc-500">/{props.dailyMin}</span>
       </span>
       <span>
-        <span className="text-zinc-400">DSA </span>
-        <span
-          className={cn(
-            'tabular-nums',
-            props.detail.dsa > 0 ? 'text-cyan-300' : 'text-zinc-400',
-          )}
-        >
-          {props.detail.dsa}
-        </span>
+        <span className="text-zinc-500">DSA </span>
+        <span className={cn('tabular-nums', props.detail.dsa > 0 ? 'text-cyan-300' : 'text-zinc-500')}>{props.detail.dsa}</span>
       </span>
       <span>
-        <span className="text-zinc-400">Beh </span>
-        <span
-          className={cn(
-            'tabular-nums',
-            props.detail.beh > 0 ? 'text-violet-300' : 'text-zinc-400',
-          )}
-        >
-          {props.detail.beh}
-        </span>
+        <span className="text-zinc-500">Beh </span>
+        <span className={cn('tabular-nums', props.detail.beh > 0 ? 'text-violet-300' : 'text-zinc-500')}>{props.detail.beh}</span>
       </span>
       <span>
-        <span className="text-zinc-400">SysD </span>
-        <span
-          className={cn(
-            'tabular-nums',
-            props.detail.sd > 0 ? 'text-amber-300' : 'text-zinc-400',
-          )}
-        >
-          {props.detail.sd}
-        </span>
+        <span className="text-zinc-500">SysD </span>
+        <span className={cn('tabular-nums', props.detail.sd > 0 ? 'text-amber-300' : 'text-zinc-500')}>{props.detail.sd}</span>
       </span>
       {!isToday ? (
         <button
           type="button"
           onClick={props.onBackToToday}
-          className="ml-auto rounded border border-edge px-2 py-0.5 text-zinc-300 hover:border-lime-500/40 hover:text-lime-300"
+          className="ml-auto rounded border border-edge px-2 py-0.5 text-zinc-400 transition-colors hover:border-lime-500/40 hover:text-lime-400"
         >
           ↩ Today
         </button>

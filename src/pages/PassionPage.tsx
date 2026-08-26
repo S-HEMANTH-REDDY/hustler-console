@@ -7,14 +7,6 @@ import { stopwatchElapsedMs, useTimerStore } from '../store/timerStore'
 export function PassionPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <header>
-        <h2 className="text-xl font-semibold text-zinc-50">Passion projects</h2>
-        <p className="mt-1 text-sm text-zinc-400">
-          Research threads with notes, links and a think timer. Need a
-          Pomodoro? Use the Focus page — it runs everywhere.
-        </p>
-      </header>
-
       <PassionWorkspace />
 
       <StopwatchCard />

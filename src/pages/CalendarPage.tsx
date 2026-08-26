@@ -31,27 +31,18 @@ export function CalendarPage() {
   const focusLog = useFocusLog()
   const today = dayKey(now)
 
-  // Per-day aggregates.
   const dayData = useMemo(() => {
-    const map = new Map<
-      string,
-      { tasks: number; tasksDone: number; focusMin: number; apps: number }
-    >()
+    const map = new Map<string, { tasks: number; tasksDone: number; focusMin: number; apps: number }>()
     const get = (k: string) => {
       let v = map.get(k)
-      if (!v) {
-        v = { tasks: 0, tasksDone: 0, focusMin: 0, apps: 0 }
-        map.set(k, v)
-      }
+      if (!v) { v = { tasks: 0, tasksDone: 0, focusMin: 0, apps: 0 }; map.set(k, v) }
       return v
     }
     for (const t of tasks) {
       const k = t.dueDate ?? today
       const v = get(k)
       v.tasks++
-      if (isRecurrenceComplete(t.lastCompletedAt, t.recurrence, now)) {
-        v.tasksDone++
-      }
+      if (isRecurrenceComplete(t.lastCompletedAt, t.recurrence, now)) v.tasksDone++
     }
     for (const e of focusLog) get(e.date).focusMin += e.minutes
     for (const a of applications) get(a.date).apps++
@@ -87,45 +78,15 @@ export function CalendarPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4">
-      {/* Toolbar */}
+    <div className="mx-auto max-w-5xl space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => shift(-1)}
-            className="btn-quiet h-9 w-9"
-            aria-label={view === 'month' ? 'Previous month' : 'Previous week'}
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setCursor(new Date())
-              setSelected(today)
-            }}
-            className="btn-quiet h-9 px-3 text-sm"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            onClick={() => shift(1)}
-            className="btn-quiet h-9 w-9"
-            aria-label={view === 'month' ? 'Next month' : 'Next week'}
-          >
-            ›
-          </button>
-          <h2 className="ml-2 text-base font-semibold text-zinc-50">
-            {rangeLabel}
-          </h2>
+          <button type="button" onClick={() => shift(-1)} className="btn-quiet h-8 w-8 text-xs" aria-label={view === 'month' ? 'Previous month' : 'Previous week'}>‹</button>
+          <button type="button" onClick={() => { setCursor(new Date()); setSelected(today) }} className="btn-quiet h-8 px-2.5 text-xs">Today</button>
+          <button type="button" onClick={() => shift(1)} className="btn-quiet h-8 w-8 text-xs" aria-label={view === 'month' ? 'Next month' : 'Next week'}>›</button>
+          <h2 className="ml-2 text-sm font-semibold text-zinc-100">{rangeLabel}</h2>
         </div>
-        <div
-          role="tablist"
-          aria-label="Calendar view"
-          className="flex gap-1 rounded-lg border border-edge bg-surface p-1"
-        >
+        <div role="tablist" aria-label="Calendar view" className="flex gap-0.5 rounded-lg border border-edge bg-surface p-0.5">
           {(['week', 'month'] as View[]).map((v) => (
             <button
               key={v}
@@ -134,10 +95,8 @@ export function CalendarPage() {
               aria-selected={view === v}
               onClick={() => setView(v)}
               className={cn(
-                'min-h-8 rounded-md px-3 text-sm font-medium capitalize',
-                view === v
-                  ? 'bg-lime-500/15 text-lime-300'
-                  : 'text-zinc-400 hover:text-zinc-200',
+                'min-h-7 rounded-md px-2.5 text-xs font-medium capitalize',
+                view === v ? 'bg-zinc-50/[0.07] text-zinc-50' : 'text-zinc-500 hover:text-zinc-300',
               )}
             >
               {v}
@@ -146,13 +105,10 @@ export function CalendarPage() {
         </div>
       </div>
 
-      {/* Grid */}
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[11px] font-medium uppercase tracking-wider text-zinc-500">
+        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[0.625rem] font-medium uppercase tracking-wider text-zinc-600">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-            <div key={d} className="py-2">
-              {d}
-            </div>
+            <div key={d} className="py-1.5">{d}</div>
           ))}
         </div>
         <div className="grid grid-cols-7">
@@ -171,45 +127,24 @@ export function CalendarPage() {
                 aria-label={`${format(d, 'EEEE, MMMM d')}${openTasks ? `, ${openTasks} open tasks` : ''}${info?.focusMin ? `, ${formatMinutes(info.focusMin)} focused` : ''}`}
                 aria-pressed={isSelected}
                 className={cn(
-                  'relative flex min-h-16 flex-col items-start gap-1 border-b border-r border-edge-soft p-1.5 text-left transition-colors last:border-r-0 sm:min-h-20 sm:p-2',
-                  !inMonth && 'opacity-35',
-                  isSelected
-                    ? 'bg-lime-500/10'
-                    : 'hover:bg-surface-2',
+                  'relative flex min-h-14 flex-col items-start gap-0.5 border-b border-r border-edge-soft p-1.5 text-left transition-colors last:border-r-0 sm:min-h-[4.5rem] sm:p-2',
+                  !inMonth && 'opacity-30',
+                  isSelected ? 'bg-lime-500/[0.06]' : 'hover:bg-surface-2',
                 )}
               >
-                <span
-                  className={cn(
-                    'flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium tabular-nums',
-                    isToday
-                      ? 'bg-lime-500 text-zinc-950'
-                      : 'text-zinc-300',
-                  )}
-                >
+                <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-[0.625rem] font-medium tabular-nums', isToday ? 'bg-lime-500 text-zinc-950' : 'text-zinc-400')}>
                   {format(d, 'd')}
                 </span>
                 {info ? (
-                  <span className="flex flex-wrap items-center gap-1">
+                  <span className="flex flex-wrap items-center gap-0.5">
                     {openTasks > 0 ? (
-                      <span
-                        className="rounded-full bg-lime-500/20 px-1.5 text-[10px] font-medium text-lime-300"
-                        title={`${openTasks} open tasks`}
-                      >
-                        {openTasks}
-                      </span>
+                      <span className="rounded-full bg-lime-500/15 px-1 text-[9px] font-medium text-lime-400" title={`${openTasks} open tasks`}>{openTasks}</span>
                     ) : null}
                     {info.tasksDone > 0 && openTasks === 0 && info.tasks > 0 ? (
-                      <span className="text-[10px] text-zinc-500" title="All tasks done">
-                        ✓
-                      </span>
+                      <span className="text-[9px] text-zinc-600" title="All done">✓</span>
                     ) : null}
                     {info.focusMin > 0 ? (
-                      <span
-                        className="hidden text-[10px] text-cyan-300/90 sm:inline"
-                        title={`${formatMinutes(info.focusMin)} focused`}
-                      >
-                        {formatMinutes(info.focusMin)}
-                      </span>
+                      <span className="hidden text-[9px] text-cyan-400/80 sm:inline" title={`${formatMinutes(info.focusMin)} focused`}>{formatMinutes(info.focusMin)}</span>
                     ) : null}
                   </span>
                 ) : null}
@@ -219,67 +154,34 @@ export function CalendarPage() {
         </div>
       </div>
 
-      {/* Selected day */}
-      <section className="card p-4 sm:p-5">
+      <section className="card p-4">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold text-zinc-100">
+          <h3 className="text-sm font-semibold text-zinc-200">
             {format(new Date(selected + 'T12:00:00'), 'EEEE, MMMM d')}
             {selected === today ? (
-              <span className="ml-2 rounded-full bg-lime-500/15 px-2 py-0.5 text-[11px] font-medium text-lime-300">
-                Today
-              </span>
+              <span className="ml-2 rounded-full bg-lime-500/15 px-1.5 py-0.5 text-[0.625rem] font-medium text-lime-400">Today</span>
             ) : null}
           </h3>
-          <Link
-            to="/tasks"
-            className="text-xs font-medium text-lime-400 hover:underline"
-          >
-            Manage tasks
-          </Link>
+          <Link to="/tasks" className="text-[0.6875rem] font-medium text-lime-400 hover:underline">Manage tasks</Link>
         </div>
-
         {selectedInfo && (selectedInfo.focusMin > 0 || selectedInfo.apps > 0) ? (
-          <p className="mt-2 text-xs text-zinc-500">
-            {selectedInfo.focusMin > 0
-              ? `${formatMinutes(selectedInfo.focusMin)} focused`
-              : null}
+          <p className="mt-1.5 text-[0.6875rem] text-zinc-500">
+            {selectedInfo.focusMin > 0 ? `${formatMinutes(selectedInfo.focusMin)} focused` : null}
             {selectedInfo.focusMin > 0 && selectedInfo.apps > 0 ? ' · ' : null}
-            {selectedInfo.apps > 0
-              ? `${selectedInfo.apps} application${selectedInfo.apps === 1 ? '' : 's'} logged`
-              : null}
+            {selectedInfo.apps > 0 ? `${selectedInfo.apps} application${selectedInfo.apps === 1 ? '' : 's'} logged` : null}
           </p>
         ) : null}
-
         {selectedTasks.length === 0 ? (
-          <p className="mt-3 text-sm text-zinc-500">No tasks on this day.</p>
+          <p className="mt-2.5 text-xs text-zinc-500">No tasks on this day.</p>
         ) : (
-          <ul className="mt-3 divide-y divide-edge-soft">
+          <ul className="mt-2.5 divide-y divide-edge-soft">
             {selectedTasks.map((t) => {
-              const done = isRecurrenceComplete(
-                t.lastCompletedAt,
-                t.recurrence,
-                now,
-              )
+              const done = isRecurrenceComplete(t.lastCompletedAt, t.recurrence, now)
               return (
-                <li key={t.id} className="flex items-center gap-3 py-2">
-                  <span
-                    className={cn(
-                      'h-2 w-2 shrink-0 rounded-full',
-                      done ? 'bg-zinc-600' : 'bg-lime-400',
-                    )}
-                    aria-hidden
-                  />
-                  <span
-                    className={cn(
-                      'min-w-0 flex-1 truncate text-sm',
-                      done ? 'text-zinc-500 line-through' : 'text-zinc-100',
-                    )}
-                  >
-                    {t.title}
-                  </span>
-                  <span className="shrink-0 font-mono text-xs text-zinc-500">
-                    {formatDueTime(t.dueTime) ?? 'all day'}
-                  </span>
+                <li key={t.id} className="flex items-center gap-2.5 py-1.5">
+                  <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', done ? 'bg-zinc-700' : 'bg-lime-400')} aria-hidden />
+                  <span className={cn('min-w-0 flex-1 truncate text-sm', done ? 'text-zinc-600 line-through' : 'text-zinc-200')}>{t.title}</span>
+                  <span className="shrink-0 font-mono text-[0.6875rem] text-zinc-500">{formatDueTime(t.dueTime) ?? 'all day'}</span>
                 </li>
               )
             })}

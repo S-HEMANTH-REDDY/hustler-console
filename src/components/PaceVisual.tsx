@@ -17,7 +17,7 @@ function stateColors(state: PaceState): {
     case 'onPace':
       return {
         fill: '#84cc16',
-        text: 'text-lime-300',
+        text: 'text-lime-400',
         bar: 'bg-lime-400',
       }
     case 'behind':
@@ -58,8 +58,8 @@ export function PaceBar(props: {
   for (let v = 10; v < scaleMax; v += 10) ticks.push(v)
 
   return (
-    <div className="space-y-2">
-      <div className="relative h-14 w-full overflow-hidden rounded-xl border border-edge bg-pit">
+    <div className="space-y-1.5">
+      <div className="relative h-12 w-full overflow-hidden rounded-lg border border-edge bg-pit">
         {/* ideal band */}
         <div
           className="absolute inset-y-0 bg-lime-500/15"
@@ -125,7 +125,7 @@ export function PaceBar(props: {
           {pace.todayCount}
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
         <span>
           Scale 0–{scaleMax} · Band{' '}
           <span className="font-medium text-lime-400/90">
@@ -154,7 +154,7 @@ export function PaceHeroNumber(props: { count: number; state: PaceState }) {
   const colors = stateColors(props.state)
   return (
     <div
-      className="font-mono text-8xl font-semibold tabular-nums tracking-tighter sm:text-9xl"
+      className="font-mono text-7xl font-semibold tabular-nums tracking-tighter sm:text-8xl"
       style={{
         fontFamily: 'var(--font-mono)',
         color: colors.fill,

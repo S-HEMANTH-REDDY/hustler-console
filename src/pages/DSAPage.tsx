@@ -80,20 +80,8 @@ export function DSAPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <div>
-        <h1
-          className="text-xl font-semibold text-zinc-100"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
-          DSA
-        </h1>
-        <p className="text-sm text-zinc-400">
-          Volume log · 91-day matrix · inline table
-        </p>
-      </div>
-
-      <section className="rounded border border-edge bg-surface p-4">
-        <div className="mb-3 text-xs font-mono uppercase text-zinc-400">
+      <section className="card p-4">
+        <div className="section-label mb-3">
           13×7 heat · problems / day
         </div>
         <div
@@ -136,15 +124,15 @@ export function DSAPage() {
           { k: 'medium', v: totals.m },
           { k: 'hard', v: totals.h },
         ].map((x) => (
-          <div key={x.k} className="rounded border border-edge bg-surface p-3">
+          <div key={x.k} className="card p-3">
             <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div className="font-mono text-2xl text-zinc-100">{x.v}</div>
           </div>
         ))}
       </section>
 
-      <section className="rounded border border-edge bg-surface/80 p-4">
-        <h2 className="mb-3 text-sm font-semibold text-zinc-200">Log problem</h2>
+      <section className="card p-4">
+        <h2 className="section-label mb-3">Log problem</h2>
         <form
           className="grid gap-3 md:grid-cols-3 lg:grid-cols-6"
           onSubmit={addProblem}
@@ -192,7 +180,7 @@ export function DSAPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="rounded bg-lime-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+              className="btn-primary rounded-lg px-4 py-2 text-sm"
             >
               Add problem
             </button>
@@ -200,7 +188,7 @@ export function DSAPage() {
         </form>
       </section>
 
-      <div className="overflow-x-auto rounded border border-edge">
+      <div className="overflow-x-auto card">
         <table className="min-w-[900px] w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-edge bg-surface text-xs uppercase text-zinc-400">

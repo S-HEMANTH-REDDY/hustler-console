@@ -23,13 +23,11 @@ export function AppLayout() {
   return (
     <div className="flex min-h-full">
       {!zenMode && <Sidebar />}
-      {/* min-w-0 keeps wide tables scrolling inside this column instead of
-          pushing the layout wider than the viewport. */}
       <div
         className={
           zenMode
             ? 'flex min-h-full min-w-0 flex-1 flex-col'
-            : 'flex min-h-full min-w-0 flex-1 flex-col lg:pl-60'
+            : 'flex min-h-full min-w-0 flex-1 flex-col lg:pl-56'
         }
       >
         {!zenMode && <TopBar />}
@@ -37,7 +35,7 @@ export function AppLayout() {
           className={
             zenMode
               ? 'min-h-0 min-w-0 flex-1'
-              : 'min-h-0 min-w-0 flex-1 p-4 pb-24 sm:p-5 lg:p-8 lg:pb-8'
+              : 'min-h-0 min-w-0 flex-1 p-4 pb-20 sm:p-5 lg:p-6 lg:pb-6'
           }
         >
           <Outlet />

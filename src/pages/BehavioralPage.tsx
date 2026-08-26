@@ -61,22 +61,10 @@ export function BehavioralPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <div>
-        <h1
-          className="text-xl font-semibold text-zinc-100"
-          style={{ fontFamily: 'var(--font-display)' }}
-        >
-          Behavioral
-        </h1>
-        <p className="text-sm text-zinc-400">
-          STAR archive · question bank · study guides
-        </p>
-      </div>
-
       <BehavioralQuestionBank />
 
-      <section className="rounded border border-edge bg-surface p-4">
-        <h2 className="mb-3 text-xs font-mono uppercase text-zinc-400">
+      <section className="card p-4">
+        <h2 className="section-label mb-3">
           Coverage
         </h2>
         <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-3">
@@ -84,7 +72,7 @@ export function BehavioralPage() {
             <div
               key={c.cat}
               className={cn(
-                'rounded border p-3',
+                'rounded-lg border p-3',
                 c.count === 0
                   ? 'border-amber-600/60 bg-amber-950/20'
                   : 'border-edge bg-pit',
@@ -104,8 +92,8 @@ export function BehavioralPage() {
         </div>
       </section>
 
-      <section className="rounded border border-edge bg-surface/80 p-4">
-        <h2 className="mb-3 text-sm font-semibold text-zinc-200">New story</h2>
+      <section className="card p-4">
+        <h2 className="section-label mb-3">New story</h2>
         <form
           className="grid gap-3 md:grid-cols-4"
           onSubmit={addStory}
@@ -149,7 +137,7 @@ export function BehavioralPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="rounded bg-lime-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+              className="btn-primary rounded-lg px-4 py-2 text-sm"
             >
               Add story
             </button>
@@ -166,7 +154,7 @@ export function BehavioralPage() {
             return (
               <div
                 key={s.id}
-                className="rounded border border-edge bg-surface p-3 text-sm"
+                className="card p-3 text-sm"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <button

@@ -69,7 +69,7 @@ export function Onboarding() {
       aria-label="Welcome to Hustler"
       className="fixed inset-0 z-[130] flex items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"
     >
-      <div className="card w-full max-w-md p-5 sm:p-6">
+      <div className="card w-full max-w-md rounded-xl p-5 sm:p-6 animate-slide-up">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5" aria-hidden>
             {[0, 1, 2].map((i) => (
@@ -96,7 +96,7 @@ export function Onboarding() {
             <h2 className="mt-4 text-lg font-semibold text-zinc-50">
               Welcome to Hustler
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-400">
               Pick how you like to focus. You can change this anytime.
             </p>
             <div className="mt-4 grid gap-2">
@@ -107,7 +107,7 @@ export function Onboarding() {
                   onClick={() => pomoApplyPreset(preset.id)}
                   aria-pressed={activePreset === preset.id}
                   className={cn(
-                    'flex items-center justify-between rounded-lg border px-3 py-3 text-left transition-colors',
+                    'flex items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors',
                     activePreset === preset.id
                       ? 'border-lime-400/60 bg-lime-500/10'
                       : 'border-edge bg-well hover:border-edge-strong',
@@ -115,7 +115,7 @@ export function Onboarding() {
                 >
                   <span
                     className={cn(
-                      'text-sm font-medium',
+                      'text-xs font-medium',
                       activePreset === preset.id
                         ? 'text-lime-300'
                         : 'text-zinc-200',
@@ -123,7 +123,7 @@ export function Onboarding() {
                   >
                     {preset.label}
                   </span>
-                  <span className="font-mono text-xs text-zinc-500">
+                  <span className="font-mono text-[0.6875rem] text-zinc-500">
                     {preset.focusMin} min focus · {preset.shortBreakMin} min
                     break
                   </span>
@@ -133,7 +133,7 @@ export function Onboarding() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="btn-primary mt-4 w-full rounded-lg py-2.5 text-sm"
+              className="btn-primary mt-4 w-full rounded-xl py-2.5 text-xs"
             >
               Continue
             </button>
@@ -145,7 +145,7 @@ export function Onboarding() {
             <h2 className="mt-4 text-lg font-semibold text-zinc-50">
               What's first on your list?
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-400">
               Add one task to get started — assignments, prep, anything.
             </p>
             <input
@@ -170,7 +170,7 @@ export function Onboarding() {
               <button
                 type="button"
                 onClick={() => void saveTask()}
-                className="btn-primary flex-1 rounded-lg py-2.5 text-sm"
+                className="btn-primary flex-1 rounded-xl py-2.5 text-xs"
               >
                 Add task
               </button>
@@ -183,7 +183,7 @@ export function Onboarding() {
             <h2 className="mt-4 text-lg font-semibold text-zinc-50">
               Ready to focus?
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-400">
               {p.focusMin} minutes of focus, then a {p.shortBreakMin}-minute
               break. The timer runs on every page and in the tab title.
             </p>
@@ -198,7 +198,7 @@ export function Onboarding() {
               <button
                 type="button"
                 onClick={() => finish(true)}
-                className="btn-primary flex-1 rounded-lg py-2.5 text-sm"
+                className="btn-primary flex-1 rounded-xl py-2.5 text-xs"
               >
                 Start focusing
               </button>
