@@ -61,8 +61,12 @@ function getGreeting(hour: number): string {
 
 function getFirstName(email: string | null | undefined): string | null {
   if (!email) return null
+  const knownNames: Record<string, string> = {
+    'hemanth1729hr': 'Hemanth',
+  }
   const local = email.split('@')[0]
   if (!local) return null
+  if (knownNames[local.toLowerCase()]) return knownNames[local.toLowerCase()]
   const name = local.replace(/[._-]/g, ' ').split(' ')[0]
   if (!name || name.length < 2) return null
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
