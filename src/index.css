@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-base: #09090b;
-  --color-well: #0f0f12;
-  --color-surface: #161619;
-  --color-surface-2: #1c1c20;
-  --color-surface-3: #232328;
-  --color-pit: #050506;
-  --color-edge: #232328;
-  --color-edge-soft: #1c1c20;
-  --color-edge-strong: #3f3f46;
+  --color-base: #050507;
+  --color-well: #0a0a0e;
+  --color-surface: #111115;
+  --color-surface-2: #18181d;
+  --color-surface-3: #1f1f25;
+  --color-pit: #030304;
+  --color-edge: #1e1e26;
+  --color-edge-soft: #18181d;
+  --color-edge-strong: #2e2e38;
 
   --color-accent: #84cc16;
   --color-accent-soft: #a3e635;
@@ -26,13 +26,7 @@
 @layer base {
   html {
     color-scheme: dark;
-    font-size: 15px;
-  }
-  @media (min-width: 640px) {
-    html { font-size: 15.5px; }
-  }
-  @media (min-width: 1280px) {
-    html { font-size: 16px; }
+    font-size: 16px;
   }
   html, body, #root {
     height: 100%;
@@ -50,13 +44,18 @@
     background-color: var(--color-base);
     background-image:
       radial-gradient(
-        ellipse 80% 50% at 10% -10%,
-        rgba(132, 204, 22, 0.06),
-        transparent 60%
+        ellipse 120% 60% at 5% -20%,
+        rgba(132, 204, 22, 0.07),
+        transparent 55%
       ),
       radial-gradient(
-        ellipse 50% 35% at 100% 0%,
-        rgba(56, 189, 248, 0.03),
+        ellipse 80% 50% at 100% 0%,
+        rgba(56, 189, 248, 0.04),
+        transparent 45%
+      ),
+      radial-gradient(
+        ellipse 60% 40% at 50% 100%,
+        rgba(139, 92, 246, 0.03),
         transparent 50%
       );
     background-attachment: fixed;
@@ -79,15 +78,15 @@
 html[data-theme='light'] {
   color-scheme: light;
 
-  --color-base: #f8f9fa;
-  --color-well: #f0f1f3;
+  --color-base: #f5f5f7;
+  --color-well: #ebebef;
   --color-surface: #ffffff;
-  --color-surface-2: #f4f5f7;
-  --color-surface-3: #ecedf0;
+  --color-surface-2: #f7f7f9;
+  --color-surface-3: #ededf0;
   --color-pit: #ffffff;
-  --color-edge: #e2e4e9;
-  --color-edge-soft: #ecedf0;
-  --color-edge-strong: #c8ccd3;
+  --color-edge: #dcdce4;
+  --color-edge-soft: #e8e8ee;
+  --color-edge-strong: #c0c0cc;
 
   --color-zinc-50: #111318;
   --color-zinc-100: #1a1d24;
@@ -118,14 +117,14 @@ html[data-theme='light'] {
 html[data-theme='light'] body {
   background-image:
     radial-gradient(
-      ellipse 80% 50% at 10% -10%,
-      rgba(101, 163, 13, 0.05),
-      transparent 55%
+      ellipse 100% 50% at 5% -15%,
+      rgba(101, 163, 13, 0.06),
+      transparent 50%
     ),
     radial-gradient(
-      ellipse 50% 35% at 100% 0%,
-      rgba(14, 165, 233, 0.03),
-      transparent 50%
+      ellipse 70% 40% at 100% 0%,
+      rgba(14, 165, 233, 0.04),
+      transparent 45%
     );
 }
 html[data-theme='light'] ::selection {
@@ -139,24 +138,26 @@ select, input, textarea, button {
 /* ───────────────────── Component primitives ───────────────────── */
 
 .field {
-  @apply w-full rounded-lg text-[0.875rem] text-zinc-50 outline-none;
+  @apply w-full rounded-xl text-sm text-zinc-50 outline-none;
   background-color: var(--color-well);
   border: 1px solid var(--color-edge);
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 0.875rem;
   transition:
-    border-color 120ms ease,
-    box-shadow 150ms ease,
-    background-color 120ms ease;
+    border-color 150ms ease,
+    box-shadow 200ms ease,
+    background-color 150ms ease;
 }
 .field::placeholder {
   color: var(--color-zinc-500);
 }
 .field:hover {
   border-color: var(--color-edge-strong);
+  background-color: var(--color-surface);
 }
 .field:focus {
-  border-color: rgba(132, 204, 22, 0.6);
-  box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.12);
+  border-color: rgba(132, 204, 22, 0.5);
+  box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1), 0 0 20px -4px rgba(132, 204, 22, 0.15);
+  background-color: var(--color-surface);
 }
 input[type='date'].field,
 input[type='number'].field,
@@ -165,28 +166,30 @@ input[type='time'].field {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center;
-  background: linear-gradient(180deg, #a3e635 0%, #84cc16 100%);
+  @apply inline-flex items-center justify-center rounded-xl font-semibold;
+  background: linear-gradient(180deg, #a3e635 0%, #84cc16 50%, #65a30d 100%);
   color: #0a1402;
-  font-weight: 600;
   letter-spacing: -0.01em;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 1px 2px rgba(0, 0, 0, 0.2);
-  transition:
-    transform 100ms ease,
-    box-shadow 140ms ease,
-    filter 100ms ease;
-}
-.btn-primary:hover {
-  filter: brightness(1.06);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 4px 12px -4px rgba(132, 204, 22, 0.5);
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 0 0 0 rgba(132, 204, 22, 0);
+  transition:
+    transform 120ms ease,
+    box-shadow 200ms ease,
+    filter 120ms ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 4px 16px -4px rgba(132, 204, 22, 0.5),
+    0 0 24px -8px rgba(132, 204, 22, 0.3);
 }
 .btn-primary:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  filter: brightness(0.98);
 }
 .btn-primary:disabled {
   filter: saturate(0.3) brightness(0.7);
@@ -194,40 +197,87 @@ input[type='time'].field {
 }
 
 .btn-quiet {
-  @apply inline-flex items-center justify-center rounded-lg border border-edge bg-surface text-[0.875rem] text-zinc-300;
+  @apply inline-flex items-center justify-center rounded-xl border border-edge bg-surface text-sm text-zinc-300;
   transition:
-    border-color 120ms ease,
-    background-color 120ms ease,
-    color 120ms ease;
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 200ms ease;
 }
 .btn-quiet:hover {
   @apply border-edge-strong bg-surface-2 text-zinc-50;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.3);
 }
 .btn-quiet:disabled {
   cursor: not-allowed;
   opacity: 0.4;
 }
 
+/* Card with gradient border */
 .card {
-  @apply rounded-xl border border-edge bg-surface;
+  position: relative;
+  @apply rounded-2xl;
+  background-color: var(--color-surface);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.02) inset,
-    0 1px 3px rgba(0, 0, 0, 0.3);
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 4px 16px -8px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-edge);
+  transition: border-color 200ms ease, box-shadow 300ms ease;
+}
+.card:hover {
+  border-color: var(--color-edge-strong);
 }
 html[data-theme='light'] .card {
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 1px 3px rgba(0, 0, 0, 0.06);
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 16px -8px rgba(0, 0, 0, 0.04);
+}
+
+/* Highlighted card with gradient border */
+.card-glow {
+  position: relative;
+  @apply rounded-2xl overflow-hidden;
+  background-color: var(--color-surface);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 4px 24px -8px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 300ms ease;
+}
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(132, 204, 22, 0.2) 0%,
+    rgba(255, 255, 255, 0.06) 40%,
+    rgba(56, 189, 248, 0.1) 100%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+.card-glow:hover {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 8px 32px -8px rgba(132, 204, 22, 0.12),
+    0 0 48px -16px rgba(132, 204, 22, 0.08);
 }
 
 .surface-glossy {
-  @apply rounded-xl border border-edge;
+  @apply rounded-2xl;
+  position: relative;
+  overflow: hidden;
   background:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.04) 0%, transparent 35%),
     var(--color-surface);
+  border: 1px solid var(--color-edge);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.03) inset,
-    0 2px 8px -2px rgba(0, 0, 0, 0.4);
+    0 2px 12px -4px rgba(0, 0, 0, 0.5),
+    0 8px 32px -8px rgba(0, 0, 0, 0.3);
 }
 html[data-theme='light'] .surface-glossy {
   background:
@@ -239,9 +289,9 @@ html[data-theme='light'] .surface-glossy {
 }
 
 .frost {
-  background: color-mix(in srgb, var(--color-base) 82%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  background: color-mix(in srgb, var(--color-base) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 
 .section-label {
@@ -250,6 +300,79 @@ html[data-theme='light'] .surface-glossy {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-zinc-500);
+}
+
+/* Glow text utilities */
+.glow-lime {
+  text-shadow:
+    0 0 40px rgba(132, 204, 22, 0.5),
+    0 0 80px rgba(132, 204, 22, 0.2);
+}
+.glow-cyan {
+  text-shadow:
+    0 0 40px rgba(56, 189, 248, 0.5),
+    0 0 80px rgba(56, 189, 248, 0.2);
+}
+.glow-amber {
+  text-shadow:
+    0 0 40px rgba(245, 158, 11, 0.4),
+    0 0 80px rgba(245, 158, 11, 0.15);
+}
+
+/* Hero section */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  @apply rounded-2xl;
+  background:
+    linear-gradient(170deg, rgba(132, 204, 22, 0.04) 0%, transparent 30%),
+    linear-gradient(280deg, rgba(56, 189, 248, 0.02) 0%, transparent 25%),
+    var(--color-surface);
+  border: 1px solid var(--color-edge);
+  box-shadow:
+    0 2px 12px -4px rgba(0, 0, 0, 0.5),
+    0 8px 40px -12px rgba(0, 0, 0, 0.3);
+}
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(132, 204, 22, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Stat card with top accent */
+.stat-card {
+  position: relative;
+  @apply rounded-2xl;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-edge);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 4px 16px -8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: border-color 200ms ease, box-shadow 300ms ease, transform 200ms ease;
+}
+.stat-card:hover {
+  border-color: var(--color-edge-strong);
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px -4px rgba(0, 0, 0, 0.4),
+    0 8px 24px -8px rgba(0, 0, 0, 0.2);
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--stat-accent, linear-gradient(90deg, #84cc16, #a3e635));
+  opacity: 0.8;
 }
 
 :focus-visible {
@@ -321,23 +444,52 @@ kbd {
 /* ───────────────────── Animations ───────────────────── */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
 }
 @keyframes pulse-glow {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
 
 .animate-fade-in {
-  animation: fadeIn 300ms ease both;
+  animation: fadeIn 350ms ease both;
 }
 .animate-slide-up {
-  animation: slideUp 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slideUp 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-scale-in {
+  animation: scaleIn 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

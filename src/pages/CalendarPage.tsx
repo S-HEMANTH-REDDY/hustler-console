@@ -78,15 +78,16 @@ export function CalendarPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-1">
-          <button type="button" onClick={() => shift(-1)} className="btn-quiet h-8 w-8 text-xs" aria-label={view === 'month' ? 'Previous month' : 'Previous week'}>‹</button>
-          <button type="button" onClick={() => { setCursor(new Date()); setSelected(today) }} className="btn-quiet h-8 px-2.5 text-xs">Today</button>
-          <button type="button" onClick={() => shift(1)} className="btn-quiet h-8 w-8 text-xs" aria-label={view === 'month' ? 'Next month' : 'Next week'}>›</button>
-          <h2 className="ml-2 text-sm font-semibold text-zinc-100">{rangeLabel}</h2>
+    <div className="mx-auto max-w-5xl space-y-4 animate-fade-in">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5">
+          <button type="button" onClick={() => shift(-1)} className="btn-quiet h-9 w-9 rounded-xl text-sm" aria-label={view === 'month' ? 'Previous month' : 'Previous week'}>‹</button>
+          <button type="button" onClick={() => { setCursor(new Date()); setSelected(today) }} className="btn-quiet h-9 rounded-xl px-3 text-sm">Today</button>
+          <button type="button" onClick={() => shift(1)} className="btn-quiet h-9 w-9 rounded-xl text-sm" aria-label={view === 'month' ? 'Next month' : 'Next week'}>›</button>
+          <h2 className="ml-2 text-base font-semibold text-zinc-100">{rangeLabel}</h2>
         </div>
-        <div role="tablist" aria-label="Calendar view" className="flex gap-0.5 rounded-lg border border-edge bg-surface p-0.5">
+        <div role="tablist" aria-label="Calendar view" className="flex gap-1 rounded-2xl border border-edge bg-surface p-1">
           {(['week', 'month'] as View[]).map((v) => (
             <button
               key={v}
@@ -95,8 +96,8 @@ export function CalendarPage() {
               aria-selected={view === v}
               onClick={() => setView(v)}
               className={cn(
-                'min-h-7 rounded-md px-2.5 text-xs font-medium capitalize',
-                view === v ? 'bg-zinc-50/[0.07] text-zinc-50' : 'text-zinc-500 hover:text-zinc-300',
+                'min-h-8 rounded-xl px-3 text-sm font-medium capitalize transition-all',
+                view === v ? 'bg-zinc-50/[0.08] text-zinc-50 shadow-sm' : 'text-zinc-500 hover:text-zinc-300',
               )}
             >
               {v}
@@ -105,10 +106,11 @@ export function CalendarPage() {
         </div>
       </div>
 
+      {/* Calendar grid */}
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[0.625rem] font-medium uppercase tracking-wider text-zinc-600">
+        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[0.625rem] font-semibold uppercase tracking-wider text-zinc-600">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-            <div key={d} className="py-1.5">{d}</div>
+            <div key={d} className="py-2">{d}</div>
           ))}
         </div>
         <div className="grid grid-cols-7">
@@ -127,18 +129,23 @@ export function CalendarPage() {
                 aria-label={`${format(d, 'EEEE, MMMM d')}${openTasks ? `, ${openTasks} open tasks` : ''}${info?.focusMin ? `, ${formatMinutes(info.focusMin)} focused` : ''}`}
                 aria-pressed={isSelected}
                 className={cn(
-                  'relative flex min-h-14 flex-col items-start gap-0.5 border-b border-r border-edge-soft p-1.5 text-left transition-colors last:border-r-0 sm:min-h-[4.5rem] sm:p-2',
-                  !inMonth && 'opacity-30',
+                  'relative flex min-h-16 flex-col items-start gap-0.5 border-b border-r border-edge-soft p-2 text-left transition-all last:border-r-0 sm:min-h-[5rem]',
+                  !inMonth && 'opacity-25',
                   isSelected ? 'bg-lime-500/[0.06]' : 'hover:bg-surface-2',
                 )}
               >
-                <span className={cn('flex h-5 w-5 items-center justify-center rounded-full text-[0.625rem] font-medium tabular-nums', isToday ? 'bg-lime-500 text-zinc-950' : 'text-zinc-400')}>
+                <span className={cn(
+                  'flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium tabular-nums',
+                  isToday
+                    ? 'bg-lime-500 text-zinc-950 shadow-[0_0_8px_rgba(132,204,22,0.3)]'
+                    : 'text-zinc-400',
+                )}>
                   {format(d, 'd')}
                 </span>
                 {info ? (
-                  <span className="flex flex-wrap items-center gap-0.5">
+                  <span className="flex flex-wrap items-center gap-0.5 mt-0.5">
                     {openTasks > 0 ? (
-                      <span className="rounded-full bg-lime-500/15 px-1 text-[9px] font-medium text-lime-400" title={`${openTasks} open tasks`}>{openTasks}</span>
+                      <span className="rounded-full bg-lime-500/15 px-1.5 text-[9px] font-medium text-lime-400" title={`${openTasks} open tasks`}>{openTasks}</span>
                     ) : null}
                     {info.tasksDone > 0 && openTasks === 0 && info.tasks > 0 ? (
                       <span className="text-[9px] text-zinc-600" title="All done">✓</span>
@@ -154,34 +161,35 @@ export function CalendarPage() {
         </div>
       </div>
 
-      <section className="card p-4">
+      {/* Selected day detail */}
+      <section className="card p-5">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold text-zinc-200">
+          <h3 className="text-base font-semibold text-zinc-200">
             {format(new Date(selected + 'T12:00:00'), 'EEEE, MMMM d')}
             {selected === today ? (
-              <span className="ml-2 rounded-full bg-lime-500/15 px-1.5 py-0.5 text-[0.625rem] font-medium text-lime-400">Today</span>
+              <span className="ml-2 rounded-full bg-lime-500/15 px-2 py-0.5 text-[0.625rem] font-medium text-lime-400">Today</span>
             ) : null}
           </h3>
-          <Link to="/tasks" className="text-[0.6875rem] font-medium text-lime-400 hover:underline">Manage tasks</Link>
+          <Link to="/tasks" className="text-xs font-medium text-lime-400 hover:underline">Manage tasks</Link>
         </div>
         {selectedInfo && (selectedInfo.focusMin > 0 || selectedInfo.apps > 0) ? (
-          <p className="mt-1.5 text-[0.6875rem] text-zinc-500">
+          <p className="mt-1.5 text-xs text-zinc-500">
             {selectedInfo.focusMin > 0 ? `${formatMinutes(selectedInfo.focusMin)} focused` : null}
             {selectedInfo.focusMin > 0 && selectedInfo.apps > 0 ? ' · ' : null}
             {selectedInfo.apps > 0 ? `${selectedInfo.apps} application${selectedInfo.apps === 1 ? '' : 's'} logged` : null}
           </p>
         ) : null}
         {selectedTasks.length === 0 ? (
-          <p className="mt-2.5 text-xs text-zinc-500">No tasks on this day.</p>
+          <p className="mt-3 text-sm text-zinc-500">No tasks on this day.</p>
         ) : (
-          <ul className="mt-2.5 divide-y divide-edge-soft">
+          <ul className="mt-3 divide-y divide-edge-soft">
             {selectedTasks.map((t) => {
               const done = isRecurrenceComplete(t.lastCompletedAt, t.recurrence, now)
               return (
-                <li key={t.id} className="flex items-center gap-2.5 py-1.5">
-                  <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', done ? 'bg-zinc-700' : 'bg-lime-400')} aria-hidden />
+                <li key={t.id} className="flex items-center gap-3 py-2">
+                  <span className={cn('h-2 w-2 shrink-0 rounded-full', done ? 'bg-zinc-700' : 'bg-lime-400')} aria-hidden />
                   <span className={cn('min-w-0 flex-1 truncate text-sm', done ? 'text-zinc-600 line-through' : 'text-zinc-200')}>{t.title}</span>
-                  <span className="shrink-0 font-mono text-[0.6875rem] text-zinc-500">{formatDueTime(t.dueTime) ?? 'all day'}</span>
+                  <span className="shrink-0 font-mono text-xs text-zinc-500">{formatDueTime(t.dueTime) ?? 'all day'}</span>
                 </li>
               )
             })}

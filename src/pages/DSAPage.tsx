@@ -79,9 +79,9 @@ export function DSAPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
-      <section className="card p-4">
-        <div className="section-label mb-3">
+    <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
+      <section className="card p-5">
+        <div className="text-base font-semibold text-zinc-100 mb-3">
           13×7 heat · problems / day
         </div>
         <div
@@ -124,15 +124,15 @@ export function DSAPage() {
           { k: 'medium', v: totals.m },
           { k: 'hard', v: totals.h },
         ].map((x) => (
-          <div key={x.k} className="card p-3">
+          <div key={x.k} className="card p-5">
             <div className="text-xs uppercase text-zinc-400">{x.k}</div>
             <div className="font-mono text-2xl text-zinc-100">{x.v}</div>
           </div>
         ))}
       </section>
 
-      <section className="card p-4">
-        <h2 className="section-label mb-3">Log problem</h2>
+      <section className="card p-5">
+        <h2 className="text-base font-semibold text-zinc-100 mb-3">Log problem</h2>
         <form
           className="grid gap-3 md:grid-cols-3 lg:grid-cols-6"
           onSubmit={addProblem}
@@ -180,7 +180,7 @@ export function DSAPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="btn-primary rounded-lg px-4 py-2 text-sm"
+              className="btn-primary rounded-xl px-5 py-2.5 text-sm"
             >
               Add problem
             </button>
@@ -206,7 +206,7 @@ export function DSAPage() {
               .slice()
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((p) => (
-                <tr key={p.id} className="border-b border-edge/70 hover:bg-surface-3">
+                <tr key={p.id} className="border-b border-edge/70 hover:bg-surface-2/30">
                   <td className="px-1 py-1 align-middle">
                     <input
                       type="date"
@@ -289,7 +289,7 @@ export function DSAPage() {
                   <td className="px-1 py-1 align-middle text-right">
                     <button
                       type="button"
-                      className="rounded border border-red-900/60 px-2 py-1 text-xs text-red-300"
+                      className="rounded-xl border border-red-900/60 px-2 py-1 text-xs text-red-300"
                       onClick={() => {
                         if (!window.confirm('Delete this problem?')) return
                         void deleteDsaById(p.id)
@@ -304,7 +304,7 @@ export function DSAPage() {
           </tbody>
         </table>
         {problems.length === 0 ? (
-          <div className="p-6 text-center text-zinc-400">No problems yet</div>
+          <div className="p-6 text-center text-sm text-zinc-400">No problems yet</div>
         ) : null}
       </div>
     </div>

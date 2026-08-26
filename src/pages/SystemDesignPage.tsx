@@ -139,13 +139,13 @@ export function SystemDesignPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <KindFilterTabs value={filter} onChange={setFilter} />
       </div>
 
-      <section className="card p-4">
-        <div className="section-label mb-3 flex items-center justify-between">
+      <section className="card p-5">
+        <div className="text-base font-semibold text-zinc-100 mb-3 flex items-center justify-between">
           <span>
             13×7 heat ·{' '}
             {filter === 'all'
@@ -200,7 +200,7 @@ export function SystemDesignPage() {
         ].map((x) => (
           <div
             key={x.k}
-            className="card p-3"
+            className="card p-5"
           >
             <div className="section-label">{x.k}</div>
             <div
@@ -229,8 +229,8 @@ export function SystemDesignPage() {
         coverage={lldCoverage}
       />
 
-      <section className="card p-4">
-        <h2 className="section-label mb-3">
+      <section className="card p-5">
+        <h2 className="text-base font-semibold text-zinc-100 mb-3">
           Log system-design problem
         </h2>
         <form
@@ -316,7 +316,7 @@ export function SystemDesignPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="btn-primary rounded-lg px-4 py-2 text-sm"
+              className="btn-primary rounded-xl px-5 py-2.5 text-sm"
             >
               Add {formKind === 'lld' ? 'LLD' : 'HLD'} problem
             </button>
@@ -349,7 +349,7 @@ export function SystemDesignPage() {
                 return (
                   <tr
                     key={p.id}
-                    className="border-b border-edge/70 hover:bg-surface-3"
+                    className="border-b border-edge/70 hover:bg-surface-2/30"
                   >
                     <td className="px-1 py-1 align-middle">
                       <input
@@ -474,7 +474,7 @@ export function SystemDesignPage() {
                     <td className="px-1 py-1 align-middle text-right">
                       <button
                         type="button"
-                        className="rounded border border-red-900/60 px-2 py-1 text-xs text-red-300"
+                        className="rounded-xl border border-red-900/60 px-2 py-1 text-xs text-red-300"
                         onClick={() => {
                           if (!window.confirm('Delete this problem?')) return
                           void deleteSystemDesignById(p.id)
@@ -490,7 +490,7 @@ export function SystemDesignPage() {
           </tbody>
         </table>
         {visible.length === 0 ? (
-          <div className="p-6 text-center text-zinc-400">
+          <div className="p-6 text-center text-sm text-zinc-400">
             {filter === 'all'
               ? 'No problems yet · log your first one above'
               : `No ${filter.toUpperCase()} problems yet · pick ${filter.toUpperCase()} above and log one`}
@@ -514,7 +514,7 @@ function KindFilterTabs(props: {
     <div
       role="tablist"
       aria-label="Filter by kind"
-      className="inline-flex overflow-hidden rounded-md border border-edge bg-base p-0.5"
+      className="inline-flex overflow-hidden rounded-2xl border border-edge bg-surface p-1"
     >
       {opts.map((o) => {
         const active = props.value === o.id
@@ -526,9 +526,9 @@ function KindFilterTabs(props: {
             aria-selected={active}
             onClick={() => props.onChange(o.id)}
             className={cn(
-              'rounded px-3 py-1.5 text-xs font-medium font-mono uppercase tracking-wider transition-colors',
+              'rounded-xl px-3 py-1.5 text-xs font-medium font-mono uppercase tracking-wider transition-colors',
               active
-                ? 'bg-edge text-zinc-50'
+                ? 'bg-zinc-50/[0.08] text-zinc-50 shadow-sm'
                 : 'text-zinc-400 hover:text-zinc-200',
             )}
           >
@@ -547,9 +547,9 @@ function CoverageSection(props: {
   coverage: { topic: string; count: number }[]
 }) {
   return (
-    <section className="card p-4">
+    <section className="card p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="section-label">
+        <h2 className="text-base font-semibold text-zinc-100">
           {props.title}
         </h2>
         <span
@@ -561,14 +561,14 @@ function CoverageSection(props: {
           {props.subtitle}
         </span>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
         {props.coverage.map((t) => (
           <div
             key={t.topic}
             className={
               t.count === 0
-                ? 'rounded-lg border border-amber-700/40 bg-amber-950/20 px-3 py-2'
-                : 'rounded-lg border border-edge bg-base px-3 py-2'
+                ? 'rounded-xl border border-amber-700/40 bg-amber-950/20 px-3 py-2'
+                : 'rounded-xl border border-edge bg-base px-3 py-2'
             }
           >
             <div className="font-mono text-xs uppercase tracking-wider text-zinc-400">

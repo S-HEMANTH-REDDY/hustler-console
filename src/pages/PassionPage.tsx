@@ -6,7 +6,7 @@ import { stopwatchElapsedMs, useTimerStore } from '../store/timerStore'
 
 export function PassionPage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6 animate-fade-in">
       <PassionWorkspace />
 
       <StopwatchCard />
@@ -56,7 +56,7 @@ function StopwatchCard() {
     <section className="card p-5">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-100">Stopwatch</h3>
+          <h3 className="text-base font-semibold text-zinc-100">Stopwatch</h3>
           <p className="mt-0.5 text-xs text-zinc-500">
             Time individual problems · Space to start/pause
           </p>
@@ -80,12 +80,12 @@ function StopwatchCard() {
         <span className="text-xl text-zinc-500">.{formatCentis(elapsed)}</span>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2.5">
         {sw.running ? (
           <button
             type="button"
             onClick={swPause}
-            className="rounded-lg border border-amber-400/50 bg-amber-500/15 px-4 py-2 text-sm font-semibold text-amber-200 hover:bg-amber-500/20"
+            className="rounded-xl border border-amber-400/50 bg-amber-500/15 px-5 py-2.5 text-sm font-semibold text-amber-200 hover:bg-amber-500/20"
           >
             Pause
           </button>
@@ -93,7 +93,7 @@ function StopwatchCard() {
           <button
             type="button"
             onClick={swStart}
-            className="btn-primary rounded-lg px-4 py-2 text-sm"
+            className="btn-primary rounded-xl px-5 py-2.5 text-sm"
           >
             {sw.baseMs > 0 ? 'Resume' : 'Start'}
           </button>
@@ -117,7 +117,7 @@ function StopwatchCard() {
       </div>
 
       {sw.laps.length > 0 ? (
-        <ol className="mt-4 max-h-56 overflow-y-auto rounded-lg border border-edge">
+        <ol className="mt-4 max-h-56 overflow-y-auto rounded-xl border border-edge">
           {sw.laps.map((lap, idx) => {
             const delta = lapDeltas[idx]
             const isFastest =

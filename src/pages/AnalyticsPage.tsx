@@ -65,102 +65,120 @@ export function AnalyticsPage() {
   ]
 
   return (
-    <div className="mx-auto max-w-5xl space-y-3">
-      <section className="card p-4">
+    <div className="mx-auto max-w-5xl space-y-5 animate-fade-in">
+      {/* Focus section */}
+      <section className="card p-5">
         <h3 className="section-label">Focus</h3>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <Metric label="Total time" value={formatMinutes(total)} />
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Metric label="Total time" value={formatMinutes(total)} accent="lime" />
           <Metric label="Sessions" value={String(focusLog.length)} />
-          <Metric label="Streak" value={`${streak} day${streak === 1 ? '' : 's'}`} />
+          <Metric label="Streak" value={`${streak} day${streak === 1 ? '' : 's'}`} accent={streak > 0 ? 'lime' : undefined} />
           <Metric label="Active (14d)" value={`${activeDays14} / 14`} />
         </div>
-        <div className="mt-4">
-          <p className="text-[0.6875rem] text-zinc-500">Last 14 days</p>
-          <div className="mt-1.5 flex h-24 items-end gap-1">
+        <div className="mt-5">
+          <p className="text-xs text-zinc-500">Last 14 days</p>
+          <div className="mt-2 flex h-28 items-end gap-1">
             {days14.map((d) => (
               <div key={d.date} className="group relative flex-1" title={`${d.date}: ${formatMinutes(d.minutes)}`}>
                 <div
-                  className={cn('w-full rounded-t', d.minutes > 0 ? 'bg-lime-500/70' : 'bg-surface-3', d.date === today && 'ring-1 ring-lime-400')}
-                  style={{ height: `${Math.max(4, (d.minutes / max14) * 90)}px` }}
+                  className="w-full rounded-t transition-all"
+                  style={{
+                    height: `${Math.max(4, (d.minutes / max14) * 100)}px`,
+                    background: d.minutes > 0
+                      ? 'linear-gradient(180deg, rgba(132,204,22,0.8) 0%, rgba(132,204,22,0.4) 100%)'
+                      : 'var(--color-surface-3)',
+                    boxShadow: d.date === today && d.minutes > 0 ? '0 0 8px rgba(132,204,22,0.3)' : undefined,
+                  }}
                 />
               </div>
             ))}
           </div>
         </div>
         {(weekday || timeOfDay) && (
-          <p className="mt-3 border-t border-edge-soft pt-2.5 text-xs text-zinc-500">
+          <p className="mt-4 border-t border-edge-soft pt-3 text-sm text-zinc-500">
             {weekday ? (<>Most productive: <span className="text-zinc-200">{weekday.label}</span>{timeOfDay ? ' · ' : null}</>) : null}
             {timeOfDay ? (<>Best time: <span className="text-zinc-200">{timeOfDay}</span></>) : null}
           </p>
         )}
         {focusLog.length === 0 ? (
-          <p className="mt-2.5 text-xs text-zinc-500">Complete your first focus session to see stats.</p>
+          <p className="mt-3 text-sm text-zinc-500">Complete your first focus session to see stats.</p>
         ) : null}
       </section>
 
-      <section className="card p-4">
+      {/* Tasks section */}
+      <section className="card p-5">
         <h3 className="section-label">Tasks</h3>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <Metric label="Done this week" value={String(tasksWeekTotal)} />
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Metric label="Done this week" value={String(tasksWeekTotal)} accent="cyan" />
           <Metric label="Done today" value={String(doneByDay.get(today) ?? 0)} />
         </div>
-        <div className="mt-4 flex h-16 items-end gap-1.5">
+        <div className="mt-5 flex h-20 items-end gap-2">
           {tasksWeek.map((d) => (
-            <div key={d.date} className="flex flex-1 flex-col items-center gap-0.5">
+            <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
               <div
-                className={cn('w-full rounded-t', d.count > 0 ? 'bg-cyan-500/60' : 'bg-surface-3')}
-                style={{ height: `${Math.max(4, (d.count / tasksWeekMax) * 56)}px` }}
+                className="w-full rounded-t transition-all"
+                style={{
+                  height: `${Math.max(4, (d.count / tasksWeekMax) * 64)}px`,
+                  background: d.count > 0
+                    ? 'linear-gradient(180deg, rgba(6,182,212,0.7) 0%, rgba(6,182,212,0.3) 100%)'
+                    : 'var(--color-surface-3)',
+                }}
                 title={`${d.date}: ${d.count} done`}
               />
-              <span className="text-[9px] text-zinc-600">{format(new Date(d.date + 'T12:00:00'), 'EEEEE')}</span>
+              <span className="text-[9px] font-medium text-zinc-600">{format(new Date(d.date + 'T12:00:00'), 'EEEEE')}</span>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="card p-4">
+      {/* Applications section */}
+      <section className="card p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="section-label">Applications</h3>
           <HeatLegend dailyMin={dailyMin} dailyMax={dailyMax} />
         </div>
-        <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Metric label="Today" value={String(trends.today)} />
           <Metric label="vs yesterday" value={fmtDelta(trends.deltaVsYesterday)} tone={trends.deltaVsYesterday} />
           <Metric label="7-day avg" value={String(trends.avg7)} />
           <Metric label="30-day avg" value={String(trends.avg30)} />
         </div>
-        <div className="mt-4">
-          <p className="text-[0.6875rem] text-zinc-500">Last 30 days · goal {dailyMin}–{dailyMax}</p>
-          <div className="mt-1.5">
+        <div className="mt-5">
+          <p className="text-xs text-zinc-500">Last 30 days · goal {dailyMin}–{dailyMax}</p>
+          <div className="mt-2">
             <HeatStrip cells={cells30} dailyMin={dailyMin} dailyMax={dailyMax} />
           </div>
         </div>
         {applications.length > 0 ? (
-          <div className="mt-4 border-t border-edge-soft pt-3">
-            <p className="mb-1.5 text-[0.6875rem] text-zinc-500">Interview pipeline</p>
+          <div className="mt-5 border-t border-edge-soft pt-4">
+            <p className="mb-2 text-xs text-zinc-500">Interview pipeline</p>
             <FunnelMini stages={funnelStages} />
           </div>
         ) : (
-          <p className="mt-2.5 text-xs text-zinc-500">No applications logged yet.</p>
+          <p className="mt-3 text-sm text-zinc-500">No applications logged yet.</p>
         )}
       </section>
     </div>
   )
 }
 
-function Metric(props: { label: string; value: string; tone?: number }) {
+function Metric(props: { label: string; value: string; tone?: number; accent?: 'lime' | 'cyan' }) {
   const toneClass =
-    props.tone === undefined
-      ? 'text-zinc-50'
-      : props.tone > 0
+    props.tone !== undefined
+      ? props.tone > 0
         ? 'text-lime-400'
         : props.tone < 0
           ? 'text-amber-300'
           : 'text-zinc-50'
+      : props.accent === 'lime'
+        ? 'text-lime-400'
+        : props.accent === 'cyan'
+          ? 'text-cyan-400'
+          : 'text-zinc-50'
   return (
-    <div className="rounded-lg bg-well px-3 py-2">
-      <p className="text-[0.6875rem] text-zinc-500">{props.label}</p>
-      <p className={cn('mt-0.5 font-mono text-lg font-semibold tabular-nums', toneClass)}>{props.value}</p>
+    <div className="rounded-xl bg-well/50 border border-edge px-4 py-3 transition-colors hover:border-edge-strong">
+      <p className="text-xs text-zinc-500">{props.label}</p>
+      <p className={cn('mt-1 font-mono text-xl font-bold tabular-nums', toneClass)}>{props.value}</p>
     </div>
   )
 }

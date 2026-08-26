@@ -57,8 +57,7 @@ export function FocusPage() {
   const activePreset = matchPreset(p)
 
   const isFocus = p.phase === 'focus'
-  const accentText = isFocus ? 'text-lime-400' : 'text-cyan-300'
-  const accentBar = isFocus ? 'bg-lime-400' : 'bg-cyan-400'
+  const accentColor = isFocus ? 'lime' : 'cyan'
 
   function requestNotifyPermissionIfNeeded() {
     if (typeof Notification === 'undefined') return
@@ -70,64 +69,94 @@ export function FocusPage() {
   return (
     <div
       className={cn(
-        'mx-auto flex w-full max-w-2xl flex-col items-center',
+        'mx-auto flex w-full max-w-2xl flex-col items-center animate-fade-in',
         zenMode && 'min-h-full justify-center px-4 py-10',
       )}
     >
-      <div className="mt-2 flex items-center gap-2">
-        <span
-          className={cn(
-            'rounded-md border px-3 py-1 text-xs font-semibold uppercase tracking-wider',
-            isFocus
-              ? 'border-lime-400/30 bg-lime-500/10 text-lime-400'
-              : 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300',
-          )}
-        >
-          {phaseLabel(p.phase)}
-        </span>
-        {p.justCompleted ? (
-          <span className="rounded-md border border-edge bg-surface px-2.5 py-1 text-[0.6875rem] text-zinc-400">
-            {p.justCompleted === 'focus'
-              ? 'Focus complete — take your break'
-              : 'Break over — ready when you are'}
-          </span>
-        ) : null}
-      </div>
-
-      <p
-        className={cn(
-          'mt-4 font-mono font-semibold tabular-nums leading-none text-zinc-50',
-          zenMode ? 'text-[7rem] sm:text-[9rem]' : 'text-[5.5rem] sm:text-[7rem]',
-        )}
-        style={{ fontFamily: 'var(--font-mono)' }}
-      >
-        {formatClock(remaining)}
-      </p>
-
-      <div
-        className="mt-4 h-1 w-full max-w-md overflow-hidden rounded-full bg-surface-3"
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(progress * 100)}
-        aria-label={`${phaseLabel(p.phase)} progress`}
-      >
+      {/* Ambient glow behind timer */}
+      <div className="relative flex flex-col items-center">
         <div
-          className={cn('h-full rounded-full transition-[width] duration-500', accentBar)}
-          style={{ width: `${Math.min(100, Math.max(0, progress * 100))}%` }}
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow-pulse"
+          style={{
+            width: zenMode ? '400px' : '300px',
+            height: zenMode ? '400px' : '300px',
+            borderRadius: '50%',
+            background: isFocus
+              ? 'radial-gradient(circle, rgba(132,204,22,0.08) 0%, rgba(132,204,22,0.02) 50%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, rgba(56,189,248,0.02) 50%, transparent 70%)',
+          }}
         />
+
+        {/* Phase badge */}
+        <div className="relative mt-2 flex items-center gap-2.5">
+          <span
+            className={cn(
+              'rounded-xl border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider',
+              isFocus
+                ? 'border-lime-400/30 bg-lime-500/10 text-lime-400'
+                : 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300',
+            )}
+          >
+            {phaseLabel(p.phase)}
+          </span>
+          {p.justCompleted ? (
+            <span className="rounded-xl border border-edge bg-surface px-3 py-1.5 text-xs text-zinc-400">
+              {p.justCompleted === 'focus'
+                ? 'Focus complete — take your break'
+                : 'Break over — ready when you are'}
+            </span>
+          ) : null}
+        </div>
+
+        {/* Timer display */}
+        <p
+          className={cn(
+            'relative mt-6 font-bold tabular-nums leading-none text-zinc-50',
+            zenMode ? 'text-[8rem] sm:text-[10rem]' : 'text-[6rem] sm:text-[8rem]',
+            isFocus ? 'glow-lime' : 'glow-cyan',
+          )}
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          {formatClock(remaining)}
+        </p>
+
+        {/* Progress bar */}
+        <div
+          className="relative mt-6 h-1.5 w-full max-w-md overflow-hidden rounded-full"
+          style={{ background: 'var(--color-surface-3)' }}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress * 100)}
+          aria-label={`${phaseLabel(p.phase)} progress`}
+        >
+          <div
+            className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-500"
+            style={{
+              width: `${Math.min(100, Math.max(0, progress * 100))}%`,
+              background: isFocus
+                ? 'linear-gradient(90deg, #84cc16, #a3e635)'
+                : 'linear-gradient(90deg, #06b6d4, #22d3ee)',
+              boxShadow: isFocus
+                ? '0 0 12px rgba(132,204,22,0.4)'
+                : '0 0 12px rgba(6,182,212,0.4)',
+            }}
+          />
+        </div>
+
+        {/* Cycle dots */}
+        <div className="mt-4">
+          <CycleDots completed={p.completed % p.longEvery} total={p.longEvery} />
+        </div>
       </div>
 
-      <div className="mt-3">
-        <CycleDots completed={p.completed % p.longEvery} total={p.longEvery} />
-      </div>
-
+      {/* Task selector */}
       {!zenMode ? (
-        <div className="mt-5 w-full max-w-md">
+        <div className="mt-6 w-full max-w-md">
           <label className="block">
-            <span className="text-[0.6875rem] text-zinc-500">Working on</span>
+            <span className="text-xs text-zinc-500">Working on</span>
             <select
-              className="field mt-1"
+              className="field mt-1.5"
               value={p.taskId ?? ''}
               onChange={(e) => pomoSetTask(e.target.value || null)}
             >
@@ -139,20 +168,21 @@ export function FocusPage() {
           </label>
         </div>
       ) : currentTask ? (
-        <p className="mt-5 max-w-md truncate text-xs text-zinc-500">
+        <p className="mt-6 max-w-md truncate text-sm text-zinc-500">
           Working on <span className="text-zinc-300">{currentTask.title}</span>
         </p>
       ) : null}
 
-      <div className="mt-6 flex items-center gap-2.5">
-        <button type="button" onClick={pomoSkip} className="btn-quiet h-10 px-4 text-sm" title="Skip to next session">
+      {/* Action buttons */}
+      <div className="mt-8 flex items-center gap-3">
+        <button type="button" onClick={pomoSkip} className="btn-quiet h-11 rounded-xl px-5 text-sm" title="Skip to next session">
           Skip
         </button>
         {p.running ? (
           <button
             type="button"
             onClick={pomoPause}
-            className="h-12 min-w-36 rounded-lg border border-amber-400/40 bg-amber-500/15 px-6 text-sm font-semibold text-amber-200 transition-colors hover:bg-amber-500/20"
+            className="h-13 min-w-40 rounded-xl border border-amber-400/40 bg-amber-500/15 px-7 text-sm font-semibold text-amber-200 transition-all hover:bg-amber-500/20 hover:shadow-[0_0_20px_-4px_rgba(245,158,11,0.3)]"
           >
             Pause
           </button>
@@ -163,43 +193,45 @@ export function FocusPage() {
               requestNotifyPermissionIfNeeded()
               pomoStart()
             }}
-            className="btn-primary h-12 min-w-36 rounded-lg px-6 text-sm"
+            className="btn-primary h-13 min-w-40 rounded-xl px-7 text-sm"
           >
             {p.everStarted && remaining < totalMs ? 'Resume' : 'Start'}
           </button>
         )}
-        <button type="button" onClick={pomoReset} className="btn-quiet h-10 px-4 text-sm" title="Reset this session">
+        <button type="button" onClick={pomoReset} className="btn-quiet h-11 rounded-xl px-5 text-sm" title="Reset this session">
           Reset
         </button>
       </div>
 
+      {/* Zen toggle */}
       <button
         type="button"
         onClick={() => setZenMode(!zenMode)}
-        className="mt-4 text-[0.6875rem] text-zinc-600 underline-offset-4 hover:text-zinc-400 hover:underline"
+        className="mt-5 text-xs text-zinc-600 underline-offset-4 transition-colors hover:text-zinc-400 hover:underline"
       >
         {zenMode ? 'Exit fullscreen (Esc)' : 'Distraction-free mode'}
       </button>
 
+      {/* Presets + Settings */}
       {!zenMode ? (
         <>
-          <div className="mt-7 w-full max-w-md">
-            <p className="text-[0.6875rem] text-zinc-500">Preset</p>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+          <div className="mt-8 w-full max-w-md">
+            <p className="text-xs text-zinc-500">Preset</p>
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {TIMER_PRESETS.map((preset) => (
                 <button
                   key={preset.id}
                   type="button"
                   onClick={() => pomoApplyPreset(preset.id)}
                   className={cn(
-                    'rounded-lg border px-2 py-1.5 text-center transition-colors',
+                    'rounded-xl border px-3 py-2.5 text-center transition-all',
                     activePreset === preset.id
-                      ? 'border-lime-400/40 bg-lime-500/10'
-                      : 'border-edge bg-surface hover:border-edge-strong',
+                      ? 'border-lime-400/40 bg-lime-500/10 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
+                      : 'border-edge bg-surface hover:border-edge-strong hover:bg-surface-2',
                   )}
                   aria-pressed={activePreset === preset.id}
                 >
-                  <span className={cn('block text-xs font-medium', activePreset === preset.id ? 'text-lime-400' : 'text-zinc-200')}>
+                  <span className={cn('block text-sm font-medium', activePreset === preset.id ? 'text-lime-400' : 'text-zinc-200')}>
                     {preset.label}
                   </span>
                   <span className="block font-mono text-[0.625rem] text-zinc-500">{preset.hint}</span>
@@ -209,14 +241,14 @@ export function FocusPage() {
                 type="button"
                 onClick={() => setSettingsOpen((v) => !v)}
                 className={cn(
-                  'rounded-lg border px-2 py-1.5 text-center transition-colors',
+                  'rounded-xl border px-3 py-2.5 text-center transition-all',
                   activePreset === 'custom'
-                    ? 'border-lime-400/40 bg-lime-500/10'
-                    : 'border-edge bg-surface hover:border-edge-strong',
+                    ? 'border-lime-400/40 bg-lime-500/10 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
+                    : 'border-edge bg-surface hover:border-edge-strong hover:bg-surface-2',
                 )}
                 aria-expanded={settingsOpen}
               >
-                <span className={cn('block text-xs font-medium', activePreset === 'custom' ? 'text-lime-400' : 'text-zinc-200')}>
+                <span className={cn('block text-sm font-medium', activePreset === 'custom' ? 'text-lime-400' : 'text-zinc-200')}>
                   Custom
                 </span>
                 <span className="block font-mono text-[0.625rem] text-zinc-500">{p.focusMin} / {p.shortBreakMin}</span>
@@ -224,40 +256,40 @@ export function FocusPage() {
             </div>
           </div>
 
-          <div className="mt-3 w-full max-w-md">
+          <div className="mt-4 w-full max-w-md">
             <button
               type="button"
               onClick={() => setSettingsOpen((v) => !v)}
-              className="flex w-full items-center justify-between rounded-lg border border-edge bg-surface px-3 py-2 text-xs text-zinc-400 transition-colors hover:border-edge-strong"
+              className="flex w-full items-center justify-between rounded-xl border border-edge bg-surface px-4 py-2.5 text-sm text-zinc-400 transition-all hover:border-edge-strong hover:bg-surface-2"
               aria-expanded={settingsOpen}
             >
               <span>Timer settings</span>
-              <span className={cn('text-zinc-600 transition-transform', settingsOpen && 'rotate-180')} aria-hidden>▾</span>
+              <span className={cn('text-zinc-600 transition-transform duration-200', settingsOpen && 'rotate-180')} aria-hidden>▾</span>
             </button>
             {settingsOpen ? (
-              <div className="card mt-1.5 space-y-3 p-3.5">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="card mt-2 animate-slide-up space-y-3 p-4">
+                <div className="grid grid-cols-2 gap-3">
                   <NumberField label="Focus (min)" value={p.focusMin} min={1} max={120} onChange={(v) => pomoSetSettings({ ...settingsOf(p), focusMin: v })} />
                   <NumberField label="Short break (min)" value={p.shortBreakMin} min={1} max={60} onChange={(v) => pomoSetSettings({ ...settingsOf(p), shortBreakMin: v })} />
                   <NumberField label="Long break (min)" value={p.longBreakMin} min={1} max={90} onChange={(v) => pomoSetSettings({ ...settingsOf(p), longBreakMin: v })} />
                   <NumberField label="Long break after" value={p.longEvery} min={2} max={12} onChange={(v) => pomoSetSettings({ ...settingsOf(p), longEvery: v })} suffix="sessions" />
                 </div>
-                <label className="flex items-center gap-2 text-xs text-zinc-400">
-                  <input type="checkbox" checked={p.autoStartBreak} onChange={(e) => pomoSetSettings({ ...settingsOf(p), autoStartBreak: e.target.checked })} className="h-3.5 w-3.5 accent-lime-500" />
+                <label className="flex items-center gap-2.5 text-sm text-zinc-400">
+                  <input type="checkbox" checked={p.autoStartBreak} onChange={(e) => pomoSetSettings({ ...settingsOf(p), autoStartBreak: e.target.checked })} className="h-4 w-4 accent-lime-500" />
                   Start breaks automatically
                 </label>
-                <label className="flex items-center gap-2 text-xs text-zinc-400">
-                  <input type="checkbox" checked={p.autoStartFocus} onChange={(e) => pomoSetSettings({ ...settingsOf(p), autoStartFocus: e.target.checked })} className="h-3.5 w-3.5 accent-lime-500" />
+                <label className="flex items-center gap-2.5 text-sm text-zinc-400">
+                  <input type="checkbox" checked={p.autoStartFocus} onChange={(e) => pomoSetSettings({ ...settingsOf(p), autoStartFocus: e.target.checked })} className="h-4 w-4 accent-lime-500" />
                   Start focus automatically after breaks
                 </label>
-                <p className="border-t border-edge-soft pt-2.5 text-[0.6875rem] leading-relaxed text-zinc-500">
+                <p className="border-t border-edge-soft pt-3 text-xs leading-relaxed text-zinc-500">
                   {p.focusMin}m focus → {p.shortBreakMin}m break. After {p.longEvery} sessions, {p.longBreakMin}m long break.
                 </p>
               </div>
             ) : null}
           </div>
 
-          <p className={cn('mt-5 text-[0.6875rem]', accentText, 'opacity-60')}>
+          <p className={cn('mt-6 text-xs', isFocus ? 'text-lime-400/40' : 'text-cyan-400/40')}>
             Timer runs on every page — watch it in the tab title or header.
           </p>
         </>
@@ -293,8 +325,8 @@ function NumberField(props: {
   suffix?: string
 }) {
   return (
-    <label className="space-y-1">
-      <span className="text-[0.6875rem] text-zinc-500">{props.label}</span>
+    <label className="space-y-1.5">
+      <span className="text-xs text-zinc-500">{props.label}</span>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -304,7 +336,7 @@ function NumberField(props: {
           max={props.max}
           onChange={(e) => props.onChange(Number(e.target.value) || props.min)}
         />
-        {props.suffix ? <span className="text-[0.6875rem] text-zinc-500">{props.suffix}</span> : null}
+        {props.suffix ? <span className="text-xs text-zinc-500">{props.suffix}</span> : null}
       </div>
     </label>
   )

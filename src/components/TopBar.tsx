@@ -33,8 +33,7 @@ export function TopBar() {
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-edge">
-      <div className="flex h-14 items-center gap-3 px-4 sm:px-5 lg:px-6">
-        {/* Mobile hamburger */}
+      <div className="flex h-12 items-center gap-3 px-4 sm:px-5 lg:px-6">
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
@@ -47,30 +46,25 @@ export function TopBar() {
         </button>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-baseline gap-3">
-            <h1 className="truncate text-[0.9375rem] font-semibold tracking-tight text-zinc-50">
-              {title}
-            </h1>
-            <span className="hidden text-xs text-zinc-500 sm:block">
-              {format(tick, 'EEEE, MMM d')}
-            </span>
-          </div>
+          <h1 className="truncate text-base font-semibold tracking-tight text-zinc-50">
+            {title}
+          </h1>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <MiniTimer />
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="btn-quiet hidden h-8 items-center gap-2 px-2.5 text-xs md:flex"
+            className="hidden h-8 items-center gap-2 rounded-full border border-edge bg-surface px-3 text-xs text-zinc-500 transition-all hover:border-edge-strong hover:bg-surface-2 hover:text-zinc-300 md:flex"
             aria-label="Open search and commands"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
             </svg>
-            <span className="text-zinc-400">Search</span>
-            <kbd className="rounded border border-edge bg-well px-1 py-0.5 font-mono text-[0.5625rem] text-zinc-600">
+            <span>Search</span>
+            <kbd className="rounded-md border border-edge bg-well px-1 py-0.5 font-mono text-[0.5625rem] text-zinc-600">
               ⌘K
             </kbd>
           </button>
@@ -84,7 +78,7 @@ export function TopBar() {
           <span>Last backup is {bAge} days old.</span>
           <Link
             to="/settings"
-            className="rounded-md border border-amber-400/30 px-2 py-1 font-medium text-amber-100 transition-colors hover:bg-amber-500/10"
+            className="rounded-lg border border-amber-400/30 px-2 py-1 font-medium text-amber-100 transition-colors hover:bg-amber-500/10"
           >
             Back up now
           </Link>
@@ -104,7 +98,7 @@ function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isLight ? 'dark' : 'light')}
-      className="btn-quiet flex h-8 w-8 items-center justify-center"
+      className="flex h-8 w-8 items-center justify-center rounded-full border border-edge bg-surface text-zinc-400 transition-all hover:border-edge-strong hover:bg-surface-2 hover:text-zinc-200"
       aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
       title={`Theme: ${theme}`}
     >
@@ -119,7 +113,7 @@ function AuthSetupLink() {
   return (
     <Link
       to="/auth"
-      className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[0.6875rem] font-medium text-amber-200 transition-colors hover:bg-amber-500/15"
+      className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-500/15"
     >
       Sign in
     </Link>
@@ -155,7 +149,11 @@ function UserChip() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 w-8 items-center justify-center rounded-full bg-lime-500/15 text-xs font-semibold text-lime-400 ring-1 ring-lime-500/25 transition-shadow hover:ring-lime-500/50"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold text-lime-400 transition-all hover:scale-105"
+        style={{
+          background: 'linear-gradient(135deg, rgba(132,204,22,0.15), rgba(132,204,22,0.05))',
+          boxShadow: '0 0 0 1px rgba(132,204,22,0.25), 0 0 12px -4px rgba(132,204,22,0.2)',
+        }}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Account menu for ${email}`}
@@ -165,17 +163,17 @@ function UserChip() {
       {open ? (
         <div
           role="menu"
-          className="card absolute right-0 z-30 mt-1.5 w-56 animate-fade-in overflow-hidden"
+          className="card absolute right-0 z-30 mt-2 w-56 animate-scale-in overflow-hidden"
         >
-          <div className="border-b border-edge px-3 py-2">
+          <div className="border-b border-edge px-3 py-2.5">
             <p className="text-[0.625rem] text-zinc-500">Signed in as</p>
-            <p className="truncate text-xs text-zinc-200">{email}</p>
+            <p className="truncate text-sm text-zinc-200">{email}</p>
           </div>
           <Link
             to="/settings"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="block w-full px-3 py-2 text-left text-xs text-zinc-300 transition-colors hover:bg-surface-2"
+            className="block w-full px-3 py-2.5 text-left text-sm text-zinc-300 transition-colors hover:bg-surface-2"
           >
             Settings
           </Link>
@@ -187,7 +185,7 @@ function UserChip() {
               await signOut()
               pushToast('info', 'Signed out')
             }}
-            className="block w-full px-3 py-2 text-left text-xs text-zinc-300 transition-colors hover:bg-surface-2"
+            className="block w-full px-3 py-2.5 text-left text-sm text-zinc-300 transition-colors hover:bg-surface-2"
           >
             Sign out
           </button>

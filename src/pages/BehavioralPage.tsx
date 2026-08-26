@@ -60,19 +60,19 @@ export function BehavioralPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
       <BehavioralQuestionBank />
 
-      <section className="card p-4">
-        <h2 className="section-label mb-3">
+      <section className="card p-5">
+        <h2 className="text-base font-semibold text-zinc-100 mb-3">
           Coverage
         </h2>
-        <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-3 lg:grid-cols-3">
           {coverage.map((c) => (
             <div
               key={c.cat}
               className={cn(
-                'rounded-lg border p-3',
+                'rounded-xl border p-3',
                 c.count === 0
                   ? 'border-amber-600/60 bg-amber-950/20'
                   : 'border-edge bg-pit',
@@ -92,8 +92,8 @@ export function BehavioralPage() {
         </div>
       </section>
 
-      <section className="card p-4">
-        <h2 className="section-label mb-3">New story</h2>
+      <section className="card p-5">
+        <h2 className="text-base font-semibold text-zinc-100 mb-3">New story</h2>
         <form
           className="grid gap-3 md:grid-cols-4"
           onSubmit={addStory}
@@ -137,7 +137,7 @@ export function BehavioralPage() {
           <div className="col-span-full flex justify-end">
             <button
               type="submit"
-              className="btn-primary rounded-lg px-4 py-2 text-sm"
+              className="btn-primary rounded-xl px-5 py-2.5 text-sm"
             >
               Add story
             </button>
@@ -145,7 +145,7 @@ export function BehavioralPage() {
         </form>
       </section>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {stories
           .slice()
           .sort((a, b) => b.updatedAt - a.updatedAt)
@@ -154,9 +154,9 @@ export function BehavioralPage() {
             return (
               <div
                 key={s.id}
-                className="card p-3 text-sm"
+                className="card p-5 text-sm"
               >
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <button
                     type="button"
                     className="w-8 shrink-0 text-left text-zinc-400 hover:text-lime-300"
@@ -225,7 +225,7 @@ export function BehavioralPage() {
                   </select>
                   <button
                     type="button"
-                    className="rounded border border-red-900/50 px-2 py-1 text-xs text-red-300"
+                    className="rounded-xl border border-red-900/50 px-2 py-1 text-xs text-red-300"
                     onClick={() => {
                       if (!window.confirm('Delete story?')) return
                       void deleteBehavioralById(s.id)
@@ -290,7 +290,7 @@ export function BehavioralPage() {
             )
           })}
         {stories.length === 0 ? (
-          <div className="text-center text-zinc-400">No stories yet</div>
+          <div className="text-center text-sm text-zinc-400">No stories yet</div>
         ) : null}
       </div>
     </div>

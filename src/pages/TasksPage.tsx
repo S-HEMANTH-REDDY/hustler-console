@@ -82,46 +82,47 @@ export function TasksPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-3">
-      <form onSubmit={addTask} className="card p-3">
-        <div className="flex gap-2">
+    <div className="mx-auto max-w-3xl space-y-4 animate-fade-in">
+      {/* Quick-add form */}
+      <form onSubmit={addTask} className="card p-5">
+        <div className="flex gap-2.5">
           <input
             name="title"
             placeholder="Add a task…"
             className="field flex-1"
             aria-label="New task title"
           />
-          <button type="submit" className="btn-primary shrink-0 rounded-lg px-4 py-2 text-sm">
+          <button type="submit" className="btn-primary shrink-0 rounded-xl px-5 py-2.5 text-sm">
             Add
           </button>
         </div>
         <button
           type="button"
           onClick={() => setDetailsOpen((v) => !v)}
-          className="mt-1.5 text-[0.6875rem] text-zinc-600 hover:text-zinc-400"
+          className="mt-2 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
           aria-expanded={detailsOpen}
         >
           {detailsOpen ? 'Hide details' : 'Due date, priority, repeat…'}
         </button>
-        <div className={cn('grid gap-2 sm:grid-cols-4', detailsOpen ? 'mt-2' : 'hidden')}>
-          <label className="block space-y-1">
-            <span className="text-[0.6875rem] text-zinc-500">Due date</span>
+        <div className={cn('grid gap-2.5 sm:grid-cols-4', detailsOpen ? 'mt-3' : 'hidden')}>
+          <label className="block space-y-1.5">
+            <span className="text-xs text-zinc-500">Due date</span>
             <input type="date" name="dueDate" defaultValue={todayStr} className="field font-mono text-xs" />
           </label>
-          <label className="block space-y-1">
-            <span className="text-[0.6875rem] text-zinc-500">Time</span>
+          <label className="block space-y-1.5">
+            <span className="text-xs text-zinc-500">Time</span>
             <input type="time" name="dueTime" className="field font-mono text-xs" />
           </label>
-          <label className="block space-y-1">
-            <span className="text-[0.6875rem] text-zinc-500">Priority</span>
+          <label className="block space-y-1.5">
+            <span className="text-xs text-zinc-500">Priority</span>
             <select name="priority" defaultValue="mid" className="field text-xs">
               <option value="high">High</option>
               <option value="mid">Medium</option>
               <option value="low">Low</option>
             </select>
           </label>
-          <label className="block space-y-1">
-            <span className="text-[0.6875rem] text-zinc-500">Repeat</span>
+          <label className="block space-y-1.5">
+            <span className="text-xs text-zinc-500">Repeat</span>
             <select name="recurrence" defaultValue="oneoff" className="field text-xs">
               <option value="oneoff">Never</option>
               <option value="daily">Daily</option>
@@ -132,10 +133,11 @@ export function TasksPage() {
         </div>
       </form>
 
+      {/* Filter tabs */}
       <div
         role="tablist"
         aria-label="Task filters"
-        className="flex gap-0.5 rounded-lg border border-edge bg-surface p-0.5"
+        className="flex gap-1 rounded-2xl border border-edge bg-surface p-1"
       >
         {(
           [
@@ -151,9 +153,9 @@ export function TasksPage() {
             aria-selected={filter === key}
             onClick={() => setFilter(key)}
             className={cn(
-              'min-h-8 flex-1 rounded-md px-3 text-xs font-medium transition-colors',
+              'min-h-9 flex-1 rounded-xl px-3 text-sm font-medium transition-all',
               filter === key
-                ? 'bg-zinc-50/[0.07] text-zinc-50'
+                ? 'bg-zinc-50/[0.08] text-zinc-50 shadow-sm'
                 : 'text-zinc-500 hover:text-zinc-300',
             )}
           >
@@ -162,8 +164,9 @@ export function TasksPage() {
         ))}
       </div>
 
+      {/* Task list */}
       {visible.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-edge px-4 py-10 text-center text-xs text-zinc-500">
+        <div className="card border-dashed px-5 py-12 text-center text-sm text-zinc-500">
           {filter === 'today'
             ? 'Nothing due today. Add a task above or check Upcoming.'
             : filter === 'upcoming'
@@ -227,11 +230,11 @@ function TaskRow(props: {
         : format(dueAt, 'EEE, MMM d')
 
   return (
-    <li className="px-3 py-2">
-      <div className="flex items-center gap-2.5">
+    <li className="px-4 py-3 transition-colors hover:bg-surface-2/30">
+      <div className="flex items-center gap-3">
         <input
           type="checkbox"
-          className="h-4 w-4 shrink-0 accent-lime-500"
+          className="h-4 w-4 shrink-0 rounded accent-lime-500"
           checked={done}
           onChange={(e) => props.onToggle(e.target.checked)}
           aria-label={`Done: ${task.title}`}
@@ -278,14 +281,14 @@ function TaskRow(props: {
           </div>
         </div>
         {dueLabel ? (
-          <span className={cn('shrink-0 font-mono text-[0.6875rem] tabular-nums', dueLabel === 'Overdue' ? 'text-red-400' : 'text-zinc-500')}>
+          <span className={cn('shrink-0 font-mono text-xs tabular-nums', dueLabel === 'Overdue' ? 'text-red-400' : 'text-zinc-500')}>
             {dueLabel}
           </span>
         ) : null}
         <button
           type="button"
           onClick={() => setEditing((v) => !v)}
-          className="btn-quiet h-7 w-7 shrink-0 text-[0.6875rem]"
+          className="btn-quiet h-7 w-7 shrink-0 rounded-lg text-xs"
           aria-label={`Edit ${task.title}`}
           aria-expanded={editing}
         >
@@ -293,7 +296,7 @@ function TaskRow(props: {
         </button>
       </div>
       {editing ? (
-        <div className="mt-2 flex flex-wrap items-center gap-2 pl-6">
+        <div className="mt-3 flex flex-wrap items-center gap-2.5 pl-7 animate-fade-in">
           <input type="date" defaultValue={task.dueDate ?? ''} onChange={(e) => { const v = e.target.value; props.onPatch({ dueDate: v.length === 10 ? v : null }) }} className="field w-36 font-mono text-xs" aria-label="Due date" />
           <input type="time" defaultValue={task.dueTime ?? ''} onChange={(e) => { const v = e.target.value; props.onPatch({ dueTime: /^\d{2}:\d{2}$/.test(v) ? v : null }) }} className="field w-28 font-mono text-xs" aria-label="Due time" />
           <select defaultValue={task.priority} onChange={(e) => props.onPatch({ priority: e.target.value as TaskPriority })} className="field w-28 text-xs" aria-label="Priority">
@@ -301,7 +304,7 @@ function TaskRow(props: {
             <option value="mid">Medium</option>
             <option value="low">Low</option>
           </select>
-          <button type="button" onClick={props.onDelete} className="ml-auto rounded-lg border border-red-400/30 px-2 py-1 text-[0.6875rem] text-red-400 hover:bg-red-500/10">
+          <button type="button" onClick={props.onDelete} className="ml-auto rounded-xl border border-red-400/30 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10">
             Delete
           </button>
         </div>

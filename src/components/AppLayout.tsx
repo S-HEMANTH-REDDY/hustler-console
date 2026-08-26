@@ -27,7 +27,7 @@ export function AppLayout() {
         className={
           zenMode
             ? 'flex min-h-full min-w-0 flex-1 flex-col'
-            : 'flex min-h-full min-w-0 flex-1 flex-col lg:pl-56'
+            : 'flex min-h-full min-w-0 flex-1 flex-col lg:pl-60'
         }
       >
         {!zenMode && <TopBar />}
@@ -35,7 +35,7 @@ export function AppLayout() {
           className={
             zenMode
               ? 'min-h-0 min-w-0 flex-1'
-              : 'min-h-0 min-w-0 flex-1 p-4 pb-20 sm:p-5 lg:p-6 lg:pb-6'
+              : 'min-h-0 min-w-0 flex-1 p-4 pb-20 sm:p-6 lg:p-8 lg:pb-8'
           }
         >
           <Outlet />

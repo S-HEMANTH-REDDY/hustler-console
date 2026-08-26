@@ -132,10 +132,10 @@ export function ApplicationsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-8 animate-fade-in">
       <LocalDataImportBanner />
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2.5 sm:flex-row">
           <input
             className="field sm:w-64"
             placeholder="Search company / role / file"
@@ -174,8 +174,8 @@ export function ApplicationsPage() {
 
       <QuickApplicationForm />
 
-      <section className="card p-4">
-        <h2 className="section-label mb-3">
+      <section className="card p-5">
+        <h2 className="text-base font-semibold text-zinc-100 mb-3">
           Funnel · Applied → Offer
         </h2>
         <div className="flex flex-wrap gap-3">
@@ -186,7 +186,7 @@ export function ApplicationsPage() {
             >
               <span
                 className={cn(
-                  'rounded-lg border px-2 py-0.5 text-xs',
+                  'rounded-xl border px-2 py-0.5 text-xs',
                   statusPillClass(s.stage as ApplicationStatus),
                 )}
               >
@@ -199,9 +199,9 @@ export function ApplicationsPage() {
             </div>
           ))}
         </div>
-        <div className="mt-4 grid gap-2 font-mono text-xs text-zinc-400 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-2.5 font-mono text-xs text-zinc-400 sm:grid-cols-2 lg:grid-cols-4">
           {funnel.pairs.map((p) => (
-            <div key={p.from + p.to} className="rounded-lg border border-edge p-2">
+            <div key={p.from + p.to} className="rounded-xl border border-edge p-2">
               {p.from}→{p.to}: <span className="text-lime-300">{p.rate}</span>
             </div>
           ))}
@@ -239,7 +239,7 @@ export function ApplicationsPage() {
               const isPreview = previewRow === r.id
               return (
               <Fragment key={r.id}>
-              <tr className="border-b border-edge/80 hover:bg-surface-3">
+              <tr className="border-b border-edge/80 hover:bg-surface-2/30">
                 <td className="px-1 py-1 align-middle">
                   <input
                     type="date"
@@ -332,7 +332,7 @@ export function ApplicationsPage() {
                 <td className="px-1 py-1 align-middle text-right">
                   <button
                     type="button"
-                    className="rounded border border-red-900/60 px-2 py-1 text-xs text-red-300 hover:bg-red-950/40"
+                    className="rounded-xl border border-red-900/60 px-2 py-1 text-xs text-red-300 hover:bg-red-950/40"
                     onClick={() => remove(r.id)}
                   >
                     Delete
@@ -351,7 +351,7 @@ export function ApplicationsPage() {
           </tbody>
         </table>
         {filtered.length === 0 ? (
-          <div className="p-6 text-center text-sm text-zinc-400">No rows</div>
+          <div className="p-6 text-center text-sm text-zinc-400">No rows found</div>
         ) : null}
       </div>
     </div>
@@ -369,7 +369,7 @@ function ResumeFileCell(props: {
   const inputRef = useRef<HTMLInputElement>(null)
   if (!props.file) {
     return (
-      <label className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-edge bg-well px-2 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
+      <label className="inline-flex cursor-pointer items-center gap-1 rounded-xl border border-edge bg-well px-2 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300">
         <PaperclipIcon />
         <span>Attach…</span>
         <input
@@ -394,7 +394,7 @@ function ResumeFileCell(props: {
         onClick={props.onTogglePreview}
         aria-expanded={props.expanded}
         className={cn(
-          'inline-flex max-w-[180px] items-center gap-1 truncate rounded-lg border px-2 py-1 text-xs transition-colors',
+          'inline-flex max-w-[180px] items-center gap-1 truncate rounded-xl border px-2 py-1 text-xs transition-colors',
           props.expanded
             ? 'border-lime-500/60 bg-lime-500/15 text-lime-100'
             : 'border-lime-700/40 bg-lime-500/5 text-lime-200 hover:bg-lime-500/10',
@@ -407,7 +407,7 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void downloadResume(f.id)}
-        className="rounded-lg border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded-xl border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Download"
       >
         ↓
@@ -415,13 +415,13 @@ function ResumeFileCell(props: {
       <button
         type="button"
         onClick={() => void openResumeInNewTab(f.id)}
-        className="rounded-lg border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
+        className="rounded-xl border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-lime-500/40 hover:text-lime-300"
         title="Open in new tab"
       >
         ↗
       </button>
       <label
-        className="cursor-pointer rounded-lg border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:text-lime-300"
+        className="cursor-pointer rounded-xl border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:text-lime-300"
         title="Replace file"
       >
         ↺
@@ -439,7 +439,7 @@ function ResumeFileCell(props: {
       </label>
       <button
         type="button"
-        className="rounded-lg border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300"
+        className="rounded-xl border border-edge px-1.5 py-1 text-xs text-zinc-400 hover:border-red-900/60 hover:text-red-300"
         title="Detach file"
         onClick={() => props.onDetach()}
       >

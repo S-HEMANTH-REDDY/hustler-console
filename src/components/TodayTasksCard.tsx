@@ -72,16 +72,13 @@ export function TodayTasksCard() {
   }, [tasks, tab, now])
 
   return (
-    <section className="surface-glossy rounded-xl p-4 md:p-5">
+    <section className="card p-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p
-            className="font-mono text-xs uppercase tracking-wider text-zinc-400"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
+          <p className="section-label">
             Tasks · {TAB_LABEL[tab].toLowerCase()}
           </p>
-          <h2 className="mt-0.5 text-base font-semibold text-zinc-100">
+          <h2 className="mt-1 text-base font-semibold text-zinc-100">
             {format(
               tab === 'yesterday'
                 ? addDays(now, -1)
@@ -100,7 +97,7 @@ export function TodayTasksCard() {
         </Link>
       </div>
 
-      <div className="mt-3 flex gap-1 rounded-md border border-edge bg-base p-1 text-xs">
+      <div className="mt-3 flex gap-1 rounded-2xl border border-edge bg-well/50 p-1 text-sm">
         {(['yesterday', 'today', 'tomorrow'] as Tab[]).map((k) => {
           const active = k === tab
           const c = counts[k]
@@ -110,10 +107,10 @@ export function TodayTasksCard() {
               type="button"
               onClick={() => setTab(k)}
               className={cn(
-                'flex-1 rounded px-2 py-1.5 font-medium transition-colors',
+                'flex-1 rounded-xl px-2 py-2 font-medium transition-all',
                 active
-                  ? 'bg-lime-500/15 text-lime-100 shadow-[inset_0_0_0_1px_rgba(132,204,22,0.45)]'
-                  : 'text-zinc-300 hover:bg-surface hover:text-zinc-100',
+                  ? 'bg-lime-500/10 text-lime-100 shadow-[inset_0_0_0_1px_rgba(132,204,22,0.35)]'
+                  : 'text-zinc-400 hover:bg-surface hover:text-zinc-200',
               )}
               aria-pressed={active}
             >
@@ -131,9 +128,9 @@ export function TodayTasksCard() {
         })}
       </div>
 
-      <ul className="mt-3 divide-y divide-edge/60">
+      <ul className="mt-4 divide-y divide-edge/40">
         {visible.length === 0 ? (
-          <li className="py-6 text-center text-sm text-zinc-400">
+          <li className="py-8 text-center text-sm text-zinc-400">
             Nothing scheduled for {TAB_LABEL[tab].toLowerCase()}.{' '}
             <Link to="/tasks" className="text-lime-400/90 hover:underline">
               Add one →

@@ -32,11 +32,11 @@ export function HeatStrip(props: {
         return (
           <div
             key={c.date}
-            className="group relative h-4 w-4 shrink-0 rounded-sm"
+            className="group relative h-[18px] w-[18px] shrink-0 rounded"
             style={{ backgroundColor: bg, boxShadow: `inset 0 0 0 1px ${border}` }}
             title={`${c.date} · ${c.count}`}
           >
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded border border-edge bg-base px-2 py-1 font-mono text-xs text-zinc-200 shadow-lg group-hover:block">
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 hidden -translate-x-1/2 whitespace-nowrap rounded-lg border border-edge bg-base px-2.5 py-1.5 font-mono text-xs text-zinc-200 shadow-xl group-hover:block">
               {c.date} · {c.count}
             </div>
           </div>
@@ -48,7 +48,7 @@ export function HeatStrip(props: {
 
 export function HeatLegend(props: { dailyMin: number; dailyMax: number }) {
   return (
-    <div className="flex items-center gap-3 font-mono text-xs text-zinc-400">
+    <div className="flex items-center gap-3 font-mono text-xs text-zinc-500">
       <Swatch color="#20232c" border="#1f1f24" /> 0
       <Swatch color="rgba(220,38,38,0.55)" border="#7f1d1d80" /> &lt; {props.dailyMin}
       <Swatch color="rgba(132,204,22,0.7)" border="#65a30d80" />{' '}
@@ -62,7 +62,7 @@ export function HeatLegend(props: { dailyMin: number; dailyMax: number }) {
 function Swatch(props: { color: string; border: string }) {
   return (
     <span
-      className="inline-block h-2.5 w-2.5 rounded-sm"
+      className="inline-block h-3 w-3 rounded"
       style={{ backgroundColor: props.color, boxShadow: `inset 0 0 0 1px ${props.border}` }}
     />
   )
@@ -90,11 +90,11 @@ export function MiniBars(props: {
   return (
     <div className="space-y-1.5">
       {props.items.map((it) => (
-        <div key={it.key} className="flex items-center gap-2 font-mono text-xs">
+        <div key={it.key} className="flex items-center gap-2.5 font-mono text-xs">
           <span className="w-20 shrink-0 truncate text-zinc-400">{it.label}</span>
-          <div className="relative h-3 flex-1 overflow-hidden rounded-sm bg-surface-3">
+          <div className="relative h-3.5 flex-1 overflow-hidden rounded bg-surface-3">
             <div
-              className="absolute inset-y-0 left-0 rounded-sm"
+              className="absolute inset-y-0 left-0 rounded"
               style={{
                 width: `${(it.count / max) * 100}%`,
                 backgroundColor: it.color ?? '#84cc16',
@@ -167,9 +167,9 @@ export function FunnelMini(props: {
               <span className="uppercase tracking-wider">{s.label}</span>
               <span className="tabular-nums text-zinc-200">{s.count}</span>
             </div>
-            <div className="relative h-2 overflow-hidden rounded-sm bg-surface-3">
+            <div className="relative h-2.5 overflow-hidden rounded bg-surface-3">
               <div
-                className="absolute inset-y-0 left-0 rounded-sm opacity-90"
+                className="absolute inset-y-0 left-0 rounded opacity-90"
                 style={{ width: w, backgroundColor: s.color }}
               />
             </div>

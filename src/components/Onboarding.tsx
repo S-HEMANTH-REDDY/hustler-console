@@ -11,10 +11,6 @@ import {
 } from '../store/timerStore'
 import { useUiStore } from '../store/uiStore'
 
-/**
- * Three-step first-run flow: pick a preset, add a task, start focusing.
- * Skippable at any point; never shows again once completed or skipped.
- */
 export function Onboarding() {
   const onboarded = useUiStore((s) => s.onboarded)
   const setOnboarded = useUiStore((s) => s.setOnboarded)
@@ -67,17 +63,17 @@ export function Onboarding() {
       role="dialog"
       aria-modal="true"
       aria-label="Welcome to Hustler"
-      className="fixed inset-0 z-[130] flex items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-[130] flex items-end justify-center bg-black/60 p-4 backdrop-blur-md sm:items-center"
     >
-      <div className="card w-full max-w-md rounded-xl p-5 sm:p-6 animate-slide-up">
+      <div className="card-glow w-full max-w-md p-6 sm:p-7 animate-scale-in">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5" aria-hidden>
+          <div className="flex items-center gap-2" aria-hidden>
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
                 className={cn(
-                  'h-1.5 rounded-full transition-all',
-                  i === step ? 'w-6 bg-lime-400' : 'w-1.5 bg-surface-3',
+                  'h-1.5 rounded-full transition-all duration-300',
+                  i === step ? 'w-7 bg-lime-400' : 'w-1.5 bg-surface-3',
                 )}
               />
             ))}
@@ -85,7 +81,7 @@ export function Onboarding() {
           <button
             type="button"
             onClick={() => finish(false)}
-            className="text-xs text-zinc-500 hover:text-zinc-300"
+            className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
           >
             Skip
           </button>
@@ -93,13 +89,16 @@ export function Onboarding() {
 
         {step === 0 ? (
           <>
-            <h2 className="mt-4 text-lg font-semibold text-zinc-50">
+            <h2
+              className="mt-5 text-xl font-semibold text-zinc-50"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
               Welcome to Hustler
             </h2>
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1.5 text-sm text-zinc-400">
               Pick how you like to focus. You can change this anytime.
             </p>
-            <div className="mt-4 grid gap-2">
+            <div className="mt-5 grid gap-2.5">
               {TIMER_PRESETS.map((preset) => (
                 <button
                   key={preset.id}
@@ -107,15 +106,15 @@ export function Onboarding() {
                   onClick={() => pomoApplyPreset(preset.id)}
                   aria-pressed={activePreset === preset.id}
                   className={cn(
-                    'flex items-center justify-between rounded-xl border px-3 py-3 text-left transition-colors',
+                    'flex items-center justify-between rounded-2xl border px-4 py-3.5 text-left transition-all',
                     activePreset === preset.id
-                      ? 'border-lime-400/60 bg-lime-500/10'
-                      : 'border-edge bg-well hover:border-edge-strong',
+                      ? 'border-lime-400/50 bg-lime-500/10 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
+                      : 'border-edge bg-well hover:border-edge-strong hover:bg-surface',
                   )}
                 >
                   <span
                     className={cn(
-                      'text-xs font-medium',
+                      'text-sm font-medium',
                       activePreset === preset.id
                         ? 'text-lime-300'
                         : 'text-zinc-200',
@@ -123,9 +122,8 @@ export function Onboarding() {
                   >
                     {preset.label}
                   </span>
-                  <span className="font-mono text-[0.6875rem] text-zinc-500">
-                    {preset.focusMin} min focus · {preset.shortBreakMin} min
-                    break
+                  <span className="font-mono text-xs text-zinc-500">
+                    {preset.focusMin} min focus · {preset.shortBreakMin} min break
                   </span>
                 </button>
               ))}
@@ -133,7 +131,7 @@ export function Onboarding() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="btn-primary mt-4 w-full rounded-xl py-2.5 text-xs"
+              className="btn-primary mt-5 w-full rounded-xl py-3 text-sm"
             >
               Continue
             </button>
@@ -142,10 +140,13 @@ export function Onboarding() {
 
         {step === 1 ? (
           <>
-            <h2 className="mt-4 text-lg font-semibold text-zinc-50">
+            <h2
+              className="mt-5 text-xl font-semibold text-zinc-50"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
               What's first on your list?
             </h2>
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1.5 text-sm text-zinc-400">
               Add one task to get started — assignments, prep, anything.
             </p>
             <input
@@ -156,21 +157,21 @@ export function Onboarding() {
                 if (e.key === 'Enter') void saveTask()
               }}
               placeholder="e.g. Finish problem set 3"
-              className="field mt-4"
+              className="field mt-5"
               aria-label="First task"
             />
-            <div className="mt-4 flex gap-2">
+            <div className="mt-5 flex gap-2.5">
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="btn-quiet flex-1 py-2.5"
+                className="btn-quiet flex-1 rounded-xl py-3 text-sm"
               >
                 Not now
               </button>
               <button
                 type="button"
                 onClick={() => void saveTask()}
-                className="btn-primary flex-1 rounded-xl py-2.5 text-xs"
+                className="btn-primary flex-1 rounded-xl py-3 text-sm"
               >
                 Add task
               </button>
@@ -180,25 +181,28 @@ export function Onboarding() {
 
         {step === 2 ? (
           <>
-            <h2 className="mt-4 text-lg font-semibold text-zinc-50">
+            <h2
+              className="mt-5 text-xl font-semibold text-zinc-50"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
               Ready to focus?
             </h2>
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1.5 text-sm text-zinc-400">
               {p.focusMin} minutes of focus, then a {p.shortBreakMin}-minute
               break. The timer runs on every page and in the tab title.
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-5 flex gap-2.5">
               <button
                 type="button"
                 onClick={() => finish(false)}
-                className="btn-quiet flex-1 py-2.5"
+                className="btn-quiet flex-1 rounded-xl py-3 text-sm"
               >
                 Explore first
               </button>
               <button
                 type="button"
                 onClick={() => finish(true)}
-                className="btn-primary flex-1 rounded-xl py-2.5 text-xs"
+                className="btn-primary flex-1 rounded-xl py-3 text-sm"
               >
                 Start focusing
               </button>

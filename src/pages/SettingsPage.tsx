@@ -23,13 +23,13 @@ export function SettingsPage() {
   const stored = useSettingsRowHybrid()
 
   return (
-    <div className="mx-auto max-w-xl space-y-3">
+    <div className="mx-auto max-w-xl space-y-5 animate-fade-in">
       <AppearanceSection />
       <TimerSection />
       {stored ? (
         <GoalsSection key={stored.updatedAt} settings={stored} />
       ) : (
-        <section className="card p-4 text-xs text-zinc-500">Loading goals…</section>
+        <section className="card p-5 text-sm text-zinc-500">Loading goals…</section>
       )}
       <AccountSection />
       <DataSection />
@@ -46,9 +46,9 @@ function AppearanceSection() {
     { id: 'system', label: 'System' },
   ]
   return (
-    <section className="card p-4">
-      <h2 className="text-sm font-semibold text-zinc-200">Appearance</h2>
-      <div role="radiogroup" aria-label="Theme" className="mt-2.5 grid grid-cols-3 gap-1.5">
+    <section className="card p-5">
+      <h2 className="text-base font-semibold text-zinc-100">Appearance</h2>
+      <div role="radiogroup" aria-label="Theme" className="mt-3 grid grid-cols-3 gap-2">
         {options.map((o) => (
           <button
             key={o.id}
@@ -57,10 +57,10 @@ function AppearanceSection() {
             aria-checked={theme === o.id}
             onClick={() => setTheme(o.id)}
             className={cn(
-              'min-h-9 rounded-lg border text-xs font-medium transition-colors',
+              'min-h-10 rounded-xl border text-sm font-medium transition-all',
               theme === o.id
-                ? 'border-lime-400/40 bg-lime-500/10 text-lime-400'
-                : 'border-edge bg-surface text-zinc-400 hover:border-edge-strong',
+                ? 'border-lime-400/40 bg-lime-500/10 text-lime-400 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
+                : 'border-edge bg-surface text-zinc-400 hover:border-edge-strong hover:bg-surface-2',
             )}
           >
             {o.label}
@@ -76,12 +76,12 @@ function TimerSection() {
   const pomoApplyPreset = useTimerStore((s) => s.pomoApplyPreset)
   const active = matchPreset(p)
   return (
-    <section className="card p-4">
-      <h2 className="text-sm font-semibold text-zinc-200">Focus timer</h2>
-      <p className="mt-1 text-[0.6875rem] text-zinc-500">
+    <section className="card p-5">
+      <h2 className="text-base font-semibold text-zinc-100">Focus timer</h2>
+      <p className="mt-1.5 text-sm text-zinc-500">
         {p.focusMin}m focus · {p.shortBreakMin}m break · {p.longBreakMin}m long break after {p.longEvery} sessions.
       </p>
-      <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+      <div className="mt-3 grid grid-cols-3 gap-2">
         {TIMER_PRESETS.map((preset) => (
           <button
             key={preset.id}
@@ -89,13 +89,13 @@ function TimerSection() {
             onClick={() => pomoApplyPreset(preset.id)}
             aria-pressed={active === preset.id}
             className={cn(
-              'rounded-lg border px-2 py-1.5 text-center transition-colors',
+              'rounded-xl border px-3 py-2.5 text-center transition-all',
               active === preset.id
-                ? 'border-lime-400/40 bg-lime-500/10'
-                : 'border-edge bg-surface hover:border-edge-strong',
+                ? 'border-lime-400/40 bg-lime-500/10 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
+                : 'border-edge bg-surface hover:border-edge-strong hover:bg-surface-2',
             )}
           >
-            <span className={cn('block text-xs font-medium', active === preset.id ? 'text-lime-400' : 'text-zinc-300')}>
+            <span className={cn('block text-sm font-medium', active === preset.id ? 'text-lime-400' : 'text-zinc-300')}>
               {preset.label}
             </span>
             <span className="block font-mono text-[0.625rem] text-zinc-500">{preset.hint}</span>
@@ -122,28 +122,28 @@ function GoalsSection(props: { settings: SettingsRow }) {
   }
 
   return (
-    <section className="card p-4">
-      <h2 className="text-sm font-semibold text-zinc-200">Application goal</h2>
-      <p className="mt-1 text-[0.6875rem] text-zinc-500">Daily target for job applications.</p>
-      <div className="mt-2.5 grid grid-cols-2 gap-2">
-        <label className="space-y-1">
-          <span className="text-[0.6875rem] text-zinc-500">Daily minimum</span>
+    <section className="card p-5">
+      <h2 className="text-base font-semibold text-zinc-100">Application goal</h2>
+      <p className="mt-1.5 text-sm text-zinc-500">Daily target for job applications.</p>
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <label className="space-y-1.5">
+          <span className="text-xs text-zinc-500">Daily minimum</span>
           <input type="number" min={1} className="field font-mono" value={draft.dailyMin} onChange={(e) => setDraft({ ...draft, dailyMin: Number(e.target.value) || 1 })} />
         </label>
-        <label className="space-y-1">
-          <span className="text-[0.6875rem] text-zinc-500">Daily maximum</span>
+        <label className="space-y-1.5">
+          <span className="text-xs text-zinc-500">Daily maximum</span>
           <input type="number" min={1} className="field font-mono" value={draft.dailyMax} onChange={(e) => setDraft({ ...draft, dailyMax: Number(e.target.value) || 1 })} />
         </label>
-        <label className="space-y-1">
-          <span className="text-[0.6875rem] text-zinc-500">Day starts</span>
+        <label className="space-y-1.5">
+          <span className="text-xs text-zinc-500">Day starts</span>
           <input type="time" className="field font-mono" value={draft.windowStart} onChange={(e) => setDraft({ ...draft, windowStart: e.target.value })} />
         </label>
-        <label className="space-y-1">
-          <span className="text-[0.6875rem] text-zinc-500">Day ends</span>
+        <label className="space-y-1.5">
+          <span className="text-xs text-zinc-500">Day ends</span>
           <input type="time" className="field font-mono" value={draft.windowEnd} onChange={(e) => setDraft({ ...draft, windowEnd: e.target.value })} />
         </label>
       </div>
-      <button type="button" onClick={handleSave} className="btn-primary mt-3 w-full rounded-lg py-2 text-sm">Save</button>
+      <button type="button" onClick={handleSave} className="btn-primary mt-4 w-full rounded-xl py-2.5 text-sm">Save</button>
     </section>
   )
 }
@@ -165,30 +165,30 @@ function AccountSection() {
   if (status !== 'authed' || !user) return null
 
   return (
-    <section className="card p-4">
-      <h2 className="text-sm font-semibold text-zinc-200">Account</h2>
-      <div className="mt-2.5 flex items-center justify-between gap-3">
+    <section className="card p-5">
+      <h2 className="text-base font-semibold text-zinc-100">Account</h2>
+      <div className="mt-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm text-zinc-300">{user.email}</p>
-          <p className="text-[0.6875rem] text-zinc-500">Data syncs to your account.</p>
+          <p className="text-xs text-zinc-500">Data syncs to your account.</p>
         </div>
         <button
           type="button"
-          className="btn-quiet shrink-0 px-3 py-1.5 text-xs"
+          className="btn-quiet shrink-0 rounded-xl px-4 py-2 text-sm"
           onClick={async () => { await signOut(); pushToast('info', 'Signed out') }}
         >
           Sign out
         </button>
       </div>
       {localApps > 0 ? (
-        <div className="mt-3 rounded-lg border border-amber-400/30 bg-amber-500/5 p-3">
-          <p className="text-xs text-amber-200">
+        <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/5 p-4">
+          <p className="text-sm text-amber-200">
             This browser has {localApps} application{localApps === 1 ? '' : 's'} not in your cloud account.
           </p>
           <button
             type="button"
             disabled={busy}
-            className="btn-primary mt-2 rounded-lg px-3 py-1.5 text-xs"
+            className="btn-primary mt-3 rounded-xl px-4 py-2 text-sm"
             onClick={async () => {
               setBusy(true)
               try {
@@ -242,18 +242,18 @@ function DataSection() {
   }
 
   return (
-    <section className="card p-4">
-      <h2 className="text-sm font-semibold text-zinc-200">Data</h2>
-      <p className="mt-1 text-[0.6875rem] text-zinc-500">Export a JSON backup or restore one.</p>
-      <div className="mt-2.5 flex flex-col gap-1.5 sm:flex-row">
-        <button type="button" className="btn-quiet px-3 py-1.5 text-xs" onClick={() => void onExport()}>Export backup</button>
-        <label className="btn-quiet cursor-pointer px-3 py-1.5 text-center text-xs">
+    <section className="card p-5">
+      <h2 className="text-base font-semibold text-zinc-100">Data</h2>
+      <p className="mt-1.5 text-sm text-zinc-500">Export a JSON backup or restore one.</p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <button type="button" className="btn-quiet rounded-xl px-4 py-2 text-sm" onClick={() => void onExport()}>Export backup</button>
+        <label className="btn-quiet cursor-pointer rounded-xl px-4 py-2 text-center text-sm">
           Import backup
           <input type="file" accept="application/json" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void onImportFile(f) }} />
         </label>
         <button
           type="button"
-          className="ml-auto rounded-lg border border-red-400/30 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10"
+          className="ml-auto rounded-xl border border-red-400/30 px-4 py-2 text-sm text-red-400 transition-colors hover:bg-red-500/10"
           onClick={() => void onReset()}
         >
           Reset all data…

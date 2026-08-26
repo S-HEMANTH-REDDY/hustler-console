@@ -112,28 +112,34 @@ function PaletteBody() {
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/50 px-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/60 px-4 pt-[12vh] backdrop-blur-md"
       onClick={() => setOpen(false)}
     >
       <div
         role="dialog"
         aria-label="Command palette"
-        className="animate-slide-up w-full max-w-lg overflow-hidden rounded-xl border border-edge bg-surface shadow-2xl"
+        className="card-glow animate-scale-in w-full max-w-lg overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <input
-          ref={inputRef}
-          type="text"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={onKeyDown}
-          placeholder="Type a command or search…"
-          className="w-full border-b border-edge bg-transparent px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
-        />
-        <div className="max-h-[60vh] overflow-y-auto py-1">
+        <div className="relative flex items-center gap-3 border-b border-edge px-4">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0 text-zinc-500" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            ref={inputRef}
+            type="text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder="Type a command or search…"
+            className="w-full bg-transparent py-3.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+          />
+        </div>
+        <div className="max-h-[60vh] overflow-y-auto py-1.5">
           {grouped.map((group) => (
             <div key={group.name} className="py-0.5">
-              <div className="px-4 pb-1 pt-2 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-zinc-600">
+              <div className="px-4 pb-1.5 pt-2.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-zinc-600">
                 {group.name}
               </div>
               {group.items.map(({ item, idx }) => {
@@ -145,15 +151,16 @@ function PaletteBody() {
                     onMouseEnter={() => setCursor(idx)}
                     onClick={() => run(item)}
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 px-4 py-1.5 text-left text-sm',
+                      'flex w-full items-center justify-between gap-3 rounded-xl mx-1.5 px-3 py-2 text-left text-sm transition-all',
                       active
-                        ? 'bg-zinc-50/[0.05] text-zinc-100'
+                        ? 'bg-zinc-50/[0.06] text-zinc-100'
                         : 'text-zinc-400 hover:bg-zinc-50/[0.03]',
                     )}
+                    style={{ width: 'calc(100% - 12px)' }}
                   >
                     <span className="truncate">{item.label}</span>
                     {item.shortcut ? (
-                      <kbd className="rounded border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-500">
+                      <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-500">
                         {item.shortcut}
                       </kbd>
                     ) : null}
@@ -163,10 +170,10 @@ function PaletteBody() {
             </div>
           ))}
           {filtered.length === 0 ? (
-            <div className="px-4 py-6 text-center text-xs text-zinc-500">No results</div>
+            <div className="px-4 py-8 text-center text-sm text-zinc-500">No results</div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-edge px-3 py-1.5 font-mono text-[0.5625rem] text-zinc-600">
+        <div className="flex items-center justify-between border-t border-edge px-4 py-2 font-mono text-[0.5625rem] text-zinc-600">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>
