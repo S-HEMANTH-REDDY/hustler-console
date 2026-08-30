@@ -170,14 +170,18 @@ export function PaceBar(props: {
 export function PaceHeroNumber(props: { count: number; state: PaceState }) {
   const colors = stateColors(props.state)
   return (
-    <div
-      className={cn('text-8xl font-bold tabular-nums tracking-tighter sm:text-9xl', colors.glow)}
-      style={{
-        fontFamily: 'var(--font-display)',
-        color: colors.fill,
-      }}
-    >
-      {props.count}
+    <div className="orbit-frame" style={{ color: colors.fill }}>
+      <span aria-hidden="true" className="orbit-ring orbit-ring-outer" />
+      <span aria-hidden="true" className="orbit-ring orbit-ring-inner" />
+      <span aria-hidden="true" className="orbit-node" />
+      <div
+        className={cn(
+          'numeric-display relative px-3 text-8xl sm:text-9xl',
+          colors.glow,
+        )}
+      >
+        {props.count}
+      </div>
     </div>
   )
 }

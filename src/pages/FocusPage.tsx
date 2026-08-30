@@ -13,6 +13,92 @@ import {
 } from '../store/timerStore'
 import { useUiStore } from '../store/uiStore'
 
+const DIAL_R = 94
+const DIAL_C = 2 * Math.PI * DIAL_R
+
+/**
+ * Circular progress dial that frames the timer. The ring itself carries the
+ * progress, so no separate bar is needed.
+ */
+function TimerDial(props: {
+  progress: number
+  isFocus: boolean
+  zenMode: boolean
+  label: string
+  children: React.ReactNode
+}) {
+  const pct = Math.min(1, Math.max(0, props.progress))
+  const stroke = props.isFocus ? '#84cc16' : '#22d3ee'
+  const gradId = props.isFocus ? 'dial-focus' : 'dial-break'
+
+  return (
+    <div
+      className={cn(
+        'relative mt-6 flex aspect-square w-full items-center justify-center',
+        props.zenMode ? 'max-w-[30rem]' : 'max-w-[24rem]',
+      )}
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(pct * 100)}
+      aria-label={props.label}
+    >
+      {/* Ambient halo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-[12%] animate-glow-pulse rounded-full"
+        style={{
+          background: `radial-gradient(circle, ${stroke}1f 0%, ${stroke}08 45%, transparent 70%)`,
+        }}
+      />
+      {/* Rotating dashed halo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 animate-orbit rounded-full border border-dashed"
+        style={{ borderColor: `${stroke}2e` }}
+      />
+      {/* Progress ring */}
+      <svg
+        aria-hidden
+        viewBox="0 0 200 200"
+        className="pointer-events-none absolute inset-[5%] -rotate-90"
+      >
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={props.isFocus ? '#d9f99d' : '#a5f3fc'} />
+            <stop offset="60%" stopColor={stroke} />
+            <stop offset="100%" stopColor={props.isFocus ? '#22d3ee' : '#84cc16'} />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="100"
+          cy="100"
+          r={DIAL_R}
+          fill="none"
+          stroke="var(--color-edge)"
+          strokeWidth="2"
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r={DIAL_R}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeDasharray={DIAL_C}
+          strokeDashoffset={DIAL_C * (1 - pct)}
+          style={{
+            transition: 'stroke-dashoffset 500ms linear',
+            filter: `drop-shadow(0 0 6px ${stroke}99)`,
+          }}
+        />
+      </svg>
+      <div className="relative flex flex-col items-center">{props.children}</div>
+    </div>
+  )
+}
+
 export function FocusPage() {
   const p = useTimerStore((s) => s.pomodoro)
   const pomoStart = useTimerStore((s) => s.pomoStart)
@@ -72,82 +158,49 @@ export function FocusPage() {
         zenMode && 'min-h-full justify-center px-4 py-10',
       )}
     >
-      {/* Ambient glow behind timer */}
-      <div className="relative flex flex-col items-center">
-        <div
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow-pulse"
-          style={{
-            width: zenMode ? '400px' : '300px',
-            height: zenMode ? '400px' : '300px',
-            borderRadius: '50%',
-            background: isFocus
-              ? 'radial-gradient(circle, rgba(132,204,22,0.08) 0%, rgba(132,204,22,0.02) 50%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(56,189,248,0.08) 0%, rgba(56,189,248,0.02) 50%, transparent 70%)',
-          }}
-        />
-
-        {/* Phase badge */}
-        <div className="relative mt-2 flex items-center gap-2.5">
-          <span
-            className={cn(
-              'rounded-xl border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider',
-              isFocus
-                ? 'border-lime-400/30 bg-lime-500/10 text-lime-400'
-                : 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300',
-            )}
-          >
-            {phaseLabel(p.phase)}
+      {/* Phase badge */}
+      <div className="relative flex items-center gap-2.5">
+        <span
+          className={cn(
+            'rounded-xl border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider',
+            isFocus
+              ? 'border-lime-400/30 bg-lime-500/10 text-lime-400'
+              : 'border-cyan-400/30 bg-cyan-500/10 text-cyan-300',
+          )}
+        >
+          {phaseLabel(p.phase)}
+        </span>
+        {p.justCompleted ? (
+          <span className="rounded-xl border border-edge bg-surface px-3 py-1.5 text-xs text-zinc-400">
+            {p.justCompleted === 'focus'
+              ? 'Focus complete — take your break'
+              : 'Break over — ready when you are'}
           </span>
-          {p.justCompleted ? (
-            <span className="rounded-xl border border-edge bg-surface px-3 py-1.5 text-xs text-zinc-400">
-              {p.justCompleted === 'focus'
-                ? 'Focus complete — take your break'
-                : 'Break over — ready when you are'}
-            </span>
-          ) : null}
-        </div>
+        ) : null}
+      </div>
 
-        {/* Timer display */}
+      {/* Timer dial */}
+      <TimerDial
+        progress={progress}
+        isFocus={isFocus}
+        zenMode={zenMode}
+        label={`${phaseLabel(p.phase)} progress`}
+      >
         <p
           className={cn(
-            'relative mt-6 font-bold tabular-nums leading-none text-zinc-50',
-            zenMode ? 'text-[8rem] sm:text-[10rem]' : 'text-[6rem] sm:text-[8rem]',
+            'numeric-display text-zinc-50',
+            zenMode
+              ? 'text-[clamp(3.5rem,17vw,8rem)]'
+              : 'text-[clamp(3rem,14vw,6rem)]',
             isFocus ? 'glow-lime' : 'glow-cyan',
           )}
-          style={{ fontFamily: 'var(--font-display)' }}
         >
           {formatClock(remaining)}
         </p>
-
-        {/* Progress bar */}
-        <div
-          className="relative mt-6 h-1.5 w-full max-w-md overflow-hidden rounded-full"
-          style={{ background: 'var(--color-surface-3)' }}
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(progress * 100)}
-          aria-label={`${phaseLabel(p.phase)} progress`}
-        >
-          <div
-            className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-500"
-            style={{
-              width: `${Math.min(100, Math.max(0, progress * 100))}%`,
-              background: isFocus
-                ? 'linear-gradient(90deg, #84cc16, #a3e635)'
-                : 'linear-gradient(90deg, #06b6d4, #22d3ee)',
-              boxShadow: isFocus
-                ? '0 0 12px rgba(132,204,22,0.4)'
-                : '0 0 12px rgba(6,182,212,0.4)',
-            }}
-          />
-        </div>
-
-        {/* Cycle dots */}
         <div className="mt-4">
           <CycleDots completed={p.completed % p.longEvery} total={p.longEvery} />
         </div>
-      </div>
+      </TimerDial>
 
       {/* Task selector */}
       {!zenMode ? (

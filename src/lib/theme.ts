@@ -1,11 +1,29 @@
-export type ThemePref = 'dark' | 'light' | 'system'
+/** Visual modes, brightest to darkest, plus an OS-following option. */
+export type ThemePref = 'light' | 'dim' | 'dark' | 'system'
+
+/** The three concrete surfaces a `ThemePref` can resolve to. */
+export type ResolvedTheme = 'light' | 'dim' | 'dark'
 
 const THEME_KEY = 'hustler.theme'
+
+/** Order used when cycling with the topbar toggle. */
+export const THEME_CYCLE: ResolvedTheme[] = ['dark', 'dim', 'light']
+
+export const THEME_LABELS: Record<ThemePref, string> = {
+  light: 'Light',
+  dim: 'Dim',
+  dark: 'Dark',
+  system: 'System',
+}
+
+function isThemePref(v: unknown): v is ThemePref {
+  return v === 'light' || v === 'dim' || v === 'dark' || v === 'system'
+}
 
 export function loadThemePref(): ThemePref {
   try {
     const raw = window.localStorage.getItem(THEME_KEY)
-    if (raw === 'dark' || raw === 'light' || raw === 'system') return raw
+    if (isThemePref(raw)) return raw
   } catch {
     // ignore
   }
@@ -20,7 +38,7 @@ export function saveThemePref(pref: ThemePref) {
   }
 }
 
-function resolve(pref: ThemePref): 'dark' | 'light' {
+export function resolveTheme(pref: ThemePref): ResolvedTheme {
   if (pref !== 'system') return pref
   return window.matchMedia('(prefers-color-scheme: light)').matches
     ? 'light'
@@ -29,7 +47,15 @@ function resolve(pref: ThemePref): 'dark' | 'light' {
 
 /** Set data-theme on <html>; the CSS token overrides do the rest. */
 export function applyTheme(pref: ThemePref) {
-  document.documentElement.dataset.theme = resolve(pref)
+  const resolved = resolveTheme(pref)
+  document.documentElement.dataset.theme = resolved
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) {
+    meta.setAttribute(
+      'content',
+      resolved === 'light' ? '#eef0f5' : resolved === 'dim' ? '#1b1e26' : '#05060a',
+    )
+  }
 }
 
 /** Re-apply on OS theme changes while pref is 'system'. */

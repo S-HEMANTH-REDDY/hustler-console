@@ -35,16 +35,23 @@ export function Sidebar() {
       >
         {/* Brand */}
         <div className="flex h-14 items-center gap-2.5 px-5">
-          <span
-            aria-hidden
-            className="flex h-8 w-8 items-center justify-center rounded-xl text-sm font-bold text-lime-400"
-            style={{
-              fontFamily: 'var(--font-display)',
-              background: 'linear-gradient(135deg, rgba(132,204,22,0.15) 0%, rgba(132,204,22,0.05) 100%)',
-              boxShadow: '0 0 20px rgba(132,204,22,0.15), inset 0 0 0 1px rgba(132,204,22,0.2)',
-            }}
-          >
-            H
+          <span aria-hidden className="relative flex h-8 w-8 items-center justify-center">
+            <span
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background:
+                  'linear-gradient(135deg, rgba(132,204,22,0.22) 0%, rgba(34,211,238,0.08) 100%)',
+                boxShadow:
+                  '0 0 22px rgba(132,204,22,0.22), inset 0 0 0 1px rgba(132,204,22,0.3)',
+              }}
+            />
+            <span className="absolute -inset-1 animate-orbit rounded-full border border-dashed border-lime-400/25" />
+            <span
+              className="relative text-sm font-bold text-lime-400"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              H
+            </span>
           </span>
           <span
             className="text-[1.0625rem] font-semibold tracking-tight text-zinc-50"
@@ -52,6 +59,10 @@ export function Sidebar() {
           >
             Hustler
           </span>
+          <span
+            aria-hidden
+            className="ml-auto h-1.5 w-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(132,204,22,0.8)]"
+          />
         </div>
 
         {/* Nav */}

@@ -37,18 +37,69 @@ export function SettingsPage() {
   )
 }
 
+/** Miniature window preview so each mode is recognisable before selecting. */
+function ThemeSwatch({ mode }: { mode: 'light' | 'dim' | 'dark' }) {
+  const palette = {
+    light: { bg: '#eef0f5', card: '#ffffff', edge: '#dae0ea', ink: '#3a4353' },
+    dim: { bg: '#1b1e26', card: '#262b36', edge: '#3b4351', ink: '#95a2b7' },
+    dark: { bg: '#05060a', card: '#0f1118', edge: '#202634', ink: '#5c6675' },
+  }[mode]
+  return (
+    <span
+      aria-hidden="true"
+      className="block h-12 w-full overflow-hidden rounded-lg border"
+      style={{ background: palette.bg, borderColor: palette.edge }}
+    >
+      <span className="flex h-full gap-1 p-1.5">
+        <span
+          className="h-full w-1/4 rounded-sm"
+          style={{ background: palette.card, border: `1px solid ${palette.edge}` }}
+        />
+        <span className="flex flex-1 flex-col gap-1">
+          <span
+            className="h-1.5 w-2/3 rounded-full"
+            style={{ background: '#84cc16' }}
+          />
+          <span
+            className="h-1.5 w-full rounded-full"
+            style={{ background: palette.ink, opacity: 0.55 }}
+          />
+          <span
+            className="h-1.5 w-4/5 rounded-full"
+            style={{ background: palette.ink, opacity: 0.3 }}
+          />
+        </span>
+      </span>
+    </span>
+  )
+}
+
 function AppearanceSection() {
   const theme = useUiStore((s) => s.theme)
   const setTheme = useUiStore((s) => s.setTheme)
-  const options: { id: ThemePref; label: string }[] = [
-    { id: 'light', label: 'Light' },
-    { id: 'dark', label: 'Dark' },
-    { id: 'system', label: 'System' },
+  const options: {
+    id: ThemePref
+    label: string
+    hint: string
+    swatch?: 'light' | 'dim' | 'dark'
+  }[] = [
+    { id: 'light', label: 'Light', hint: 'Daylight', swatch: 'light' },
+    { id: 'dim', label: 'Dim', hint: 'Twilight', swatch: 'dim' },
+    { id: 'dark', label: 'Dark', hint: 'Void', swatch: 'dark' },
+    { id: 'system', label: 'System', hint: 'Follows OS' },
   ]
   return (
     <section className="card p-5">
-      <h2 className="text-base font-semibold text-zinc-100">Appearance</h2>
-      <div role="radiogroup" aria-label="Theme" className="mt-3 grid grid-cols-3 gap-2">
+      <p className="section-label">Interface</p>
+      <h2 className="mt-1 text-base font-semibold text-zinc-100">Appearance</h2>
+      <p className="mt-1 text-sm text-zinc-500">
+        Three surfaces, from bright to void.
+      </p>
+      <div
+        role="radiogroup"
+        aria-label="Theme"
+        className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4"
+      >
         {options.map((o) => (
           <button
             key={o.id}
@@ -57,13 +108,39 @@ function AppearanceSection() {
             aria-checked={theme === o.id}
             onClick={() => setTheme(o.id)}
             className={cn(
-              'min-h-10 rounded-xl border text-sm font-medium transition-all',
+              'group rounded-xl border p-2 text-left transition-all',
               theme === o.id
-                ? 'border-lime-400/40 bg-lime-500/10 text-lime-400 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
-                : 'border-edge bg-surface text-zinc-400 hover:border-edge-strong hover:bg-surface-2',
+                ? 'border-lime-400/50 bg-lime-500/10 shadow-[0_0_20px_-6px_rgba(132,204,22,0.35)]'
+                : 'border-edge bg-surface hover:border-edge-strong hover:bg-surface-2',
             )}
           >
-            {o.label}
+            {o.swatch ? (
+              <ThemeSwatch mode={o.swatch} />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="flex h-12 w-full items-center justify-center rounded-lg border border-edge"
+                style={{
+                  background:
+                    'linear-gradient(105deg, #05060a 0 50%, #eef0f5 50% 100%)',
+                }}
+              >
+                <span className="h-1.5 w-2/3 rounded-full bg-lime-500/80" />
+              </span>
+            )}
+            <span className="mt-2 block px-0.5">
+              <span
+                className={cn(
+                  'block text-sm font-medium',
+                  theme === o.id ? 'text-lime-400' : 'text-zinc-200',
+                )}
+              >
+                {o.label}
+              </span>
+              <span className="block text-[0.6875rem] text-zinc-500">
+                {o.hint}
+              </span>
+            </span>
           </button>
         ))}
       </div>

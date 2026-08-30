@@ -234,13 +234,15 @@ export function TodayPage() {
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             {/* Personalized greeting */}
-            <h2
-              className="text-2xl font-semibold tracking-tight text-zinc-300 sm:text-3xl"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
-              {greeting}{firstName ? `, ${firstName}` : ''}
+            <h2 className="text-gradient text-3xl font-semibold tracking-tight sm:text-4xl">
+              {greeting}
+              {firstName ? (
+                <>
+                  , <span className="text-gradient-accent">{firstName}</span>
+                </>
+              ) : null}
             </h2>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1.5 text-sm text-zinc-500">
               {format(secondTick, 'EEEE, MMMM d')} · W{isoWeekNumber(secondTick)} ·{' '}
               {dailyMin}–{dailyMax} app goal · sweet spot {sweet.min}–{sweet.max}
             </p>
@@ -272,14 +274,15 @@ export function TodayPage() {
 
           {/* Right: Time + CTA */}
           <div className="flex shrink-0 flex-col items-stretch gap-3 lg:items-end">
-            <div
-              className="flex flex-col items-end gap-1 rounded-2xl border border-edge bg-well/50 px-5 py-3 lg:min-w-[14rem]"
-            >
+            <div className="relative flex flex-col items-end gap-1 overflow-hidden rounded-2xl border border-edge bg-well/60 px-5 py-3.5 lg:min-w-[14rem]">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-lime-400/50 to-transparent"
+              />
               <span className="section-label">Local time</span>
               <span
-                className="mt-1 font-mono text-3xl font-semibold tabular-nums tracking-tight text-zinc-50"
+                className="numeric-display mt-1.5 text-4xl text-zinc-50"
                 aria-live="off"
-                style={{ textShadow: '0 0 20px rgba(255,255,255,0.05)' }}
               >
                 {format(secondTick, 'HH:mm:ss')}
               </span>

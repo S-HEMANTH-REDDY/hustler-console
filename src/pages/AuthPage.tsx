@@ -127,7 +127,7 @@ export function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-base px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <h1
@@ -272,7 +272,7 @@ export function AuthPage() {
 
 function AuthDisabledNotice() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-base px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
         <div className="mb-6 text-center">
           <h1

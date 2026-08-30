@@ -84,11 +84,8 @@ function Unit(props: { value: number; label: string }) {
   return (
     <div className="text-center">
       <span
-        className="block text-2xl font-bold tabular-nums text-zinc-100"
-        style={{
-          fontFamily: 'var(--font-display)',
-          textShadow: '0 0 20px rgba(132,204,22,0.15)',
-        }}
+        className="numeric-display block text-2xl text-zinc-100"
+        style={{ textShadow: '0 0 20px rgba(132,204,22,0.15)' }}
       >
         {String(props.value).padStart(2, '0')}
       </span>

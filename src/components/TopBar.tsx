@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { backupAgeDays } from '../lib/insights'
+import { THEME_CYCLE, THEME_LABELS, resolveTheme } from '../lib/theme'
 import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
 import { MiniTimer } from './MiniTimer'
@@ -88,18 +89,21 @@ export function TopBar() {
 function ThemeToggle() {
   const theme = useUiStore((s) => s.theme)
   const setTheme = useUiStore((s) => s.setTheme)
-  const isLight =
-    typeof document !== 'undefined' &&
-    document.documentElement.dataset.theme === 'light'
+  const resolved = resolveTheme(theme)
+
+  const next = THEME_CYCLE[(THEME_CYCLE.indexOf(resolved) + 1) % THEME_CYCLE.length]
+  const Icon =
+    resolved === 'light' ? SunIcon : resolved === 'dim' ? ContrastIcon : MoonIcon
+
   return (
     <button
       type="button"
-      onClick={() => setTheme(isLight ? 'dark' : 'light')}
+      onClick={() => setTheme(next)}
       className="flex h-8 w-8 items-center justify-center rounded-full border border-edge bg-surface text-zinc-400 transition-all hover:border-edge-strong hover:bg-surface-2 hover:text-zinc-200"
-      aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
-      title={`Theme: ${theme}`}
+      aria-label={`Theme: ${THEME_LABELS[resolved]}. Switch to ${THEME_LABELS[next]}.`}
+      title={`${THEME_LABELS[resolved]} — click for ${THEME_LABELS[next]}`}
     >
-      {isLight ? <MoonIcon /> : <SunIcon />}
+      <Icon />
     </button>
   )
 }
@@ -204,6 +208,14 @@ function MoonIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+    </svg>
+  )
+}
+function ContrastIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none" />
     </svg>
   )
 }
