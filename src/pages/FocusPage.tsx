@@ -34,7 +34,10 @@ function TimerDial(props: {
   return (
     <div
       className={cn(
-        'relative mt-6 flex aspect-square w-full items-center justify-center',
+        // overflow-hidden keeps the rotating ring's square bounding box from
+        // widening the page; the ring itself is a circle, so nothing visible
+        // gets clipped.
+        'relative mt-6 flex aspect-square w-full items-center justify-center overflow-hidden',
         props.zenMode ? 'max-w-[30rem]' : 'max-w-[24rem]',
       )}
       role="progressbar"
@@ -190,8 +193,8 @@ export function FocusPage() {
           className={cn(
             'numeric-display text-zinc-50',
             zenMode
-              ? 'text-[clamp(3.5rem,17vw,8rem)]'
-              : 'text-[clamp(3rem,14vw,6rem)]',
+              ? 'text-[clamp(4rem,18vw,9rem)]'
+              : 'text-[clamp(3.5rem,15vw,7rem)]',
             isFocus ? 'glow-lime' : 'glow-cyan',
           )}
         >
@@ -286,7 +289,7 @@ export function FocusPage() {
                   <span className={cn('block text-sm font-medium', activePreset === preset.id ? 'text-lime-400' : 'text-zinc-200')}>
                     {preset.label}
                   </span>
-                  <span className="block font-mono text-[0.625rem] text-zinc-500">{preset.hint}</span>
+                  <span className="block font-mono text-[0.75rem] text-zinc-500">{preset.hint}</span>
                 </button>
               ))}
               <button
@@ -303,7 +306,7 @@ export function FocusPage() {
                 <span className={cn('block text-sm font-medium', activePreset === 'custom' ? 'text-lime-400' : 'text-zinc-200')}>
                   Custom
                 </span>
-                <span className="block font-mono text-[0.625rem] text-zinc-500">{p.focusMin} / {p.shortBreakMin}</span>
+                <span className="block font-mono text-[0.75rem] text-zinc-500">{p.focusMin} / {p.shortBreakMin}</span>
               </button>
             </div>
           </div>

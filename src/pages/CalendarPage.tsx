@@ -85,7 +85,7 @@ export function CalendarPage() {
           <button type="button" onClick={() => shift(-1)} className="btn-quiet h-9 w-9 rounded-xl text-sm" aria-label={view === 'month' ? 'Previous month' : 'Previous week'}>‹</button>
           <button type="button" onClick={() => { setCursor(new Date()); setSelected(today) }} className="btn-quiet h-9 rounded-xl px-3 text-sm">Today</button>
           <button type="button" onClick={() => shift(1)} className="btn-quiet h-9 w-9 rounded-xl text-sm" aria-label={view === 'month' ? 'Next month' : 'Next week'}>›</button>
-          <h2 className="ml-2 text-base font-semibold text-zinc-100">{rangeLabel}</h2>
+          <h2 className="ml-2 text-lg font-semibold text-zinc-100">{rangeLabel}</h2>
         </div>
         <div role="tablist" aria-label="Calendar view" className="flex gap-1 rounded-2xl border border-edge bg-surface p-1">
           {(['week', 'month'] as View[]).map((v) => (
@@ -108,7 +108,7 @@ export function CalendarPage() {
 
       {/* Calendar grid */}
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[0.625rem] font-semibold uppercase tracking-wider text-zinc-600">
+        <div className="grid grid-cols-7 border-b border-edge-soft text-center text-[0.75rem] font-semibold uppercase tracking-wider text-zinc-600">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
             <div key={d} className="py-2">{d}</div>
           ))}
@@ -164,10 +164,10 @@ export function CalendarPage() {
       {/* Selected day detail */}
       <section className="card p-5">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-base font-semibold text-zinc-200">
+          <h3 className="text-lg font-semibold text-zinc-200">
             {format(new Date(selected + 'T12:00:00'), 'EEEE, MMMM d')}
             {selected === today ? (
-              <span className="ml-2 rounded-full bg-lime-500/15 px-2 py-0.5 text-[0.625rem] font-medium text-lime-400">Today</span>
+              <span className="ml-2 rounded-full bg-lime-500/15 px-2 py-0.5 text-[0.75rem] font-medium text-lime-400">Today</span>
             ) : null}
           </h3>
           <Link to="/tasks" className="text-xs font-medium text-lime-400 hover:underline">Manage tasks</Link>

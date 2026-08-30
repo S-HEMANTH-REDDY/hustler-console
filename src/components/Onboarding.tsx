@@ -90,7 +90,7 @@ export function Onboarding() {
         {step === 0 ? (
           <>
             <h2
-              className="mt-5 text-xl font-semibold text-zinc-50"
+              className="mt-5 text-2xl font-bold text-zinc-50"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Welcome to Hustler
@@ -106,7 +106,7 @@ export function Onboarding() {
                   onClick={() => pomoApplyPreset(preset.id)}
                   aria-pressed={activePreset === preset.id}
                   className={cn(
-                    'flex items-center justify-between rounded-2xl border px-4 py-3.5 text-left transition-all',
+                    'flex flex-col gap-1 rounded-2xl border px-4 py-3.5 text-left transition-all sm:flex-row sm:items-center sm:justify-between',
                     activePreset === preset.id
                       ? 'border-lime-400/50 bg-lime-500/10 shadow-[0_0_16px_-4px_rgba(132,204,22,0.2)]'
                       : 'border-edge bg-well hover:border-edge-strong hover:bg-surface',
@@ -114,7 +114,7 @@ export function Onboarding() {
                 >
                   <span
                     className={cn(
-                      'text-sm font-medium',
+                      'text-base font-medium',
                       activePreset === preset.id
                         ? 'text-lime-300'
                         : 'text-zinc-200',
@@ -141,7 +141,7 @@ export function Onboarding() {
         {step === 1 ? (
           <>
             <h2
-              className="mt-5 text-xl font-semibold text-zinc-50"
+              className="mt-5 text-2xl font-bold text-zinc-50"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               What's first on your list?
@@ -182,7 +182,7 @@ export function Onboarding() {
         {step === 2 ? (
           <>
             <h2
-              className="mt-5 text-xl font-semibold text-zinc-50"
+              className="mt-5 text-2xl font-bold text-zinc-50"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Ready to focus?

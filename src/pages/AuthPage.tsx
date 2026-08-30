@@ -131,7 +131,7 @@ export function AuthPage() {
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <h1
-            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent"
+            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-4xl font-bold tracking-tight text-transparent"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Hustler
@@ -145,7 +145,7 @@ export function AuthPage() {
           {mode !== 'reset' ? (
             <ModeTabs mode={mode} onChange={(m) => setMode(m)} />
           ) : (
-            <h2 className="text-base font-semibold text-zinc-100">
+            <h2 className="text-lg font-semibold text-zinc-100">
               Set a new password
             </h2>
           )}
@@ -276,7 +276,7 @@ function AuthDisabledNotice() {
       <div className="w-full max-w-lg">
         <div className="mb-6 text-center">
           <h1
-            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-3xl font-semibold tracking-tight text-transparent"
+            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-4xl font-bold tracking-tight text-transparent"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Hustler

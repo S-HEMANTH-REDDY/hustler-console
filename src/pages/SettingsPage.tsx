@@ -91,7 +91,7 @@ function AppearanceSection() {
   return (
     <section className="card p-5">
       <p className="section-label">Interface</p>
-      <h2 className="mt-1 text-base font-semibold text-zinc-100">Appearance</h2>
+      <h2 className="mt-1 text-lg font-semibold text-zinc-100">Appearance</h2>
       <p className="mt-1 text-sm text-zinc-500">
         Three surfaces, from bright to void.
       </p>
@@ -154,7 +154,7 @@ function TimerSection() {
   const active = matchPreset(p)
   return (
     <section className="card p-5">
-      <h2 className="text-base font-semibold text-zinc-100">Focus timer</h2>
+      <h2 className="text-lg font-semibold text-zinc-100">Focus timer</h2>
       <p className="mt-1.5 text-sm text-zinc-500">
         {p.focusMin}m focus · {p.shortBreakMin}m break · {p.longBreakMin}m long break after {p.longEvery} sessions.
       </p>
@@ -175,7 +175,7 @@ function TimerSection() {
             <span className={cn('block text-sm font-medium', active === preset.id ? 'text-lime-400' : 'text-zinc-300')}>
               {preset.label}
             </span>
-            <span className="block font-mono text-[0.625rem] text-zinc-500">{preset.hint}</span>
+            <span className="block font-mono text-[0.75rem] text-zinc-500">{preset.hint}</span>
           </button>
         ))}
       </div>
@@ -200,7 +200,7 @@ function GoalsSection(props: { settings: SettingsRow }) {
 
   return (
     <section className="card p-5">
-      <h2 className="text-base font-semibold text-zinc-100">Application goal</h2>
+      <h2 className="text-lg font-semibold text-zinc-100">Application goal</h2>
       <p className="mt-1.5 text-sm text-zinc-500">Daily target for job applications.</p>
       <div className="mt-3 grid grid-cols-2 gap-3">
         <label className="space-y-1.5">
@@ -243,7 +243,7 @@ function AccountSection() {
 
   return (
     <section className="card p-5">
-      <h2 className="text-base font-semibold text-zinc-100">Account</h2>
+      <h2 className="text-lg font-semibold text-zinc-100">Account</h2>
       <div className="mt-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm text-zinc-300">{user.email}</p>
@@ -320,7 +320,7 @@ function DataSection() {
 
   return (
     <section className="card p-5">
-      <h2 className="text-base font-semibold text-zinc-100">Data</h2>
+      <h2 className="text-lg font-semibold text-zinc-100">Data</h2>
       <p className="mt-1.5 text-sm text-zinc-500">Export a JSON backup or restore one.</p>
       <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <button type="button" className="btn-quiet rounded-xl px-4 py-2 text-sm" onClick={() => void onExport()}>Export backup</button>

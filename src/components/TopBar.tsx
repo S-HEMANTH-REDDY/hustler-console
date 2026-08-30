@@ -31,7 +31,7 @@ export function TopBar() {
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-edge">
-      <div className="flex h-12 items-center gap-3 px-4 sm:px-5 lg:px-6">
+      <div className="flex h-14 items-center gap-3 px-4 sm:px-5 lg:px-6">
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
@@ -44,7 +44,7 @@ export function TopBar() {
         </button>
 
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-base font-semibold tracking-tight text-zinc-50">
+          <h1 className="truncate text-xl font-bold tracking-tight text-zinc-50">
             {title}
           </h1>
         </div>
@@ -62,7 +62,7 @@ export function TopBar() {
               <path d="m21 21-4.3-4.3" />
             </svg>
             <span>Search</span>
-            <kbd className="rounded-md border border-edge bg-well px-1 py-0.5 font-mono text-[0.5625rem] text-zinc-600">
+            <kbd className="rounded-md border border-edge bg-well px-1 py-0.5 font-mono text-[0.6875rem] text-zinc-600">
               ⌘K
             </kbd>
           </button>
@@ -167,7 +167,7 @@ function UserChip() {
           className="card absolute right-0 z-30 mt-2 w-56 animate-scale-in overflow-hidden"
         >
           <div className="border-b border-edge px-3 py-2.5">
-            <p className="text-[0.625rem] text-zinc-500">Signed in as</p>
+            <p className="text-[0.75rem] text-zinc-500">Signed in as</p>
             <p className="truncate text-sm text-zinc-200">{email}</p>
           </div>
           <Link

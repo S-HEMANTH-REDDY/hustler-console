@@ -358,7 +358,7 @@ function ThinkTimerPanel(props: {
           <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
             Think timer · countdown
           </p>
-          <h3 className="text-base font-semibold text-zinc-100">
+          <h3 className="text-lg font-semibold text-zinc-100">
             {props.idea.title || 'Untitled idea'}
           </h3>
         </div>

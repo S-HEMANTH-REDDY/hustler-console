@@ -50,7 +50,7 @@ export function MiniTimer() {
           aria-hidden
         />
         <span className="hidden sm:inline">{phaseLabel(p.phase)}</span>
-        <span className="font-mono text-sm font-semibold tabular-nums">
+        <span className="numeric-display text-base">
           {formatClock(remaining)}
         </span>
       </Link>

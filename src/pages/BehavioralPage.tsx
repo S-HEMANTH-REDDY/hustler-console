@@ -64,7 +64,7 @@ export function BehavioralPage() {
       <BehavioralQuestionBank />
 
       <section className="card p-5">
-        <h2 className="text-base font-semibold text-zinc-100 mb-3">
+        <h2 className="text-lg font-semibold text-zinc-100 mb-3">
           Coverage
         </h2>
         <div className="grid gap-2.5 sm:grid-cols-3 lg:grid-cols-3">
@@ -93,7 +93,7 @@ export function BehavioralPage() {
       </section>
 
       <section className="card p-5">
-        <h2 className="text-base font-semibold text-zinc-100 mb-3">New story</h2>
+        <h2 className="text-lg font-semibold text-zinc-100 mb-3">New story</h2>
         <form
           className="grid gap-3 md:grid-cols-4"
           onSubmit={addStory}

@@ -28,7 +28,7 @@ export function Sidebar() {
       <aside
         aria-label="Main navigation"
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-edge bg-base/90 backdrop-blur-xl transition-transform max-lg:w-[min(280px,85vw)]',
+          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-edge bg-base/90 backdrop-blur-xl transition-transform max-lg:w-[min(300px,88vw)]',
           sidebarOpen ? 'translate-x-0' : 'max-lg:-translate-x-full',
           'lg:translate-x-0',
         )}
@@ -54,7 +54,7 @@ export function Sidebar() {
             </span>
           </span>
           <span
-            className="text-[1.0625rem] font-semibold tracking-tight text-zinc-50"
+            className="text-xl font-bold tracking-tight text-zinc-50"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Hustler
@@ -83,7 +83,7 @@ export function Sidebar() {
           <div className="mx-3 my-4">
             <div className="hairline" />
           </div>
-          <div className="mb-2 px-3 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-zinc-600">
+          <div className="mb-2 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600">
             Career
           </div>
           <div className="flex flex-col gap-1">
@@ -117,7 +117,7 @@ export function Sidebar() {
               <SearchIcon />
               Search
             </span>
-            <kbd className="rounded-lg border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.625rem] text-zinc-600">
+            <kbd className="rounded-lg border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.75rem] text-zinc-600">
               ⌘K
             </kbd>
           </button>
@@ -149,7 +149,7 @@ function SideLink(props: {
       onClick={props.onNavigate}
       className={({ isActive }) =>
         cn(
-          'group relative flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150',
+          'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-base font-medium tracking-tight transition-all duration-150',
           isActive
             ? 'bg-gradient-to-r from-lime-500/[0.08] to-transparent text-zinc-50'
             : 'text-zinc-400 hover:bg-surface-2 hover:text-zinc-200',
@@ -176,7 +176,7 @@ function SideLink(props: {
           )}
           <span className="flex-1">{props.label}</span>
           {props.hint ? (
-            <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
+            <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.6875rem] text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
               {props.hint}
             </kbd>
           ) : null}
@@ -208,7 +208,7 @@ export function BottomNav() {
             end={it.to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.625rem] font-medium transition-colors',
+                'flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-medium transition-colors',
                 isActive ? 'text-lime-400' : 'text-zinc-500',
               )
             }
@@ -220,7 +220,7 @@ export function BottomNav() {
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
-          className="flex min-h-14 flex-col items-center justify-center gap-0.5 text-[0.625rem] font-medium text-zinc-500"
+          className="flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-medium text-zinc-500"
         >
           <MenuIcon />
           More

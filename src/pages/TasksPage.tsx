@@ -252,7 +252,7 @@ function TaskRow(props: {
             )}
             aria-label={`Task title: ${task.title}`}
           />
-          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[0.625rem] text-zinc-600">
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[0.75rem] text-zinc-600">
             {task.priority !== 'mid' ? (
               <span
                 className={cn(

@@ -81,7 +81,7 @@ export function DSAPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-8 animate-fade-in">
       <section className="card p-5">
-        <div className="text-base font-semibold text-zinc-100 mb-3">
+        <div className="text-lg font-semibold text-zinc-100 mb-3">
           13×7 heat · problems / day
         </div>
         <div
@@ -132,7 +132,7 @@ export function DSAPage() {
       </section>
 
       <section className="card p-5">
-        <h2 className="text-base font-semibold text-zinc-100 mb-3">Log problem</h2>
+        <h2 className="text-lg font-semibold text-zinc-100 mb-3">Log problem</h2>
         <form
           className="grid gap-3 md:grid-cols-3 lg:grid-cols-6"
           onSubmit={addProblem}

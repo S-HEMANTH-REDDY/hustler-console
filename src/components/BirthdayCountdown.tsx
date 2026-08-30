@@ -30,7 +30,7 @@ export function BirthdayCountdown() {
         <div className="relative flex items-center gap-4">
           <span className="text-4xl" aria-hidden>🎂</span>
           <div>
-            <p className="text-lg font-semibold text-zinc-50" style={{ fontFamily: 'var(--font-display)' }}>
+            <p className="text-xl font-bold text-zinc-50" style={{ fontFamily: 'var(--font-display)' }}>
               Happy Birthday!
             </p>
             <p className="mt-0.5 text-sm text-zinc-400">Make it count.</p>
@@ -84,12 +84,12 @@ function Unit(props: { value: number; label: string }) {
   return (
     <div className="text-center">
       <span
-        className="numeric-display block text-2xl text-zinc-100"
+        className="numeric-display block text-3xl text-zinc-100"
         style={{ textShadow: '0 0 20px rgba(132,204,22,0.15)' }}
       >
         {String(props.value).padStart(2, '0')}
       </span>
-      <span className="mt-1 block text-[0.5625rem] font-medium uppercase tracking-widest text-zinc-500">
+      <span className="mt-1 block text-[0.6875rem] font-medium uppercase tracking-widest text-zinc-500">
         {props.label}
       </span>
     </div>

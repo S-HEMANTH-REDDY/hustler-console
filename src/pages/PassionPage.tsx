@@ -56,7 +56,7 @@ function StopwatchCard() {
     <section className="card p-5">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-zinc-100">Stopwatch</h3>
+          <h3 className="text-lg font-semibold text-zinc-100">Stopwatch</h3>
           <p className="mt-0.5 text-xs text-zinc-500">
             Time individual problems · Space to start/pause
           </p>

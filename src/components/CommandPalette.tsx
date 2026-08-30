@@ -133,13 +133,13 @@ function PaletteBody() {
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Type a command or search…"
-            className="w-full bg-transparent py-3.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+            className="w-full bg-transparent py-3.5 text-base text-zinc-100 outline-none placeholder:text-zinc-500"
           />
         </div>
         <div className="max-h-[60vh] overflow-y-auto py-1.5">
           {grouped.map((group) => (
             <div key={group.name} className="py-0.5">
-              <div className="px-4 pb-1.5 pt-2.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-zinc-600">
+              <div className="px-4 pb-1.5 pt-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-zinc-600">
                 {group.name}
               </div>
               {group.items.map(({ item, idx }) => {
@@ -151,7 +151,7 @@ function PaletteBody() {
                     onMouseEnter={() => setCursor(idx)}
                     onClick={() => run(item)}
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 rounded-xl mx-1.5 px-3 py-2 text-left text-sm transition-all',
+                      'flex w-full items-center justify-between gap-3 rounded-xl mx-1.5 px-3 py-2.5 text-left text-base transition-all',
                       active
                         ? 'bg-zinc-50/[0.06] text-zinc-100'
                         : 'text-zinc-400 hover:bg-zinc-50/[0.03]',
@@ -160,7 +160,7 @@ function PaletteBody() {
                   >
                     <span className="truncate">{item.label}</span>
                     {item.shortcut ? (
-                      <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.5625rem] text-zinc-500">
+                      <kbd className="rounded-md border border-edge bg-well px-1.5 py-0.5 font-mono text-[0.6875rem] text-zinc-500">
                         {item.shortcut}
                       </kbd>
                     ) : null}
@@ -173,7 +173,7 @@ function PaletteBody() {
             <div className="px-4 py-8 text-center text-sm text-zinc-500">No results</div>
           ) : null}
         </div>
-        <div className="flex items-center justify-between border-t border-edge px-4 py-2 font-mono text-[0.5625rem] text-zinc-600">
+        <div className="flex items-center justify-between border-t border-edge px-4 py-2 font-mono text-[0.6875rem] text-zinc-600">
           <span>↑↓ navigate · ↵ run · Esc close</span>
           <span>⌘K · /</span>
         </div>

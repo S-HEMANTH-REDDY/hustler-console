@@ -234,7 +234,7 @@ export function TodayPage() {
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             {/* Personalized greeting */}
-            <h2 className="text-gradient text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               {greeting}
               {firstName ? (
                 <>
@@ -242,7 +242,7 @@ export function TodayPage() {
                 </>
               ) : null}
             </h2>
-            <p className="mt-1.5 text-sm text-zinc-500">
+            <p className="mt-2 text-base text-zinc-500">
               {format(secondTick, 'EEEE, MMMM d')} · W{isoWeekNumber(secondTick)} ·{' '}
               {dailyMin}–{dailyMax} app goal · sweet spot {sweet.min}–{sweet.max}
             </p>
@@ -252,14 +252,14 @@ export function TodayPage() {
               <PaceHeroNumber count={pace.todayCount} state={pace.state} />
               <div className="mb-2 flex flex-col gap-1.5">
                 <span
-                  className="font-mono text-3xl font-semibold tabular-nums text-zinc-600"
+                  className="numeric-display text-4xl text-zinc-600"
                   title="Daily minimum"
                 >
                   / {dailyMin}
                 </span>
                 <span
                   className={cn(
-                    'w-fit rounded-lg border px-2.5 py-1 text-center font-mono text-[0.625rem] font-semibold uppercase tracking-wider',
+                    'w-fit rounded-lg border px-2.5 py-1 text-center font-mono text-[0.75rem] font-semibold uppercase tracking-wider',
                     stateBadge,
                   )}
                 >
@@ -267,7 +267,7 @@ export function TodayPage() {
                 </span>
               </div>
             </div>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400">
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-zinc-400">
               {pace.statusLine}
             </p>
           </div>
@@ -281,7 +281,7 @@ export function TodayPage() {
               />
               <span className="section-label">Local time</span>
               <span
-                className="numeric-display mt-1.5 text-4xl text-zinc-50"
+                className="numeric-display mt-1.5 text-5xl text-zinc-50"
                 aria-live="off"
               >
                 {format(secondTick, 'HH:mm:ss')}
@@ -293,10 +293,10 @@ export function TodayPage() {
             </div>
             <Link
               to="/applications#quick-log"
-              className="btn-primary rounded-xl px-5 py-3 text-center text-sm"
+              className="btn-primary rounded-xl px-5 py-3.5 text-center"
             >
               + Log application
-              <span className="ml-2 rounded-md border border-lime-900/30 bg-black/10 px-1.5 py-0.5 font-mono text-[0.625rem] text-lime-950">
+              <span className="ml-2 rounded-md border border-lime-900/30 bg-black/10 px-1.5 py-0.5 font-mono text-[0.75rem] text-lime-950">
                 A
               </span>
             </Link>
@@ -555,7 +555,7 @@ export function TodayPage() {
       </section>
 
       {/* ─── Footer hints ─── */}
-      <p className="text-center font-mono text-[0.625rem] text-zinc-700">
+      <p className="text-center font-mono text-[0.75rem] text-zinc-700">
         <kbd className="rounded-md border border-edge bg-surface px-1.5 py-0.5 text-zinc-500">⌘K</kbd>
         {' '}commands ·{' '}
         <kbd className="rounded-md border border-edge bg-surface px-1.5 py-0.5 text-zinc-500">A</kbd>
@@ -599,7 +599,7 @@ function StatCard(props: {
         <div className="section-label">{props.label}</div>
         {props.chart}
       </div>
-      <div className={cn('mt-2 font-mono text-3xl font-bold tabular-nums tracking-tight', props.primaryClass ?? 'text-zinc-100')}>
+      <div className={cn('numeric-display mt-2 text-4xl', props.primaryClass ?? 'text-zinc-100')}>
         {props.primary}
       </div>
       <div className="mt-1 text-xs text-zinc-500">{props.secondary}</div>
@@ -620,7 +620,7 @@ function ThroughputTile(props: {
   return (
     <div className="bg-surface p-4">
       <div className="section-label">{props.label}</div>
-      <div className={cn('mt-1.5 font-mono text-xl font-bold tabular-nums tracking-tight', props.valueClass ?? 'text-zinc-100')}>
+      <div className={cn('numeric-display mt-1.5 text-2xl', props.valueClass ?? 'text-zinc-100')}>
         {props.value}
       </div>
       <div className="mt-1 text-xs leading-snug text-zinc-500">{props.hint}</div>
@@ -642,7 +642,7 @@ function Delta(props: {
   return (
     <div className="rounded-xl border border-edge bg-well/50 px-3.5 py-3">
       <div className="section-label">{props.label}</div>
-      <div className={cn('mt-1 font-mono text-xl font-bold tabular-nums', cls)}>
+      <div className={cn('numeric-display mt-1 text-2xl', cls)}>
         {sign}{v}
       </div>
       <div className="mt-0.5 text-xs text-zinc-500">{props.muted}</div>

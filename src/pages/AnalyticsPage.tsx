@@ -178,7 +178,7 @@ function Metric(props: { label: string; value: string; tone?: number; accent?: '
   return (
     <div className="rounded-xl bg-well/50 border border-edge px-4 py-3 transition-colors hover:border-edge-strong">
       <p className="text-xs text-zinc-500">{props.label}</p>
-      <p className={cn('mt-1 font-mono text-xl font-bold tabular-nums', toneClass)}>{props.value}</p>
+      <p className={cn('numeric-display mt-1 text-2xl', toneClass)}>{props.value}</p>
     </div>
   )
 }

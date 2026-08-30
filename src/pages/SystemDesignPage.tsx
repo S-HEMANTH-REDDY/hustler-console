@@ -145,7 +145,7 @@ export function SystemDesignPage() {
       </div>
 
       <section className="card p-5">
-        <div className="text-base font-semibold text-zinc-100 mb-3 flex items-center justify-between">
+        <div className="text-lg font-semibold text-zinc-100 mb-3 flex items-center justify-between">
           <span>
             13×7 heat ·{' '}
             {filter === 'all'
@@ -230,7 +230,7 @@ export function SystemDesignPage() {
       />
 
       <section className="card p-5">
-        <h2 className="text-base font-semibold text-zinc-100 mb-3">
+        <h2 className="text-lg font-semibold text-zinc-100 mb-3">
           Log system-design problem
         </h2>
         <form
@@ -549,7 +549,7 @@ function CoverageSection(props: {
   return (
     <section className="card p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-base font-semibold text-zinc-100">
+        <h2 className="text-lg font-semibold text-zinc-100">
           {props.title}
         </h2>
         <span

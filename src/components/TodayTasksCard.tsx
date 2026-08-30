@@ -78,7 +78,7 @@ export function TodayTasksCard() {
           <p className="section-label">
             Tasks · {TAB_LABEL[tab].toLowerCase()}
           </p>
-          <h2 className="mt-1 text-base font-semibold text-zinc-100">
+          <h2 className="mt-1 text-lg font-semibold text-zinc-100">
             {format(
               tab === 'yesterday'
                 ? addDays(now, -1)
