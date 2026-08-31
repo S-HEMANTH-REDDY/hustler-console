@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { backupAgeDays } from '../lib/insights'
+import { THEME_CYCLE, THEME_LABELS, resolveTheme } from '../lib/theme'
 import { TYPE_VOICE_LABEL, voiceForPath } from '../lib/typeVoice'
 import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
