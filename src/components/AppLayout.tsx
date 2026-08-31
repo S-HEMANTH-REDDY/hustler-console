@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { CommandPalette } from './CommandPalette'
 import { CloudImportPrompt } from './CloudImportPrompt'
 import { Onboarding } from './Onboarding'
@@ -9,11 +9,14 @@ import { ToastHost } from './ToastHost'
 import { TopBar } from './TopBar'
 import { useGlobalHotkeys } from '../hooks/useGlobalHotkeys'
 import { applyTheme, watchSystemTheme } from '../lib/theme'
+import { voiceForPath } from '../lib/typeVoice'
 import { useUiStore } from '../store/uiStore'
 
 export function AppLayout() {
   useGlobalHotkeys()
   const zenMode = useUiStore((s) => s.zenMode)
+  const pathname = useLocation().pathname
+  const voice = voiceForPath(pathname)
 
   useEffect(() => {
     applyTheme(useUiStore.getState().theme)
@@ -21,7 +24,7 @@ export function AppLayout() {
   }, [])
 
   return (
-    <div className="flex min-h-full">
+    <div className="flex min-h-full" data-voice={voice}>
       {!zenMode && <Sidebar />}
       <div
         className={

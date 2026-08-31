@@ -22,6 +22,8 @@
 
   --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
   --font-script: 'Allura', 'Segoe Script', 'Apple Chancery', cursive;
+  --font-gothic: 'UnifrakturMaguntia', 'Times New Roman', serif;
+  --font-vapor: 'Poiret One', ui-sans-serif, sans-serif;
   --font-sans:
     'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     sans-serif;
@@ -337,6 +339,94 @@ html[data-theme='light'] {
   font-weight: 400;
   letter-spacing: 0.03em;
   line-height: 1.25;
+}
+
+/* ── Per-tab display voices. Body copy stays Figtree. ── */
+[data-voice] .page-title,
+[data-voice] main h1,
+[data-voice] main h2:not(.section-label) {
+  font-family: var(--voice-font, var(--font-display));
+  font-style: var(--voice-style, italic);
+  font-weight: var(--voice-weight, 600);
+  letter-spacing: var(--voice-tracking, 0.01em);
+  text-transform: var(--voice-transform, none);
+  font-variant-caps: var(--voice-caps, normal);
+  line-height: 1.15;
+}
+
+[data-voice='script'] {
+  --voice-font: var(--font-script);
+  --voice-style: normal;
+  --voice-weight: 400;
+  --voice-tracking: 0.04em;
+  --voice-transform: none;
+  --voice-caps: normal;
+}
+[data-voice='script'] .font-script,
+[data-voice='script'] .page-title {
+  font-family: var(--font-script);
+}
+
+[data-voice='outline'] {
+  --voice-font: var(--font-display);
+  --voice-style: italic;
+  --voice-weight: 600;
+  --voice-tracking: 0.06em;
+  --voice-transform: none;
+  --voice-caps: normal;
+}
+[data-voice='outline'] .page-title,
+[data-voice='outline'] main h1,
+[data-voice='outline'] main h2:not(.section-label),
+[data-voice='outline'] .numeric-display {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.35px var(--color-zinc-50);
+}
+[data-voice='outline'] .text-gradient,
+[data-voice='outline'] .text-gradient-accent {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.35px var(--color-zinc-50);
+}
+
+[data-voice='smallcaps'] {
+  --voice-font: var(--font-sans);
+  --voice-style: normal;
+  --voice-weight: 600;
+  --voice-tracking: 0.16em;
+  --voice-transform: uppercase;
+  --voice-caps: all-small-caps;
+}
+
+[data-voice='gothic'] {
+  --voice-font: var(--font-gothic);
+  --voice-style: normal;
+  --voice-weight: 400;
+  --voice-tracking: 0.03em;
+  --voice-transform: none;
+  --voice-caps: normal;
+}
+
+[data-voice='vapor'] {
+  --voice-font: var(--font-vapor);
+  --voice-style: normal;
+  --voice-weight: 400;
+  --voice-tracking: 0.22em;
+  --voice-transform: uppercase;
+  --voice-caps: normal;
+}
+
+.voice-tag {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-zinc-500);
 }
 
 /* Big numerals stay mono so digits stay aligned and don't stretch. */

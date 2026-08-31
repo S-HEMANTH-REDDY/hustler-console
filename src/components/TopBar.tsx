@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { backupAgeDays } from '../lib/insights'
-import { THEME_CYCLE, THEME_LABELS, resolveTheme } from '../lib/theme'
+import { TYPE_VOICE_LABEL, voiceForPath } from '../lib/typeVoice'
 import { useAuthStore } from '../store/authStore'
 import { useUiStore } from '../store/uiStore'
 import { MiniTimer } from './MiniTimer'
@@ -25,13 +25,14 @@ export function TopBar() {
   const setSidebarOpen = useUiStore((s) => s.setSidebarOpen)
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen)
   const title = PAGE_TITLES[location.pathname] ?? 'Hustler'
+  const voice = voiceForPath(location.pathname)
 
   const bAge = backupAgeDays()
   const backupStale = bAge !== null && bAge >= 14
 
   return (
     <header className="frost sticky top-0 z-20 border-b border-edge">
-      <div className="flex h-14 items-center gap-3 px-4 sm:px-5 lg:px-6">
+      <div className="flex min-h-14 items-center gap-3 px-4 py-1.5 sm:px-5 lg:px-6">
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
@@ -44,7 +45,8 @@ export function TopBar() {
         </button>
 
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-semibold text-zinc-50">
+          <p className="voice-tag">{TYPE_VOICE_LABEL[voice]}</p>
+          <h1 className="page-title truncate text-2xl text-zinc-50">
             {title}
           </h1>
         </div>
