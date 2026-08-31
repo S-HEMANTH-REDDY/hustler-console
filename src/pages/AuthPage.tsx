@@ -130,10 +130,7 @@ export function AuthPage() {
     <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
-          <h1
-            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-4xl font-bold tracking-tight text-transparent"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
+          <h1 className="font-script bg-gradient-to-b from-zinc-50 to-zinc-200 bg-clip-text text-5xl text-transparent">
             Hustler
           </h1>
           <p className="mt-1 font-mono text-xs uppercase tracking-wider text-zinc-400">
@@ -275,10 +272,7 @@ function AuthDisabledNotice() {
     <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
         <div className="mb-6 text-center">
-          <h1
-            className="bg-gradient-to-b from-zinc-50 to-zinc-300 bg-clip-text text-4xl font-bold tracking-tight text-transparent"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
+          <h1 className="font-script bg-gradient-to-b from-zinc-50 to-zinc-200 bg-clip-text text-5xl text-transparent">
             Hustler
           </h1>
           <p className="mt-1 font-mono text-xs uppercase tracking-wider text-zinc-400">

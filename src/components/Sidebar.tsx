@@ -54,8 +54,7 @@ export function Sidebar() {
             </span>
           </span>
           <span
-            className="text-xl font-bold tracking-tight text-zinc-50"
-            style={{ fontFamily: 'var(--font-display)' }}
+            className="font-script text-[1.65rem] leading-none text-zinc-50"
           >
             Hustler
           </span>

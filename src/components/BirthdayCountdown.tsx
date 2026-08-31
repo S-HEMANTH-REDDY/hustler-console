@@ -30,7 +30,7 @@ export function BirthdayCountdown() {
         <div className="relative flex items-center gap-4">
           <span className="text-4xl" aria-hidden>🎂</span>
           <div>
-            <p className="text-xl font-bold text-zinc-50" style={{ fontFamily: 'var(--font-display)' }}>
+            <p className="font-script text-3xl text-zinc-50">
               Happy Birthday!
             </p>
             <p className="mt-0.5 text-sm text-zinc-400">Make it count.</p>

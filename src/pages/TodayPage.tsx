@@ -234,7 +234,7 @@ export function TodayPage() {
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">
             {/* Personalized greeting */}
-            <h2 className="text-gradient text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="font-script text-gradient text-4xl sm:text-5xl lg:text-6xl">
               {greeting}
               {firstName ? (
                 <>

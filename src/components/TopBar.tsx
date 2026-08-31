@@ -44,7 +44,7 @@ export function TopBar() {
         </button>
 
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-bold tracking-tight text-zinc-50">
+          <h1 className="truncate text-2xl font-semibold text-zinc-50">
             {title}
           </h1>
         </div>

@@ -89,10 +89,7 @@ export function Onboarding() {
 
         {step === 0 ? (
           <>
-            <h2
-              className="mt-5 text-2xl font-bold text-zinc-50"
-              style={{ fontFamily: 'var(--font-display)' }}
-            >
+            <h2 className="font-script mt-5 text-4xl text-zinc-50">
               Welcome to Hustler
             </h2>
             <p className="mt-1.5 text-sm text-zinc-400">
@@ -141,7 +138,7 @@ export function Onboarding() {
         {step === 1 ? (
           <>
             <h2
-              className="mt-5 text-2xl font-bold text-zinc-50"
+              className="mt-5 text-3xl font-semibold text-zinc-50"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               What's first on your list?
@@ -182,7 +179,7 @@ export function Onboarding() {
         {step === 2 ? (
           <>
             <h2
-              className="mt-5 text-2xl font-bold text-zinc-50"
+              className="mt-5 text-3xl font-semibold text-zinc-50"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Ready to focus?
